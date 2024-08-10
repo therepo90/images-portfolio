@@ -88,12 +88,12 @@ export class RgWebComponent extends HTMLElement {
     const uvBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, uvBuffer);
     const textureCoordinates = new Float32Array([
-      0, 0,
-      0, 1,
-      1, 1,
-      0, 0,
-      1, 1,
-      1, 0
+      0, 1, // Top-Left
+      0, 0, // Bottom-Left
+      1, 0, // Bottom-Right
+      0, 1, // Top-Left
+      1, 0, // Bottom-Right
+      1, 1  // Top-Right
     ]);
     gl.bufferData(gl.ARRAY_BUFFER, textureCoordinates, gl.STATIC_DRAW);
 
