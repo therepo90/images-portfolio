@@ -1,7 +1,6 @@
 export class RgWebComponent extends HTMLElement {
-  private fragmentCodeTemplate!: string;
-  private fragmentCodeIncluded!: string;
-  private vertexCodeTpl!: string;
+  private shaderFragmentContent!: string;
+  private vertexShaderContent!: string;
   private mouse!: { x: number; y: number };
   private startTime!: number;
   constructor() {
@@ -10,8 +9,10 @@ export class RgWebComponent extends HTMLElement {
 
   }
 
-  init(fragmentCodeTemplate, fragmentCodeIncluded, vertexCodeTpl) {
-    console.log({fragmentCodeTemplate, fragmentCodeIncluded, vertexCodeTpl})
+  init({shaderFragmentContent, vertexShaderContent}: {
+    shaderFragmentContent: string,
+    vertexShaderContent: string
+  }) {
     // calculate client width and height of this element
     const parentWidth = this.getBoundingClientRect().width;
     const parentHeight = this.getBoundingClientRect().height;
@@ -22,9 +23,8 @@ export class RgWebComponent extends HTMLElement {
             </style>
             <canvas id="rg-web-component" width="${parentWidth}px" height="${parentHeight}px"></canvas>
         `;
-    this.fragmentCodeTemplate = fragmentCodeTemplate;
-    this.fragmentCodeIncluded = fragmentCodeIncluded;
-    this.vertexCodeTpl = vertexCodeTpl;
+    this.vertexShaderContent = vertexShaderContent;
+    this.shaderFragmentContent = shaderFragmentContent;
 
     this.mouse = {x: 0, y: 0};
     this.startTime = Date.now();
@@ -44,14 +44,11 @@ export class RgWebComponent extends HTMLElement {
       return;
     }
 
-    let fragmentTpl = this.fragmentCodeTemplate;
-    // replace #include "fragment.glsl" with the actual content of fragment.glsl
-    const fragmentShaderCode = this.fragmentCodeIncluded;
-    fragmentTpl = fragmentTpl.replace('#include "fragment.glsl"', fragmentShaderCode);
-    //const vertexShaderSource = require('./vertex.glsl');
-    const vertexShaderSource = this.vertexCodeTpl;
-    const fragmentShaderSource = fragmentTpl;
 
+    const vertexShaderSource = this.vertexShaderContent;
+    const fragmentShaderSource = this.shaderFragmentContent;
+
+    console.log({vertexShaderSource, fragmentShaderSource})
     // Compile shaders
     const vertexShader = this.compileShader(gl, gl.VERTEX_SHADER, vertexShaderSource);
     const fragmentShader = this.compileShader(gl, gl.FRAGMENT_SHADER, fragmentShaderSource);
