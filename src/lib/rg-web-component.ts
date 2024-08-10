@@ -13,6 +13,9 @@ export class RgWebComponent extends HTMLElement {
   private mouse!: { x: number; y: number };
   private startTime!: number;
   private texturePaths!: { iChannel1Path: string; iChannel0Path: string };
+
+  static compiledVertexShader: any = null;
+  static compiledFragmentShader: any = null;
   constructor() {
     super();
     this.attachShadow({mode: 'open'});
@@ -40,14 +43,17 @@ export class RgWebComponent extends HTMLElement {
     this.mouse = { x: 0, y: 0 };
     this.startTime = Date.now();
     this.texturePaths = { iChannel0Path: texturePaths.iChannel0Path, iChannel1Path: texturePaths.iChannel1Path };
-    this.setupWebGL();
-    this.setupMouseListeners();
+    this.setupWebGL().then(() => {
+      this.setupMouseListeners();
+    });
+
   }
   connectedCallback() {
     console.log('connectedCallback rg-web-component');
   }
 
-  setupWebGL() {
+  async setupWebGL() {
+    //debugger;
     const canvas = this.shadowRoot!.getElementById('rg-web-component') as HTMLCanvasElement;//
     const gl = canvas.getContext('webgl');
 
@@ -63,7 +69,7 @@ export class RgWebComponent extends HTMLElement {
 
     // Compile shaders
     const vertexShader = this.compileShader(gl, gl.VERTEX_SHADER, vertexShaderSource);
-    const fragmentShader = this.compileShader(gl, gl.FRAGMENT_SHADER, fragmentShaderSource);
+    const fragmentShader =  this.compileShader(gl, gl.FRAGMENT_SHADER, fragmentShaderSource);
 
     if (!vertexShader || !fragmentShader) {
       console.error('Shader compilation failed.');
