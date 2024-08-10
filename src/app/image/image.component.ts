@@ -10,7 +10,9 @@ import {
 import {WebglApp} from "./image";
 import {CommonModule} from "@angular/common";
 import {HttpClient, HttpClientModule} from "@angular/common/http";
+import {define, RgWebComponent} from "../../lib/rg-web-component";
 
+define();
 @Component({
   selector: 'app-image',
   standalone: true,
@@ -27,6 +29,8 @@ export class ImageComponent implements AfterViewInit {
   @Input() channelo0TexturePath: string = '/DSC_0031.jpg';
   @Input() channelo1TexturePath: string = '/DSC_0031_2.jpg';
   @Input() active: boolean = false;
+  private afterViewInit: boolean = false;
+  private wantsToInit: boolean = false;
 
   constructor(private http: HttpClient) {
 
@@ -34,10 +38,14 @@ export class ImageComponent implements AfterViewInit {
 
 
   @ViewChild('renderCanvas') renderCanvas!: ElementRef<HTMLCanvasElement>;
+  @ViewChild('rgImage') rgImage!: ElementRef<HTMLElement>;
   private initialized: boolean = false;
 
   ngAfterViewInit() {
-
+    this.afterViewInit = true;
+    this.initApp().then(() => {
+      this.wantsToInit = false;
+    });
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -47,22 +55,34 @@ export class ImageComponent implements AfterViewInit {
   }
 
   private async initApp() {
+    if(!this.afterViewInit) {
+      this.wantsToInit = true;
+      console.log('Delaying image init after view init.');
+      return;
+    }
     if(this.initialized) {
       return;
     }
     console.log('activating:'+this.id);
-    const canvas = this.renderCanvas.nativeElement; // require('../loaders/loader1/fragment.glsl')
-    const shaderCode = await this.http.get('/fragment.glsl', { responseType: 'text' }).toPromise();
-    //const shaderCodeTpl = await this.http.get('/fragment-main.glsl', { responseType: 'text' }).toPromise();
-    const app = new WebglApp(
+    //const canvas = this.renderCanvas.nativeElement; // require('../loaders/loader1/fragment.glsl')
+    const fragmentCode = await this.http.get('/fragment.glsl', { responseType: 'text' }).toPromise();
+    const fragmentCodeTpl = await this.http.get('/fragment-main.glsl', { responseType: 'text' }).toPromise();
+    const vertexCodeTpl = await this.http.get('/vertex.glsl', { responseType: 'text' }).toPromise();
+
+    //@ts-ignore
+    await (this.rgImage.nativeElement as RgWebComponent).init(fragmentCodeTpl, fragmentCode, vertexCodeTpl);
+    //await this.rgImage.nativeElement.init();
+    /*const app = new WebglApp(
       canvas,
       this.shaderId,
       this.shaderMinNameAbbvPath,
       this.channelo0TexturePath,
       this.channelo1TexturePath,
-      shaderCode as any,
+      shaderCode as string,
+      shaderCodeTpl as string,
+      vertexCodeTpl as string
     );
-    await app.start();
+    await app.start();*/
     this.initialized = true;
   }
 }

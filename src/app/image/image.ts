@@ -1,4 +1,4 @@
-import {createRgLoader} from "../../lib/rg-web-component";
+
 
 export class WebglApp {
 
@@ -9,6 +9,7 @@ export class WebglApp {
   private canvas: HTMLCanvasElement;
   private shaderCode: string;
   private shaderCodeTpl: string;
+  private vertexCodeTpl!: string;
 
   constructor(
     canvas: HTMLCanvasElement,
@@ -17,30 +18,15 @@ export class WebglApp {
     channelo0TexturePath: string,
     channelo1TexturePath: string,
     shaderCode: string
-  ) {
+    ,shaderCodeTpl: string, vertexCodeTpl: string) {
     this.canvas = canvas;
     this.shaderId = shaderId;
     this.shaderMinNameAbbvPath = shaderMinNameAbbvPath;
     this.channelo0TexturePath = channelo0TexturePath;
     this.channelo1TexturePath = channelo1TexturePath;
     this.shaderCode = shaderCode;
-    this.shaderCodeTpl = `
-            #version 100
-        #ifdef GL_ES
-        precision mediump float;
-        #endif
-
-        uniform vec2 iResolution;
-        uniform float iTime; // seconds
-        uniform vec2 iMouse;
-
-        #include "fragment.glsl"
-
-        void main()
-        {
-            mainImage(gl_FragColor, gl_FragCoord.xy);
-        }
-        `
+    this.shaderCodeTpl = shaderCodeTpl;
+    this.vertexCodeTpl = vertexCodeTpl;
   }
 /*
 
@@ -96,7 +82,7 @@ export class WebglApp {
 */
 
   public async start() {
-    createRgLoader(this.shaderCodeTpl, this.shaderCode, 'rg-wgl-loader');
+
   }
 }
 
