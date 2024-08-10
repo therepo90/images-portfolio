@@ -1,33 +1,45 @@
+interface InitParams {
+  shaderFragmentContent: string;
+  vertexShaderContent: string;
+  texturePaths: {
+    iChannel0Path: string,
+    iChannel1Path: string
+  };
+}
+
 export class RgWebComponent extends HTMLElement {
   private shaderFragmentContent!: string;
   private vertexShaderContent!: string;
   private mouse!: { x: number; y: number };
   private startTime!: number;
+  private texturePaths!: { iChannel1Path: string; iChannel0Path: string };
   constructor() {
     super();
     this.attachShadow({mode: 'open'});
 
   }
 
-  init({shaderFragmentContent, vertexShaderContent}: {
-    shaderFragmentContent: string,
-    vertexShaderContent: string
-  }) {
-    // calculate client width and height of this element
+  init({
+         shaderFragmentContent,
+         vertexShaderContent,
+         texturePaths
+       }: InitParams) {
+    // Calculate client width and height of this element
     const parentWidth = this.getBoundingClientRect().width;
     const parentHeight = this.getBoundingClientRect().height;
     console.log({this: this, r: this.getBoundingClientRect(), parentWidth, parentHeight});
     this.shadowRoot!.innerHTML = `
-            <style>
-                :host { display: block; width: 100%; height: 100%; }
-            </style>
-            <canvas id="rg-web-component" width="${parentWidth}px" height="${parentHeight}px"></canvas>
-        `;
+    <style>
+      :host { display: block; width: 100%; height: 100%; }
+    </style>
+    <canvas id="rg-web-component" width="${parentWidth}px" height="${parentHeight}px"></canvas>
+  `;
     this.vertexShaderContent = vertexShaderContent;
     this.shaderFragmentContent = shaderFragmentContent;
 
-    this.mouse = {x: 0, y: 0};
+    this.mouse = { x: 0, y: 0 };
     this.startTime = Date.now();
+    this.texturePaths = { iChannel0Path: texturePaths.iChannel0Path, iChannel1Path: texturePaths.iChannel1Path };
     this.setupWebGL();
     this.setupMouseListeners();
   }
@@ -44,11 +56,11 @@ export class RgWebComponent extends HTMLElement {
       return;
     }
 
-
     const vertexShaderSource = this.vertexShaderContent;
     const fragmentShaderSource = this.shaderFragmentContent;
 
-    console.log({vertexShaderSource, fragmentShaderSource})
+    console.log({vertexShaderSource, fragmentShaderSource});
+
     // Compile shaders
     const vertexShader = this.compileShader(gl, gl.VERTEX_SHADER, vertexShaderSource);
     const fragmentShader = this.compileShader(gl, gl.FRAGMENT_SHADER, fragmentShaderSource);
@@ -58,7 +70,7 @@ export class RgWebComponent extends HTMLElement {
       return;
     }
 
-// Link shaders into a program
+    // Link shaders into a program
     const program = this.createProgram(gl, vertexShader, fragmentShader);
 
     if (!program) {
@@ -71,6 +83,31 @@ export class RgWebComponent extends HTMLElement {
     gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
     const vertices = new Float32Array([-1, -1, -1, 1, 1, 1, -1, -1, 1, 1, 1, -1]);
     gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.STATIC_DRAW);
+
+    // Create and set up textures
+    const textures = [gl.createTexture(), gl.createTexture()] as any[];
+
+    const loadTexture = (texture: WebGLTexture, path: string, unit: number) => {
+      gl.activeTexture(gl[`TEXTURE${unit}`]);
+      gl.bindTexture(gl.TEXTURE_2D, texture);
+
+      // Set texture parameters
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+
+      const image = new Image();
+      image.src = path;
+      image.onload = () => {
+        gl.bindTexture(gl.TEXTURE_2D, texture);
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
+        gl.bindTexture(gl.TEXTURE_2D, null as any);
+      };
+    };
+
+    loadTexture(textures[0], this.texturePaths.iChannel0Path, 0);
+    loadTexture(textures[1], this.texturePaths.iChannel1Path, 1);
 
     // Use program and set attributes and uniforms
     gl.useProgram(program);
@@ -88,8 +125,12 @@ export class RgWebComponent extends HTMLElement {
     const resolutionUniformLocation = gl.getUniformLocation(program, 'iResolution');
     const mouseUniformLocation = gl.getUniformLocation(program, 'iMouse');
     const timeUniformLocation = gl.getUniformLocation(program, 'iTime');
-
-    if (resolutionUniformLocation === null || timeUniformLocation === null) {
+    const iChannel0UniformLocation = gl.getUniformLocation(program, 'iChannel0');
+    const iChannel1UniformLocation = gl.getUniformLocation(program, 'iChannel1');
+//
+    // todo mouse/time fix
+    console.log({resolutionUniformLocation, mouseUniformLocation, timeUniformLocation, iChannel0UniformLocation, iChannel1UniformLocation});
+    if (resolutionUniformLocation === null || iChannel0UniformLocation === null || iChannel1UniformLocation === null) {
       console.error('Unable to get uniform location(s)');
       return;
     }
@@ -102,6 +143,15 @@ export class RgWebComponent extends HTMLElement {
 
       gl.uniform2f(mouseUniformLocation, this.mouse.x, this.mouse.y);
       gl.uniform1f(timeUniformLocation, (Date.now() - this.startTime) / 1000.0);
+
+      // Bind textures
+      gl.activeTexture(gl.TEXTURE0);
+      gl.bindTexture(gl.TEXTURE_2D, textures[0]);
+      gl.uniform1i(iChannel0UniformLocation, 0);
+
+      gl.activeTexture(gl.TEXTURE1);
+      gl.bindTexture(gl.TEXTURE_2D, textures[1]);
+      gl.uniform1i(iChannel1UniformLocation, 1);
 
       gl.drawArrays(gl.TRIANGLES, 0, 6);
     };

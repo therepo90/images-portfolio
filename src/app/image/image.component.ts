@@ -70,7 +70,11 @@ export class ImageComponent implements AfterViewInit {
 
     await (this.rgImage.nativeElement as RgWebComponent).init({
       shaderFragmentContent,
-      vertexShaderContent
+      vertexShaderContent,
+      texturePaths: {
+        iChannel0Path: this.channelo0TexturePath,
+        iChannel1Path: this.channelo1TexturePath
+      }
     });
     this.initialized = true;
   }
