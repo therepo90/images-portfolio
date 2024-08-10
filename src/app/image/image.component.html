@@ -1,7 +1,7 @@
 <div class="canvas-wrapper">
   <!--<canvas class="renderCanvas" #renderCanvas [class.hidden]="!active"></canvas>-->
-  <!--<div class="preview" *ngIf="!active">
+  <div class="preview" *ngIf="!active">
     <img [src]="channelo0TexturePath" alt="preview" class="img-preview">
-  </div>-->
-  <rg-image #rgImage></rg-image>
+  </div>
+  <rg-image #rgImage [class.hidden]="!active"></rg-image>
 </div>

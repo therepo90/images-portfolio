@@ -42,9 +42,11 @@ export class ImageComponent implements AfterViewInit {
 
   ngAfterViewInit() {
     this.afterViewInit = true;
-    this.initApp().then(() => {
-      this.wantsToInit = false;
-    });
+    if(this.wantsToInit) {
+      this.initApp().then(() => {
+        this.wantsToInit = false;
+      });
+    }
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -64,8 +66,8 @@ export class ImageComponent implements AfterViewInit {
     }
     console.log('activating:'+this.id);
     //const canvas = this.renderCanvas.nativeElement; // require('../loaders/loader1/fragment.glsl')
-    const shaderFragmentContent = await this.http.get('/tmp.glsl', { responseType: 'text' }).toPromise() as any;
-    //const shaderFragmentContent = await this.http.get('/img1.shader.fragment.glsl', { responseType: 'text' }).toPromise() as any;
+    //const shaderFragmentContent = await this.http.get('/tmp.glsl', { responseType: 'text' }).toPromise() as any;
+    const shaderFragmentContent = await this.http.get('/img1.shader.fragment.glsl', { responseType: 'text' }).toPromise() as any;
     const vertexShaderContent = await this.http.get('/vertex.glsl', { responseType: 'text' }).toPromise() as any;
 
     await (this.rgImage.nativeElement as RgWebComponent).init({

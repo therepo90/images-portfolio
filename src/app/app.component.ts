@@ -18,16 +18,16 @@ export class AppComponent {
       shaderMinNameAbbvPath: '/img1.shader',
       channelo0TexturePath: '/DSC_0031.jpg',
       channelo1TexturePath: '/DSC_0031_2.jpg',
-      active: true,
+      active: false,
     },
-    /* {
+     {
        id: '2',
       shaderId: 'imgTransition2Shader',
       shaderMinNameAbbvPath: '/img1.shader',
       channelo0TexturePath: '/phone_followers.jpg',
       channelo1TexturePath: '/phone_followers2.png',
      active: false,
-    }*/
+    }
   ];
 
   activate(imageId: string) {
