@@ -15,10 +15,10 @@ export class BabylonApp {
 
   constructor(
     canvas: HTMLCanvasElement,
-    shaderId: string = 'imgTransition1Shader',
-    shaderMinNameAbbvPath: string = '/img1.shader',
-    channelo0TexturePath: string = '/DSC_0031.jpg',
-    channelo1TexturePath: string = '/DSC_0031_2.jpg'
+    shaderId: string,
+    shaderMinNameAbbvPath: string,
+    channelo0TexturePath: string,
+    channelo1TexturePath: string
   ) {
     this.canvas = canvas;
     this.shaderId = shaderId;
@@ -32,7 +32,7 @@ export class BabylonApp {
   }
 
   private getResolution(): BABYLON.Vector2 {
-    const c = this.scene.getEngine().getRenderingCanvas();
+    const c = this.scene.getEngine().getRenderingCanvas() as HTMLCanvasElement;
     return new BABYLON.Vector2(c.width, c.height);
   }
 

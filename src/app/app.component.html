@@ -1,1 +1,11 @@
-<app-image></app-image>
+<div class="images">
+  <app-image  *ngFor="let image of images"
+    [id]="image.id"
+    [active]="image.active"
+    (mouseenter)="activate(image.id)"
+    [shaderId]="image.shaderId"
+    [shaderMinNameAbbvPath]="image.shaderMinNameAbbvPath"
+    [channelo0TexturePath]="image.channelo0TexturePath"
+    [channelo1TexturePath]="image.channelo1TexturePath">
+  </app-image>
+</div>
