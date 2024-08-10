@@ -1,19 +1,15 @@
 import {AfterViewInit, Component} from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import {startStuff} from "./scene";
+import {ImageComponent} from "./image/image.component";
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet],
+  imports: [RouterOutlet, ImageComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
-export class AppComponent implements AfterViewInit {
+export class AppComponent {
   title = 'images-portfolio';
 
-  ngAfterViewInit() {
-    const canvas = document.getElementById('renderCanvas') as HTMLCanvasElement;
-    startStuff();
-  }
 }
