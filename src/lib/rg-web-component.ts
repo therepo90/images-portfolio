@@ -48,7 +48,7 @@ export class RgWebComponent extends HTMLElement {
   }
 
   setupWebGL() {
-    const canvas = this.shadowRoot!.getElementById('rg-web-component') as HTMLCanvasElement;
+    const canvas = this.shadowRoot!.getElementById('rg-web-component') as HTMLCanvasElement;//
     const gl = canvas.getContext('webgl');
 
     if (!gl) {
@@ -83,6 +83,19 @@ export class RgWebComponent extends HTMLElement {
     gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
     const vertices = new Float32Array([-1, -1, -1, 1, 1, 1, -1, -1, 1, 1, 1, -1]);
     gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.STATIC_DRAW);
+
+    // Create buffer and set texture coordinates (UV)
+    const uvBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, uvBuffer);
+    const textureCoordinates = new Float32Array([
+      0, 0,
+      0, 1,
+      1, 1,
+      0, 0,
+      1, 1,
+      1, 0
+    ]);
+    gl.bufferData(gl.ARRAY_BUFFER, textureCoordinates, gl.STATIC_DRAW);
 
     // Create and set up textures
     const textures = [gl.createTexture(), gl.createTexture()] as any[];
@@ -121,6 +134,17 @@ export class RgWebComponent extends HTMLElement {
     gl.enableVertexAttribArray(positionAttributeLocation);
     gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
     gl.vertexAttribPointer(positionAttributeLocation, 2, gl.FLOAT, false, 0, 0);
+
+    // Set texture coordinates (UV) attribute
+    const uvAttributeLocation = gl.getAttribLocation(program, 'a_uv');
+    if (uvAttributeLocation === -1) {
+      console.error('Unable to get attribute location for a_uv');
+      return;
+    }
+
+    gl.enableVertexAttribArray(uvAttributeLocation);
+    gl.bindBuffer(gl.ARRAY_BUFFER, uvBuffer);
+    gl.vertexAttribPointer(uvAttributeLocation, 2, gl.FLOAT, false, 0, 0);
 
     const resolutionUniformLocation = gl.getUniformLocation(program, 'iResolution');
     const mouseUniformLocation = gl.getUniformLocation(program, 'iMouse');
