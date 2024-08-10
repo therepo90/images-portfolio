@@ -1,35 +1,48 @@
-import * as BABYLON from '@babylonjs/core';
+import {createRgLoader} from "../../lib/rg-web-component";
 
-export class BabylonApp {
-  private canvas: HTMLCanvasElement;
-  private engine: BABYLON.Engine;
-  private scene: BABYLON.Scene;
-  private postProcess: BABYLON.PostProcess;
-  private mousePos: BABYLON.Vector2 = new BABYLON.Vector2(0, 0);
-  private time: number = 0;
+export class WebglApp {
 
   private shaderId: string;
   private shaderMinNameAbbvPath: string;
   private channelo0TexturePath: string;
   private channelo1TexturePath: string;
+  private canvas: HTMLCanvasElement;
+  private shaderCode: string;
+  private shaderCodeTpl: string;
 
   constructor(
     canvas: HTMLCanvasElement,
     shaderId: string,
     shaderMinNameAbbvPath: string,
     channelo0TexturePath: string,
-    channelo1TexturePath: string
+    channelo1TexturePath: string,
+    shaderCode: string
   ) {
     this.canvas = canvas;
     this.shaderId = shaderId;
     this.shaderMinNameAbbvPath = shaderMinNameAbbvPath;
     this.channelo0TexturePath = channelo0TexturePath;
     this.channelo1TexturePath = channelo1TexturePath;
+    this.shaderCode = shaderCode;
+    this.shaderCodeTpl = `
+            #version 100
+        #ifdef GL_ES
+        precision mediump float;
+        #endif
 
-    this.engine = new BABYLON.Engine(this.canvas, true);
-    this.scene = this.createScene();
-    this.postProcess = this.createBgPostProcess();
+        uniform vec2 iResolution;
+        uniform float iTime; // seconds
+        uniform vec2 iMouse;
+
+        #include "fragment.glsl"
+
+        void main()
+        {
+            mainImage(gl_FragColor, gl_FragCoord.xy);
+        }
+        `
   }
+/*
 
   private getResolution(): BABYLON.Vector2 {
     const c = this.scene.getEngine().getRenderingCanvas() as HTMLCanvasElement;
@@ -67,6 +80,8 @@ export class BabylonApp {
 
     return postProcess;
   }
+*/
+/*
 
   private createScene(): BABYLON.Scene {
     const scene = new BABYLON.Scene(this.engine);
@@ -78,26 +93,10 @@ export class BabylonApp {
 
     return scene;
   }
+*/
 
-  public start(): void {
-    // Set up resize event and initial resize
-    window.addEventListener('resize', () => {
-      this.engine.resize();
-    });
-    setTimeout(() => this.engine.resize(), 10); // some bug with low quality texture
-
-    // Run the render loop
-    this.engine.runRenderLoop(() => {
-      this.scene.render();
-    });
-  }
-
-  public getEngine(): BABYLON.Engine {
-    return this.engine;
-  }
-
-  public getScene(): BABYLON.Scene {
-    return this.scene;
+  public async start() {
+    createRgLoader(this.shaderCodeTpl, this.shaderCode, 'rg-wgl-loader');
   }
 }
 
