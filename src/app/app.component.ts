@@ -59,7 +59,9 @@ export class AppComponent implements AfterViewInit{
       shaderFragmentContent: this.shaderFragmentContent,
       vertexShaderContent: this.vertexShaderContent,
     });
-    await RgWebComponent.preloadImages([this.images[0].channelo0TexturePath, this.images[0].channelo1TexturePath]);
+    const toPreloadC0 = this.images.map(textureInfo => textureInfo.channelo0TexturePath);
+    const toPreloadC1 = this.images.map(textureInfo => textureInfo.channelo1TexturePath);
+    await RgWebComponent.preloadImages([...toPreloadC0, ...toPreloadC1]);
     await engineEl.activate({
       texturePaths :{
         iChannel0Path: this.images[0].channelo0TexturePath,

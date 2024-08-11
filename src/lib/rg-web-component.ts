@@ -26,6 +26,7 @@ export class RgWebComponent extends HTMLElement {
   private timeUniformLocation!: WebGLUniformLocation;
   private iChannel0UniformLocation!: WebGLUniformLocation;
   private iChannel1UniformLocation!: WebGLUniformLocation;
+  private static shadowRoot: ShadowRoot | null;
   constructor() {
     super();
     this.attachShadow({mode: 'open'});
@@ -75,7 +76,7 @@ export class RgWebComponent extends HTMLElement {
   }
   connectedCallback() {
     console.log('connectedCallback rg-web-component');
-
+    RgWebComponent.shadowRoot = this.shadowRoot;
     this.shadowRoot!.innerHTML = `
     <style>
 
@@ -92,7 +93,7 @@ export class RgWebComponent extends HTMLElement {
     console.log('Canvas created');
   }
 
-  loadTexture  = (gl, texture: WebGLTexture, path: string, unit: number, image: any) => {
+  static loadTexture  = (gl, texture: WebGLTexture, path: string, unit: number, image: any) => {
     console.log({gl, texture, path, unit, image})
     gl.activeTexture(gl[`TEXTURE${unit}`]);
     gl.bindTexture(gl.TEXTURE_2D, texture);
@@ -119,8 +120,8 @@ export class RgWebComponent extends HTMLElement {
 // print RgWebComponent.preloadedImages
     console.log(RgWebComponent.preloadedImages);
 
-    this.loadTexture(gl, RgWebComponent.textures[0], RgWebComponent.texturePaths.iChannel0Path, 0, RgWebComponent.preloadedImages.get(RgWebComponent.texturePaths.iChannel0Path));
-    this.loadTexture(gl, RgWebComponent.textures[1], RgWebComponent.texturePaths.iChannel1Path, 1, RgWebComponent.preloadedImages.get(RgWebComponent.texturePaths.iChannel1Path));
+    RgWebComponent.loadTexture(gl, RgWebComponent.textures[0], RgWebComponent.texturePaths.iChannel0Path, 0, RgWebComponent.preloadedImages.get(RgWebComponent.texturePaths.iChannel0Path));
+    RgWebComponent.loadTexture(gl, RgWebComponent.textures[1], RgWebComponent.texturePaths.iChannel1Path, 1, RgWebComponent.preloadedImages.get(RgWebComponent.texturePaths.iChannel1Path));
 
     const draw = () => {
       const gl = RgWebComponent.gl;
@@ -295,9 +296,9 @@ export class RgWebComponent extends HTMLElement {
     });*/
   }
 
-  public moveCanvas = (el: HTMLElement) => {
+  public static moveCanvas = (el: HTMLElement) => {
     const canvas = document.getElementById('rg-web-component-canvas') as HTMLCanvasElement;
-    console.log({canvas, shadowRoot: this.shadowRoot, el});
+    console.log({canvas, shadowRoot: RgWebComponent.shadowRoot, el});
     //move it with absolute position to el, calculate bounding rect
     canvas.style.position = 'absolute';
     const rect = el.getBoundingClientRect();
@@ -306,12 +307,12 @@ export class RgWebComponent extends HTMLElement {
     console.log({canvas, rect})
   }
 
-  swapInputs = (inputs: { texturePaths: { iChannel1Path: string; iChannel0Path: string } }) => {
+  static swapInputs = async (inputs: { texturePaths: { iChannel1Path: string; iChannel0Path: string } }) => {
     RgWebComponent.texturePaths = inputs.texturePaths;
-    console.log('Swapping inputs');
+    console.log('Swapping inputs to ');
     console.log(RgWebComponent.texturePaths, this, RgWebComponent.textures);
-    this.loadTexture(RgWebComponent.gl, RgWebComponent.textures[0], RgWebComponent.texturePaths.iChannel0Path, 0, RgWebComponent.preloadedImages.get(RgWebComponent.texturePaths.iChannel0Path));
-    this.loadTexture(RgWebComponent.gl, RgWebComponent.textures[1], RgWebComponent.texturePaths.iChannel1Path, 1, RgWebComponent.preloadedImages.get(RgWebComponent.texturePaths.iChannel1Path));
+    RgWebComponent.loadTexture(RgWebComponent.gl, RgWebComponent.textures[0], RgWebComponent.texturePaths.iChannel0Path, 0, RgWebComponent.preloadedImages.get(RgWebComponent.texturePaths.iChannel0Path));
+    RgWebComponent.loadTexture(RgWebComponent.gl, RgWebComponent.textures[1], RgWebComponent.texturePaths.iChannel1Path, 1, RgWebComponent.preloadedImages.get(RgWebComponent.texturePaths.iChannel1Path));
   }
 
   static initEngine() {
