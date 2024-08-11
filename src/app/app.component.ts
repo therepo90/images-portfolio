@@ -39,9 +39,14 @@ export class AppComponent implements AfterViewInit{
      active: false,
     }
   ];
+  visibleCanvas: boolean = false;
 
 
   activate(imageId: string) {
+    if(!this.visibleCanvas){
+      RgWebComponent.activate();
+    }
+    this.visibleCanvas = true;
     this.images.forEach(image => {
       image.active = image.id === imageId;
     });

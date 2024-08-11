@@ -15,17 +15,17 @@ interface InitParams {
 export class RgWebComponent extends HTMLElement {
   private static shaderFragmentContent: string;
   private static vertexShaderContent: string;
-  private mouse!: { x: number; y: number };
-  private startTime!: number;
+  private static mouse: { x: number; y: number };
+  private static startTime: number;
   private static texturePaths: { iChannel1Path: string; iChannel0Path: string };
   public static initialized: boolean = false;
   private static gl: WebGLRenderingContext;
   private static textures: any[];
   private static preloadedImages = new Map<string, HTMLImageElement>();
-  private mouseUniformLocation!: WebGLUniformLocation;
-  private timeUniformLocation!: WebGLUniformLocation;
-  private iChannel0UniformLocation!: WebGLUniformLocation;
-  private iChannel1UniformLocation!: WebGLUniformLocation;
+  private static mouseUniformLocation: WebGLUniformLocation;
+  private static timeUniformLocation: WebGLUniformLocation;
+  private static iChannel0UniformLocation: WebGLUniformLocation;
+  private static iChannel1UniformLocation: WebGLUniformLocation;
   private static shadowRoot: ShadowRoot | null;
   constructor() {
     super();
@@ -64,8 +64,8 @@ export class RgWebComponent extends HTMLElement {
     RgWebComponent.vertexShaderContent = vertexShaderContent;
     RgWebComponent.shaderFragmentContent = shaderFragmentContent;
 
-    this.mouse = { x: 0, y: 0 };
-    this.startTime = Date.now();
+    RgWebComponent.mouse = { x: 0, y: 0 };
+    RgWebComponent.startTime = Date.now();
 
     await this.setupWebGL().then(() => {
       this.setupMouseListeners();
@@ -109,7 +109,7 @@ export class RgWebComponent extends HTMLElement {
     gl.bindTexture(gl.TEXTURE_2D, null as any);
   };
 
-  activate =  () => {
+  static activate =  () => {
     console.log('activate');
     //RgWebComponent.texturePaths = { iChannel0Path: texturePaths.iChannel0Path, iChannel1Path: texturePaths.iChannel1Path };
     //const gl = RgWebComponent.gl;
@@ -128,17 +128,17 @@ export class RgWebComponent extends HTMLElement {
       gl.clearColor(0, 0, 0, 1);
       gl.clear(gl.COLOR_BUFFER_BIT);
 
-      gl.uniform2f(this.mouseUniformLocation, this.mouse.x, this.mouse.y);
-      gl.uniform1f(this.timeUniformLocation, (Date.now() - this.startTime) / 1000.0);
+      gl.uniform2f(RgWebComponent.mouseUniformLocation, RgWebComponent.mouse.x, RgWebComponent.mouse.y);
+      gl.uniform1f(RgWebComponent.timeUniformLocation, (Date.now() - RgWebComponent.startTime) / 1000.0);
 
       // Bind textures
       gl.activeTexture(gl.TEXTURE0);
       gl.bindTexture(gl.TEXTURE_2D, RgWebComponent.textures[0]);
-      gl.uniform1i(this.iChannel0UniformLocation, 0);
+      gl.uniform1i(RgWebComponent.iChannel0UniformLocation, 0);
 
       gl.activeTexture(gl.TEXTURE1);
       gl.bindTexture(gl.TEXTURE_2D, RgWebComponent.textures[1]);
-      gl.uniform1i(this.iChannel1UniformLocation, 1);
+      gl.uniform1i(RgWebComponent.iChannel1UniformLocation, 1);
 
       gl.drawArrays(gl.TRIANGLES, 0, 6);
     };
@@ -233,10 +233,10 @@ export class RgWebComponent extends HTMLElement {
     const timeUniformLocation = gl.getUniformLocation(program, 'iTime');
     const iChannel0UniformLocation = gl.getUniformLocation(program, 'iChannel0');
     const iChannel1UniformLocation = gl.getUniformLocation(program, 'iChannel1');
-    this.mouseUniformLocation = mouseUniformLocation as any;
-    this.timeUniformLocation = timeUniformLocation as any;
-    this.iChannel0UniformLocation = iChannel0UniformLocation as any
-    this.iChannel1UniformLocation = iChannel1UniformLocation as any;
+    RgWebComponent.mouseUniformLocation = mouseUniformLocation as any;
+    RgWebComponent.timeUniformLocation = timeUniformLocation as any;
+    RgWebComponent.iChannel0UniformLocation = iChannel0UniformLocation as any
+    RgWebComponent.iChannel1UniformLocation = iChannel1UniformLocation as any;
 
 //
     // todo mouse/time fix
@@ -249,7 +249,6 @@ export class RgWebComponent extends HTMLElement {
     gl.uniform2f(resolutionUniformLocation, canvas.width, canvas.height);
 
     RgWebComponent.textures = [gl.createTexture(), gl.createTexture()] as any[];
-    this.activate();
   }
 
   compileShader(gl, type, source) {
@@ -286,8 +285,8 @@ export class RgWebComponent extends HTMLElement {
     document.addEventListener('mousemove', (event) => {
 
       const rect = canvas!.getBoundingClientRect();
-      this.mouse.x = event.clientX - rect.left;
-      this.mouse.y = rect.height - (event.clientY - rect.top);
+      RgWebComponent.mouse.x = event.clientX - rect.left;
+      RgWebComponent.mouse.y = rect.height - (event.clientY - rect.top);
       //console.log(this.mouse);
     });
 
