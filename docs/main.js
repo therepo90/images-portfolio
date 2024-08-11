@@ -36155,7 +36155,7 @@ var ImageComponent = class _ImageComponent {
     if (rf & 2) {
       \u0275\u0275property("ngIf", !ctx.active || !ctx.ready);
     }
-  }, dependencies: [CommonModule, NgIf, HttpClientModule], styles: ["\n\n[_nghost-%COMP%] {\n  position: relative;\n  display: block;\n  background: green;\n  width: 600px;\n  height: 400px;\n}\n.preview[_ngcontent-%COMP%] {\n  background: teal;\n  width: 100%;\n  height: 100%;\n}\n/*# sourceMappingURL=image.component.css.map */"] });
+  }, dependencies: [CommonModule, NgIf, HttpClientModule], styles: ["\n\n[_nghost-%COMP%] {\n  position: relative;\n  display: block;\n  background: green;\n  width: 600px;\n  height: 400px;\n}\n.preview[_ngcontent-%COMP%] {\n  background: teal;\n  width: 100%;\n  height: 100%;\n}\n/*# sourceMappingURL=/images-portfolio/image.component.css.map */"] });
 };
 (() => {
   (typeof ngDevMode === "undefined" || ngDevMode) && \u0275setClassDebugInfo(ImageComponent, { className: "ImageComponent", filePath: "src/app/image/image.component.ts", lineNumber: 24 });
@@ -36266,7 +36266,7 @@ var AppComponent = class _AppComponent {
       \u0275\u0275advance();
       \u0275\u0275classProp("rocketed-somewhere", !ctx.visibleCanvas);
     }
-  }, dependencies: [CommonModule, NgForOf, ImageComponent, HttpClientModule], styles: ["\n\n.images[_ngcontent-%COMP%] {\n  display: flex;\n  flex-wrap: wrap;\n  padding: 20px 120px;\n  margin: 0 auto;\n}\n.images[_ngcontent-%COMP%]    > *[_ngcontent-%COMP%] {\n  margin: 10px;\n}\n/*# sourceMappingURL=app.component.css.map */"] });
+  }, dependencies: [CommonModule, NgForOf, ImageComponent, HttpClientModule], styles: ["\n\n.images[_ngcontent-%COMP%] {\n  display: flex;\n  flex-wrap: wrap;\n  padding: 20px 120px;\n  margin: 0 auto;\n}\n.images[_ngcontent-%COMP%]    > *[_ngcontent-%COMP%] {\n  margin: 10px;\n}\n/*# sourceMappingURL=/images-portfolio/app.component.css.map */"] });
 };
 (() => {
   (typeof ngDevMode === "undefined" || ngDevMode) && \u0275setClassDebugInfo(AppComponent, { className: "AppComponent", filePath: "src/app/app.component.ts", lineNumber: 16 });
