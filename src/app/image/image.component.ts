@@ -29,8 +29,9 @@ export class ImageComponent {
   @Input() channelo1TexturePath: string = '/DSC_0031_2.jpg';
   @Input() active: boolean = false;
   ready: boolean = false;
+  base: string='';
   constructor(private http: HttpClient, public el: ElementRef) {
-
+    this.base = window.origin.includes('localhost') ? '' : '/images-portfolio';
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -43,8 +44,8 @@ export class ImageComponent {
     await RgWebComponent.swapInputs(
       {
         texturePaths: {
-          iChannel0Path: this.channelo0TexturePath,
-          iChannel1Path: this.channelo1TexturePath
+          iChannel0Path: this.base + this.channelo0TexturePath,
+          iChannel1Path: this.base + this.channelo1TexturePath
         }
       }
     );
