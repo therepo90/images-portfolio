@@ -1,3 +1,4 @@
+import {type Vector3} from "@babylonjs/core";
 
 
 interface ActivateParams {
@@ -29,6 +30,9 @@ export class RgWebComponent extends HTMLElement {
   private static shadowRoot: ShadowRoot | null;
   private static swappingInputs: boolean = false;
   private static firstFrameAfterChange: boolean = false;
+  private static laserTintUniformLocation: WebGLUniformLocation;
+  private static defaultLaserTint = [1.0, 0.5, 0.0];
+  private static laserTint = [1.0, 0.5, 0.0];
   constructor() {
     super();
     this.attachShadow({mode: 'open'});
@@ -153,6 +157,7 @@ export class RgWebComponent extends HTMLElement {
       }*/
       gl.uniform2f(RgWebComponent.mouseUniformLocation, RgWebComponent.mouse.x, RgWebComponent.mouse.y);
       gl.uniform1f(RgWebComponent.timeUniformLocation, (Date.now() - RgWebComponent.startTime) / 1000.0);
+      gl.uniform3fv(RgWebComponent.laserTintUniformLocation, new Float32Array(RgWebComponent.laserTint)); // vec3(1.0, 0.5, 0.) *
 
       // Bind textures
       gl.activeTexture(gl.TEXTURE0);
@@ -256,15 +261,17 @@ export class RgWebComponent extends HTMLElement {
     const timeUniformLocation = gl.getUniformLocation(program, 'iTime');
     const iChannel0UniformLocation = gl.getUniformLocation(program, 'iChannel0');
     const iChannel1UniformLocation = gl.getUniformLocation(program, 'iChannel1');
+    const laserTintUniformLocation = gl.getUniformLocation(program, 'laserTint');
     RgWebComponent.mouseUniformLocation = mouseUniformLocation as any;
     RgWebComponent.timeUniformLocation = timeUniformLocation as any;
     RgWebComponent.iChannel0UniformLocation = iChannel0UniformLocation as any
     RgWebComponent.iChannel1UniformLocation = iChannel1UniformLocation as any;
+    RgWebComponent.laserTintUniformLocation = laserTintUniformLocation as any;
 
 //
     // todo mouse/time fix
     console.log({resolutionUniformLocation, mouseUniformLocation, timeUniformLocation, iChannel0UniformLocation, iChannel1UniformLocation});
-    if (resolutionUniformLocation === null || iChannel0UniformLocation === null || iChannel1UniformLocation === null) {
+    if (resolutionUniformLocation === null || iChannel0UniformLocation === null || iChannel1UniformLocation === null || laserTintUniformLocation === null) {
       console.error('Unable to get uniform location(s)');
       return;
     }
@@ -321,6 +328,9 @@ export class RgWebComponent extends HTMLElement {
     });*/
   }
 
+  public static changeLaserTint = (color: Vector3) => {
+      this.laserTint = [color.x, color.y, color.z];
+  }
   public static moveCanvas = (el: HTMLElement) => {
     const canvas = document.getElementById('rg-canvas-wrapper') as HTMLCanvasElement;
     console.log({canvas, shadowRoot: RgWebComponent.shadowRoot, el});

@@ -30060,13 +30060,6 @@ var RgWebComponent = class _RgWebComponent extends HTMLElement {
       const gl = _RgWebComponent.gl;
       gl.clearColor(0, 0, 0, 1);
       gl.clear(gl.COLOR_BUFFER_BIT);
-      if (_RgWebComponent.firstFrameAfterChange) {
-        _RgWebComponent.firstFrameAfterChange = false;
-      }
-      if (_RgWebComponent.swappingInputs) {
-        _RgWebComponent.firstFrameAfterChange = true;
-        return;
-      }
       gl.uniform2f(_RgWebComponent.mouseUniformLocation, _RgWebComponent.mouse.x, _RgWebComponent.mouse.y);
       gl.uniform1f(_RgWebComponent.timeUniformLocation, (Date.now() - _RgWebComponent.startTime) / 1e3);
       gl.activeTexture(gl.TEXTURE0);
@@ -30336,6 +30329,14 @@ var AppComponent = class _AppComponent {
       channelo1TexturePath: "/troll2.jpg",
       active: false
     }
+    /* {
+       id: '4',
+       shaderId: 'imgTransition4Shader',
+       shaderMinNameAbbvPath: '/img1.shader',
+       channelo0TexturePath: '/full/DSC_0031.jpg',
+       channelo1TexturePath: '/full/DSC_0031_2.jpg',
+       active: false,
+     }*/
   ];
   visibleCanvas = false;
   activate(imageId) {

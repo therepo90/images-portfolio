@@ -10,6 +10,7 @@ import {
 import {CommonModule} from "@angular/common";
 import {HttpClient, HttpClientModule} from "@angular/common/http";
 import {define, RgWebComponent} from "../../lib/rg-web-component";
+import {Vector3} from "@babylonjs/core";
 
 define();
 @Component({
@@ -53,6 +54,8 @@ export class ImageComponent {
     /*const delay = ms => new Promise(res => setTimeout(res, ms));
     await delay(10);*/
     RgWebComponent.moveCanvas(this.el.nativeElement);
+    const randomTint = new Vector3(Math.random(), Math.random(), Math.random());
+    RgWebComponent.changeLaserTint(randomTint);
     this.ready = true;
   }
 }
