@@ -30225,7 +30225,7 @@ function ImageComponent_div_0_Template(rf, ctx) {
   if (rf & 2) {
     const ctx_r0 = \u0275\u0275nextContext();
     \u0275\u0275advance();
-    \u0275\u0275property("src", ctx_r0.channelo0TexturePath, \u0275\u0275sanitizeUrl);
+    \u0275\u0275property("src", ctx_r0.base + ctx_r0.channelo0TexturePath, \u0275\u0275sanitizeUrl);
   }
 }
 define();
@@ -30239,9 +30239,11 @@ var ImageComponent = class _ImageComponent {
   channelo1TexturePath = "/DSC_0031_2.jpg";
   active = false;
   ready = false;
+  base = "";
   constructor(http, el) {
     this.http = http;
     this.el = el;
+    this.base = window.origin.includes("localhost") ? "" : "/images-portfolio";
   }
   ngOnChanges(changes) {
     if (changes["active"]?.currentValue === true) {
@@ -30252,8 +30254,8 @@ var ImageComponent = class _ImageComponent {
     return __async(this, null, function* () {
       yield RgWebComponent.swapInputs({
         texturePaths: {
-          iChannel0Path: this.channelo0TexturePath,
-          iChannel1Path: this.channelo1TexturePath
+          iChannel0Path: this.base + this.channelo0TexturePath,
+          iChannel1Path: this.base + this.channelo1TexturePath
         }
       });
       RgWebComponent.moveCanvas(this.el.nativeElement);

@@ -32,6 +32,7 @@ export class ImageComponent {
   base: string='';
   constructor(private http: HttpClient, public el: ElementRef) {
     this.base = window.origin.includes('localhost') ? '' : '/images-portfolio';
+    console.log('baseii', this.base);
   }
 
   ngOnChanges(changes: SimpleChanges) {
