@@ -29989,6 +29989,8 @@ var RgWebComponent = class _RgWebComponent extends HTMLElement {
     this.attachShadow({ mode: "open" });
   }
   static preloadImages = (paths) => __async(this, null, function* () {
+    const base = window.origin.includes("localhost") ? "" : "/images-portfolio";
+    paths = paths.map((path) => base + path);
     console.log("Preloading images", paths);
     const promises = paths.map((path) => {
       return new Promise((resolve, reject) => {
@@ -30340,8 +30342,9 @@ var AppComponent = class _AppComponent {
   }
   initFuckingCanvas() {
     return __async(this, null, function* () {
-      this.shaderFragmentContent = this.shaderFragmentContent || (yield this.http.get("/img1.shader.fragment.glsl", { responseType: "text" }).toPromise());
-      this.vertexShaderContent = this.vertexShaderContent || (yield this.http.get("/vertex.glsl", { responseType: "text" }).toPromise());
+      const base = window.origin.includes("localhost") ? "" : "/images-portfolio";
+      this.shaderFragmentContent = this.shaderFragmentContent || (yield this.http.get(base + "/img1.shader.fragment.glsl", { responseType: "text" }).toPromise());
+      this.vertexShaderContent = this.vertexShaderContent || (yield this.http.get(base + "/vertex.glsl", { responseType: "text" }).toPromise());
       let engineEl = this.rgImage.nativeElement;
       yield engineEl.init({
         shaderFragmentContent: this.shaderFragmentContent,

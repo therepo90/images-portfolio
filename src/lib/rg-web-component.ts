@@ -36,6 +36,7 @@ export class RgWebComponent extends HTMLElement {
 
   public static preloadImages = async (paths: string[]) => {
     const base = window.origin.includes('localhost') ? '' : '/images-portfolio';
+    console.log({base})
     paths = paths.map(path => base + path);
     console.log('Preloading images', paths);
     const promises = paths.map(path => {
