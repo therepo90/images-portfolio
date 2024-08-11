@@ -3,7 +3,26 @@
 .canvas-wrapper {
   width   : $canvasWidth;
   height  : $canvasHeight;
+  //border-top: 5px solid red;
+  position: relative;
 
+   /* &::after {
+      transition: background-color 0.1s linear;
+      content: '';
+      display: block;
+      padding-top: 100%;
+      background-color: rgba(0, 0, 0, 1.0);
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+    }
+  &.active {
+    &::after {
+      background-color: rgba(0, 0, 0, 0.0);
+    }
+  }*/
 }
 
 .rocketed-somewhere {

@@ -27,6 +27,7 @@ export class RgWebComponent extends HTMLElement {
   private static iChannel0UniformLocation: WebGLUniformLocation;
   private static iChannel1UniformLocation: WebGLUniformLocation;
   private static shadowRoot: ShadowRoot | null;
+  private static swappingInputs: boolean = false;
   constructor() {
     super();
     this.attachShadow({mode: 'open'});
@@ -135,6 +136,9 @@ export class RgWebComponent extends HTMLElement {
       gl.clearColor(0, 0, 0, 1);
       gl.clear(gl.COLOR_BUFFER_BIT);
 
+      if(RgWebComponent.swappingInputs) {
+        return;
+      }
       gl.uniform2f(RgWebComponent.mouseUniformLocation, RgWebComponent.mouse.x, RgWebComponent.mouse.y);
       gl.uniform1f(RgWebComponent.timeUniformLocation, (Date.now() - RgWebComponent.startTime) / 1000.0);
 
@@ -317,11 +321,15 @@ export class RgWebComponent extends HTMLElement {
   }
 
   static swapInputs = async (inputs: { texturePaths: { iChannel1Path: string; iChannel0Path: string } }) => {
+    RgWebComponent.swappingInputs = true;
     RgWebComponent.texturePaths = inputs.texturePaths;
     console.log('Swapping inputs to ');
     console.log(RgWebComponent.texturePaths, this, RgWebComponent.textures);
     RgWebComponent.loadTexture(RgWebComponent.gl, RgWebComponent.textures[0], RgWebComponent.texturePaths.iChannel0Path, 0, RgWebComponent.preloadedImages.get(RgWebComponent.texturePaths.iChannel0Path));
     RgWebComponent.loadTexture(RgWebComponent.gl, RgWebComponent.textures[1], RgWebComponent.texturePaths.iChannel1Path, 1, RgWebComponent.preloadedImages.get(RgWebComponent.texturePaths.iChannel1Path));
+    //const delay = ms => new Promise(res => setTimeout(res, ms));
+    //await delay(17); // jak poczekac zeby nie rysowac poprzedniej ramki?
+    RgWebComponent.swappingInputs = false;
   }
 
 }

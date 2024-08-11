@@ -1,6 +1,5 @@
-<div class="canvas-wrapper">
-  <!--<canvas class="renderCanvas" #renderCanvas [class.hidden]="!active"></canvas>-->
-  <div class="preview" *ngIf="!active">
+
+  <div class="preview" *ngIf="!active || !ready">
     <img [src]="channelo0TexturePath" alt="preview" class="img-preview">
   </div>
-</div>
+

@@ -28,6 +28,7 @@ export class ImageComponent {
   @Input() channelo0TexturePath: string = '/DSC_0031.jpg';
   @Input() channelo1TexturePath: string = '/DSC_0031_2.jpg';
   @Input() active: boolean = false;
+  ready: boolean = false;
   constructor(private http: HttpClient, public el: ElementRef) {
 
   }
@@ -47,6 +48,9 @@ export class ImageComponent {
         }
       }
     );
+    /*const delay = ms => new Promise(res => setTimeout(res, ms));
+    await delay(10);*/
     RgWebComponent.moveCanvas(this.el.nativeElement);
+    this.ready = true;
   }
 }
