@@ -38,6 +38,7 @@
           },
           "configurations": {
             "production": {
+              "baseHref": "/images-portfolio/",
               "deployUrl": "/images-portfolio/",
               "deleteOutputPath": true,
               "outputPath": "docs",
