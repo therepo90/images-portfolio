@@ -1,14 +1,17 @@
 
 
-interface InitParams {
-  shaderFragmentContent: string;
-  vertexShaderContent: string;
+interface ActivateParams {
   texturePaths: {
     iChannel0Path: string,
     iChannel1Path: string
   };
 }
+interface InitParams {
+  shaderFragmentContent: string;
+  vertexShaderContent: string;
 
+}
+// TO jest komponent, engine ktory zajmuje sie jednym canvasem. W apce powinno byc takie jedno tylko.
 export class RgWebComponent extends HTMLElement {
   private static shaderFragmentContent: string;
   private static vertexShaderContent: string;
@@ -19,6 +22,10 @@ export class RgWebComponent extends HTMLElement {
   private static gl: WebGLRenderingContext;
   private static textures: any[];
   private static preloadedImages = new Map<string, HTMLImageElement>();
+  private mouseUniformLocation!: WebGLUniformLocation;
+  private timeUniformLocation!: WebGLUniformLocation;
+  private iChannel0UniformLocation!: WebGLUniformLocation;
+  private iChannel1UniformLocation!: WebGLUniformLocation;
   constructor() {
     super();
     this.attachShadow({mode: 'open'});
@@ -42,17 +49,33 @@ export class RgWebComponent extends HTMLElement {
       this.preloadedImages.set(path, loadedImages[i]);
     });
   };
-  init = ({
+  init = async ({
          shaderFragmentContent,
          vertexShaderContent,
-         texturePaths
        }: InitParams) => {
-    RgWebComponent.texturePaths = { iChannel0Path: texturePaths.iChannel0Path, iChannel1Path: texturePaths.iChannel1Path };
+    console.log('init rg-web-component');
     // Calculate client width and height of this element
     const parentWidth = this.getBoundingClientRect().width;
     const parentHeight = this.getBoundingClientRect().height;
     console.log({this: this, r: this.getBoundingClientRect(), parentWidth, parentHeight});
     // :host { display: block; width: 100%; height: 100%; }
+
+    RgWebComponent.vertexShaderContent = vertexShaderContent;
+    RgWebComponent.shaderFragmentContent = shaderFragmentContent;
+
+    this.mouse = { x: 0, y: 0 };
+    this.startTime = Date.now();
+
+    await this.setupWebGL().then(() => {
+      this.setupMouseListeners();
+    });
+    RgWebComponent.initialized = true;
+    console.log('Initialized web component');
+
+  }
+  connectedCallback() {
+    console.log('connectedCallback rg-web-component');
+
     this.shadowRoot!.innerHTML = `
     <style>
 
@@ -66,20 +89,7 @@ export class RgWebComponent extends HTMLElement {
     canvas.width = 600; //parentWidth;
     canvas.height = 400;//parentHeight;
     document.body.appendChild(canvas);
-    RgWebComponent.vertexShaderContent = vertexShaderContent;
-    RgWebComponent.shaderFragmentContent = shaderFragmentContent;
-
-    this.mouse = { x: 0, y: 0 };
-    this.startTime = Date.now();
-
-    this.setupWebGL().then(() => {
-      this.setupMouseListeners();
-    });
-    RgWebComponent.initialized = true;
-
-  }
-  connectedCallback() {
-    console.log('connectedCallback rg-web-component');
+    console.log('Canvas created');
   }
 
   loadTexture  = (gl, texture: WebGLTexture, path: string, unit: number, image: any) => {
@@ -98,8 +108,50 @@ export class RgWebComponent extends HTMLElement {
     gl.bindTexture(gl.TEXTURE_2D, null as any);
   };
 
+  activate =  ({texturePaths}: ActivateParams) => {
+    console.log('activate', {texturePaths});
+    RgWebComponent.texturePaths = { iChannel0Path: texturePaths.iChannel0Path, iChannel1Path: texturePaths.iChannel1Path };
+    const gl = RgWebComponent.gl;
+    // Create and set up textures
+    RgWebComponent.textures = [gl.createTexture(), gl.createTexture()] as any[];
+
+    console.log('Dupa', {this: this, textures: RgWebComponent.textures, texturePaths: RgWebComponent.texturePaths});
+// print RgWebComponent.preloadedImages
+    console.log(RgWebComponent.preloadedImages);
+
+    this.loadTexture(gl, RgWebComponent.textures[0], RgWebComponent.texturePaths.iChannel0Path, 0, RgWebComponent.preloadedImages.get(RgWebComponent.texturePaths.iChannel0Path));
+    this.loadTexture(gl, RgWebComponent.textures[1], RgWebComponent.texturePaths.iChannel1Path, 1, RgWebComponent.preloadedImages.get(RgWebComponent.texturePaths.iChannel1Path));
+
+    const draw = () => {
+      const gl = RgWebComponent.gl;
+      gl.clearColor(0, 0, 0, 1);
+      gl.clear(gl.COLOR_BUFFER_BIT);
+
+      gl.uniform2f(this.mouseUniformLocation, this.mouse.x, this.mouse.y);
+      gl.uniform1f(this.timeUniformLocation, (Date.now() - this.startTime) / 1000.0);
+
+      // Bind textures
+      gl.activeTexture(gl.TEXTURE0);
+      gl.bindTexture(gl.TEXTURE_2D, RgWebComponent.textures[0]);
+      gl.uniform1i(this.iChannel0UniformLocation, 0);
+
+      gl.activeTexture(gl.TEXTURE1);
+      gl.bindTexture(gl.TEXTURE_2D, RgWebComponent.textures[1]);
+      gl.uniform1i(this.iChannel1UniformLocation, 1);
+
+      gl.drawArrays(gl.TRIANGLES, 0, 6);
+    };
+
+    const animate = () => {
+      draw();
+      requestAnimationFrame(animate);
+    };
+
+    animate();
+  }
 
   setupWebGL = async() => {
+    console.log('setupWebGL');
     //debugger;
     const canvas = document.getElementById('rg-web-component-canvas') as HTMLCanvasElement;//
     const gl = canvas.getContext('webgl');
@@ -151,16 +203,6 @@ export class RgWebComponent extends HTMLElement {
     ]);
     gl.bufferData(gl.ARRAY_BUFFER, textureCoordinates, gl.STATIC_DRAW);
 
-    // Create and set up textures
-    RgWebComponent.textures = [gl.createTexture(), gl.createTexture()] as any[];
-
-    console.log('Dupa', {this: this, textures: RgWebComponent.textures, texturePaths: RgWebComponent.texturePaths});
-// print RgWebComponent.preloadedImages
-    console.log(RgWebComponent.preloadedImages);
-
-    this.loadTexture(gl, RgWebComponent.textures[0], RgWebComponent.texturePaths.iChannel0Path, 0, RgWebComponent.preloadedImages.get(RgWebComponent.texturePaths.iChannel0Path));
-    this.loadTexture(gl, RgWebComponent.textures[1], RgWebComponent.texturePaths.iChannel1Path, 1, RgWebComponent.preloadedImages.get(RgWebComponent.texturePaths.iChannel1Path));
-
     // Use program and set attributes and uniforms
     gl.useProgram(program);
 
@@ -190,6 +232,11 @@ export class RgWebComponent extends HTMLElement {
     const timeUniformLocation = gl.getUniformLocation(program, 'iTime');
     const iChannel0UniformLocation = gl.getUniformLocation(program, 'iChannel0');
     const iChannel1UniformLocation = gl.getUniformLocation(program, 'iChannel1');
+    this.mouseUniformLocation = mouseUniformLocation as any;
+    this.timeUniformLocation = timeUniformLocation as any;
+    this.iChannel0UniformLocation = iChannel0UniformLocation as any
+    this.iChannel1UniformLocation = iChannel1UniformLocation as any;
+
 //
     // todo mouse/time fix
     console.log({resolutionUniformLocation, mouseUniformLocation, timeUniformLocation, iChannel0UniformLocation, iChannel1UniformLocation});
@@ -199,32 +246,6 @@ export class RgWebComponent extends HTMLElement {
     }
 
     gl.uniform2f(resolutionUniformLocation, canvas.width, canvas.height);
-
-    const draw = () => {
-      gl.clearColor(0, 0, 0, 1);
-      gl.clear(gl.COLOR_BUFFER_BIT);
-
-      gl.uniform2f(mouseUniformLocation, this.mouse.x, this.mouse.y);
-      gl.uniform1f(timeUniformLocation, (Date.now() - this.startTime) / 1000.0);
-
-      // Bind textures
-      gl.activeTexture(gl.TEXTURE0);
-      gl.bindTexture(gl.TEXTURE_2D, RgWebComponent.textures[0]);
-      gl.uniform1i(iChannel0UniformLocation, 0);
-
-      gl.activeTexture(gl.TEXTURE1);
-      gl.bindTexture(gl.TEXTURE_2D, RgWebComponent.textures[1]);
-      gl.uniform1i(iChannel1UniformLocation, 1);
-
-      gl.drawArrays(gl.TRIANGLES, 0, 6);
-    };
-
-    const animate = () => {
-      draw();
-      requestAnimationFrame(animate);
-    };
-
-    animate();
   }
 
   compileShader(gl, type, source) {
@@ -291,6 +312,10 @@ export class RgWebComponent extends HTMLElement {
     console.log(RgWebComponent.texturePaths, this, RgWebComponent.textures);
     this.loadTexture(RgWebComponent.gl, RgWebComponent.textures[0], RgWebComponent.texturePaths.iChannel0Path, 0, RgWebComponent.preloadedImages.get(RgWebComponent.texturePaths.iChannel0Path));
     this.loadTexture(RgWebComponent.gl, RgWebComponent.textures[1], RgWebComponent.texturePaths.iChannel1Path, 1, RgWebComponent.preloadedImages.get(RgWebComponent.texturePaths.iChannel1Path));
+  }
+
+  static initEngine() {
+
   }
 }
 export const define = () =>

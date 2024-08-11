@@ -30,9 +30,6 @@ export class ImageComponent implements AfterViewInit {
   @Input() active: boolean = false;
   private afterViewInit: boolean = false;
   private wantsToInit: boolean = false;
-  private shaderFragmentContent!: string;
-  private vertexShaderContent!: string;
-
   constructor(private http: HttpClient, public el: ElementRef) {
 
   }
@@ -70,8 +67,6 @@ export class ImageComponent implements AfterViewInit {
     console.log('activating:'+this.id);
     //const canvas = this.renderCanvas.nativeElement; // require('../loaders/loader1/fragment.glsl')
     //const shaderFragmentContent = await this.http.get('/tmp.glsl', { responseType: 'text' }).toPromise() as any;
-    this.shaderFragmentContent = this.shaderFragmentContent || await this.http.get('/img1.shader.fragment.glsl', { responseType: 'text' }).toPromise() as any;
-    this.vertexShaderContent = this.vertexShaderContent || await this.http.get('/vertex.glsl', { responseType: 'text' }).toPromise() as any;
 
     if(RgWebComponent.initialized) {
       console.log('Moving shit');
@@ -91,14 +86,14 @@ export class ImageComponent implements AfterViewInit {
     }else {
       console.log('Initing shit');
 
-      await (this.rgImage.nativeElement as RgWebComponent).init({
+    /*  await (this.rgImage.nativeElement as RgWebComponent).init({
         shaderFragmentContent: this.shaderFragmentContent,
         vertexShaderContent: this.vertexShaderContent,
         texturePaths: {
           iChannel0Path: this.channelo0TexturePath,
           iChannel1Path: this.channelo1TexturePath
         }
-      });
+      });*/
       (this.rgImage.nativeElement as RgWebComponent).moveCanvas(this.el.nativeElement);
       this.initialized = true;
 
