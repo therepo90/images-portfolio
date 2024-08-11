@@ -320,7 +320,7 @@ export class RgWebComponent extends HTMLElement {
     console.log({canvas, rect})
   }
 
-  static swapInputs = async (inputs: { texturePaths: { iChannel1Path: string; iChannel0Path: string } }) => {
+  static swapInputs = async (inputs: { texturePaths: { iChannel1Path: string; iChannel0Path: string } }) => {//
     RgWebComponent.swappingInputs = true;
     RgWebComponent.texturePaths = inputs.texturePaths;
     console.log('Swapping inputs to ');
