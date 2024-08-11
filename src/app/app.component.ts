@@ -31,7 +31,8 @@ export class AppComponent {
   ];
 
   activate(imageId: string) {
-    let img = this.images.find(image => image.id === imageId);
-    img!.active = true;
+    this.images.forEach(image => {
+      image.active = image.id === imageId;
+    });
   }
 }

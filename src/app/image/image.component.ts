@@ -31,12 +31,11 @@ export class ImageComponent implements AfterViewInit {
   private afterViewInit: boolean = false;
   private wantsToInit: boolean = false;
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient, public el: ElementRef) {
 
   }
 
 
-  @ViewChild('renderCanvas') renderCanvas!: ElementRef<HTMLCanvasElement>;
   @ViewChild('rgImage') rgImage!: ElementRef<HTMLElement>;
   private initialized: boolean = false;
 
@@ -70,14 +69,34 @@ export class ImageComponent implements AfterViewInit {
     const shaderFragmentContent = await this.http.get('/img1.shader.fragment.glsl', { responseType: 'text' }).toPromise() as any;
     const vertexShaderContent = await this.http.get('/vertex.glsl', { responseType: 'text' }).toPromise() as any;
 
-    await (this.rgImage.nativeElement as RgWebComponent).init({
-      shaderFragmentContent,
-      vertexShaderContent,
-      texturePaths: {
-        iChannel0Path: this.channelo0TexturePath,
-        iChannel1Path: this.channelo1TexturePath
-      }
-    });
-    this.initialized = true;
+    if(RgWebComponent.initialized) {
+      console.log('Moving shit');
+      //move this.rgImage.nativeElement canvas to fixed:0
+
+
+      (this.rgImage.nativeElement as RgWebComponent).swapInputs(
+        {
+          texturePaths: {
+            iChannel0Path: this.channelo0TexturePath,
+            iChannel1Path: this.channelo1TexturePath
+          }
+        }
+      );
+      (this.rgImage.nativeElement as RgWebComponent).moveCanvas(this.el.nativeElement);
+    }else {
+      console.log('Initing shit');
+
+      await (this.rgImage.nativeElement as RgWebComponent).init({
+        shaderFragmentContent,
+        vertexShaderContent,
+        texturePaths: {
+          iChannel0Path: this.channelo0TexturePath,
+          iChannel1Path: this.channelo1TexturePath
+        }
+      });
+      (this.rgImage.nativeElement as RgWebComponent).moveCanvas(this.el.nativeElement);
+      this.initialized = true;
+
+    }
   }
 }
