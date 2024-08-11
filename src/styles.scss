@@ -1,15 +1,12 @@
 .canvas-wrapper {
-  display: flex;
-  align-items: center;
-  justify-content: center;
   width   : 600px;
   height  : 400px;
 }
-.renderCanvas {
+
+#rg-web-component-canvas {
   display: block;
   touch-action: none;
-  width   : 100%;
-  height  : 100%;
+  background: red;
 }
 
 .hidden {
@@ -25,4 +22,5 @@ rg-image {
   display: block;
   width: 100%;
   height: 100%;
+  background: yellow;
 }
