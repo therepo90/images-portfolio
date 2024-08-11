@@ -11,7 +11,6 @@
 }
 #rg-web-component-canvas {
   display: block;
-  touch-action: none;
 }
 .hidden {
   display: none !important;

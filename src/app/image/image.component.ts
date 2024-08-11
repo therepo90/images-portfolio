@@ -47,7 +47,7 @@ export class ImageComponent {
   }
 
   private async initImageCanvas() {
-    RgWebComponent.moveCanvas(this.el.nativeElement);
+
     await RgWebComponent.swapInputs(
       {
         texturePaths: {
@@ -58,7 +58,7 @@ export class ImageComponent {
     );
     //const delay = ms => new Promise(res => setTimeout(res, ms));
     //await delay(1000); // wait one frame?
-
+    RgWebComponent.moveCanvas(this.el.nativeElement);
     const randomTint = new Vector3(Math.random(), Math.random(), Math.random());
     RgWebComponent.changeLaserTint(randomTint);
     this.ready = true;

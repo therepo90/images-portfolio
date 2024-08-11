@@ -141,6 +141,11 @@ export class RgWebComponent extends HTMLElement {
     //RgWebComponent.loadTexture(gl, RgWebComponent.textures[1], RgWebComponent.texturePaths.iChannel1Path, 1, RgWebComponent.preloadedImages.get(RgWebComponent.texturePaths.iChannel1Path));
 
     const draw = () => {
+      if(RgWebComponent.swappingInputs){
+        //debugger;
+        //RgWebComponent.swappingInputs = false;
+        return;
+      }
       const gl = RgWebComponent.gl;
       gl.clearColor(0, 0, 0, 1);
       gl.clear(gl.COLOR_BUFFER_BIT);
@@ -152,12 +157,8 @@ export class RgWebComponent extends HTMLElement {
         RgWebComponent.firstFrameAfterChange = true; // complete and utter shit but okay.
         return;
       }*/
- /*     if(RgWebComponent.swappingInputs) {
-        debugger;
-      }*/
-      if(RgWebComponent.swappingInputs){
+      if(RgWebComponent.swappingInputs) {
         //debugger;
-        RgWebComponent.swappingInputs = false;
       }
       gl.uniform2f(RgWebComponent.mouseUniformLocation, RgWebComponent.mouse.x, RgWebComponent.mouse.y);
       gl.uniform1f(RgWebComponent.timeUniformLocation, (Date.now() - RgWebComponent.startTime) / 1000.0);
@@ -357,6 +358,7 @@ export class RgWebComponent extends HTMLElement {
     RgWebComponent.loadTexture(RgWebComponent.gl, RgWebComponent.textures[1], RgWebComponent.texturePaths.iChannel1Path, 1, RgWebComponent.preloadedImages.get(RgWebComponent.texturePaths.iChannel1Path));
     const delay = ms => new Promise(res => setTimeout(res, ms));
     await delay(17); // jak poczekac zeby nie rysowac poprzedniej ramki?
+    RgWebComponent.swappingInputs = false;
     //RgWebComponent.gl.finish();
   }
 
