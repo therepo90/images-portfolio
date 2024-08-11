@@ -56,9 +56,6 @@ export class RgWebComponent extends HTMLElement {
        }: InitParams) => {
     console.log('init rg-web-component');
     // Calculate client width and height of this element
-    const parentWidth = this.getBoundingClientRect().width;
-    const parentHeight = this.getBoundingClientRect().height;
-    console.log({this: this, r: this.getBoundingClientRect(), parentWidth, parentHeight});
     // :host { display: block; width: 100%; height: 100%; }
 
     RgWebComponent.vertexShaderContent = vertexShaderContent;
@@ -66,6 +63,14 @@ export class RgWebComponent extends HTMLElement {
 
     RgWebComponent.mouse = { x: 0, y: 0 };
     RgWebComponent.startTime = Date.now();
+
+    const wrapper = document.getElementById('rg-canvas-wrapper') as any;
+    const parentWidth = wrapper.getBoundingClientRect().width;
+    const parentHeight = wrapper.getBoundingClientRect().height;
+    console.log('Rekt',{r: wrapper.getBoundingClientRect(), parentWidth, parentHeight});
+    const canvas = document.getElementById('rg-web-component-canvas') as HTMLCanvasElement;
+    canvas.width = parentWidth;
+    canvas.height = parentHeight;
 
     await this.setupWebGL().then(() => {
       this.setupMouseListeners();
@@ -80,16 +85,18 @@ export class RgWebComponent extends HTMLElement {
     this.shadowRoot!.innerHTML = `
     <style>
 
-      :host { display: block; width: 100%; height: 100%; }
+      :host { display: none; width: 0; height: 0; }
     </style>
 
   `;
     // add <canvas id="rg-web-component-canvas" width="${parentWidth}px" height="${parentHeight}px"></canvas> to document
     const canvas = document.createElement('canvas');
     canvas.id = 'rg-web-component-canvas';
-    canvas.width = 600; //parentWidth;
-    canvas.height = 400;//parentHeight;
-    document.body.appendChild(canvas);
+    //canvas.width = parentWidth; //parentWidth;
+    //canvas.height = parentHeight;//parentHeight;
+    //get rg-canvas-wrapper and put
+    const wrapper = document.getElementById('rg-canvas-wrapper') as any;
+    wrapper.appendChild(canvas);
     console.log('Canvas created');
   }
 
@@ -299,7 +306,7 @@ export class RgWebComponent extends HTMLElement {
   }
 
   public static moveCanvas = (el: HTMLElement) => {
-    const canvas = document.getElementById('rg-web-component-canvas') as HTMLCanvasElement;
+    const canvas = document.getElementById('rg-canvas-wrapper') as HTMLCanvasElement;
     console.log({canvas, shadowRoot: RgWebComponent.shadowRoot, el});
     //move it with absolute position to el, calculate bounding rect
     canvas.style.position = 'absolute';

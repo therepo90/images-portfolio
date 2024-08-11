@@ -9,4 +9,6 @@
     [channelo1TexturePath]="image.channelo1TexturePath">
   </app-image>
 </div>
-<rg-image #rgImage></rg-image>
+<div class="canvas-wrapper" id="rg-canvas-wrapper" [class.rocketed-somewhere]="!visibleCanvas">
+  <rg-image #rgImage></rg-image>
+</div>

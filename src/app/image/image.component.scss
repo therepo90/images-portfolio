@@ -1,3 +1,5 @@
+@import "../../vars";
+
 :host {
   position: relative;
   display: block;
@@ -6,6 +8,6 @@
 
 .preview {
   background: teal;
-  width: 600px;
-  height: 400px;
+  width   : $canvasWidth;
+  height  : $canvasHeight;
 }

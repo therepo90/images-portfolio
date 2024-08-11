@@ -1,8 +1,16 @@
+@import "vars";
+
 .canvas-wrapper {
-  width   : 600px;
-  height  : 400px;
+  width   : $canvasWidth;
+  height  : $canvasHeight;
+
 }
 
+.rocketed-somewhere {
+  position: absolute;
+  top: -9999px;
+  left: -9999px;
+}
 #rg-web-component-canvas {
   display: block;
   touch-action: none;
@@ -19,8 +27,8 @@
 }
 
 rg-image {
-  display: block;
-  width: 100%;
-  height: 100%;
+  display: none;
+  width: 0px;
+  height: 0px;
   background: yellow;
 }
