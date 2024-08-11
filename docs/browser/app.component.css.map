@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["src/app/app.component.scss"],
+  "sourcesContent": [".images {\r\n  display: flex;\r\n  flex-wrap: wrap;\r\n  padding: 20px 120px;\r\n  margin: 0 auto;\r\n  > * { // Targets direct children of .images\r\n    margin: 10px; // Set margin for each item\r\n  }\r\n}\r\n"],
+  "mappings": ";AAAA,CAAA;AACE,WAAA;AACA,aAAA;AACA,WAAA,KAAA;AACA,UAAA,EAAA;;AACA,CALF,OAKE,EAAA;AACE,UAAA;;",
+  "names": []
+}

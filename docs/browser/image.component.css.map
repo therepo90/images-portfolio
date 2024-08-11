@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["src/app/image/image.component.scss", "src/vars.scss"],
+  "sourcesContent": ["@import \"../../vars\";\r\n\r\n:host {\r\n  position: relative;\r\n  display: block;\r\n  background: green;\r\n  width: $canvasWidth;\r\n  height: $canvasHeight;\r\n}\r\n\r\n.preview {\r\n  background: teal;\r\n  width   : 100%;\r\n  height  : 100%;\r\n}\r\n", "$canvasWidth: 600px;\r\n$canvasHeight: 400px;\r\n"],
+  "mappings": ";AAEA;AACE,YAAA;AACA,WAAA;AACA,cAAA;AACA,SCNY;ADOZ,UCNa;;ADSf,CAAA;AACE,cAAA;AACA,SAAA;AACA,UAAA;;",
+  "names": []
+}
