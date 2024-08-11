@@ -65,8 +65,9 @@ export class AppComponent implements AfterViewInit{
   }
 
   private async initFuckingCanvas() {
-    this.shaderFragmentContent = this.shaderFragmentContent || await this.http.get('/img1.shader.fragment.glsl', { responseType: 'text' }).toPromise() as any;
-    this.vertexShaderContent = this.vertexShaderContent || await this.http.get('/vertex.glsl', { responseType: 'text' }).toPromise() as any;
+    const base = window.origin.includes('localhost') ? '' : '/images-portfolio';
+    this.shaderFragmentContent = this.shaderFragmentContent || await this.http.get(base+'/img1.shader.fragment.glsl', { responseType: 'text' }).toPromise() as any;
+    this.vertexShaderContent = this.vertexShaderContent || await this.http.get(base+'/vertex.glsl', { responseType: 'text' }).toPromise() as any;
     let engineEl = this.rgImage.nativeElement as RgWebComponent;
     await engineEl.init({
       shaderFragmentContent: this.shaderFragmentContent,
