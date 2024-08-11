@@ -29984,6 +29984,7 @@ var RgWebComponent = class _RgWebComponent extends HTMLElement {
   static iChannel1UniformLocation;
   static shadowRoot;
   static swappingInputs = false;
+  static firstFrameAfterChange = false;
   constructor() {
     super();
     this.attachShadow({ mode: "open" });
@@ -30059,7 +30060,11 @@ var RgWebComponent = class _RgWebComponent extends HTMLElement {
       const gl = _RgWebComponent.gl;
       gl.clearColor(0, 0, 0, 1);
       gl.clear(gl.COLOR_BUFFER_BIT);
+      if (_RgWebComponent.firstFrameAfterChange) {
+        _RgWebComponent.firstFrameAfterChange = false;
+      }
       if (_RgWebComponent.swappingInputs) {
+        _RgWebComponent.firstFrameAfterChange = true;
         return;
       }
       gl.uniform2f(_RgWebComponent.mouseUniformLocation, _RgWebComponent.mouse.x, _RgWebComponent.mouse.y);

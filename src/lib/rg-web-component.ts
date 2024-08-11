@@ -334,10 +334,13 @@ export class RgWebComponent extends HTMLElement {
     RgWebComponent.texturePaths = inputs.texturePaths;
     console.log('Swapping inputs to ');
     console.log(RgWebComponent.texturePaths, this, RgWebComponent.textures);
+    // a moze wyjeb poprzednie tekstury
+
     RgWebComponent.loadTexture(RgWebComponent.gl, RgWebComponent.textures[0], RgWebComponent.texturePaths.iChannel0Path, 0, RgWebComponent.preloadedImages.get(RgWebComponent.texturePaths.iChannel0Path));
     RgWebComponent.loadTexture(RgWebComponent.gl, RgWebComponent.textures[1], RgWebComponent.texturePaths.iChannel1Path, 1, RgWebComponent.preloadedImages.get(RgWebComponent.texturePaths.iChannel1Path));
     //const delay = ms => new Promise(res => setTimeout(res, ms));
     //await delay(17); // jak poczekac zeby nie rysowac poprzedniej ramki?
+    RgWebComponent.gl.finish();
     RgWebComponent.swappingInputs = false;
   }
 
