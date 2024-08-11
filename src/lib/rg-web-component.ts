@@ -109,19 +109,19 @@ export class RgWebComponent extends HTMLElement {
     gl.bindTexture(gl.TEXTURE_2D, null as any);
   };
 
-  activate =  ({texturePaths}: ActivateParams) => {
-    console.log('activate', {texturePaths});
-    RgWebComponent.texturePaths = { iChannel0Path: texturePaths.iChannel0Path, iChannel1Path: texturePaths.iChannel1Path };
-    const gl = RgWebComponent.gl;
+  activate =  () => {
+    console.log('activate');
+    //RgWebComponent.texturePaths = { iChannel0Path: texturePaths.iChannel0Path, iChannel1Path: texturePaths.iChannel1Path };
+    //const gl = RgWebComponent.gl;
     // Create and set up textures
-    RgWebComponent.textures = [gl.createTexture(), gl.createTexture()] as any[];
+    //RgWebComponent.textures = [gl.createTexture(), gl.createTexture()] as any[];
 
-    console.log('Dupa', {this: this, textures: RgWebComponent.textures, texturePaths: RgWebComponent.texturePaths});
+    //console.log('Dupa', {this: this, textures: RgWebComponent.textures, texturePaths: RgWebComponent.texturePaths});
 // print RgWebComponent.preloadedImages
-    console.log(RgWebComponent.preloadedImages);
+    //console.log(RgWebComponent.preloadedImages);
 
-    RgWebComponent.loadTexture(gl, RgWebComponent.textures[0], RgWebComponent.texturePaths.iChannel0Path, 0, RgWebComponent.preloadedImages.get(RgWebComponent.texturePaths.iChannel0Path));
-    RgWebComponent.loadTexture(gl, RgWebComponent.textures[1], RgWebComponent.texturePaths.iChannel1Path, 1, RgWebComponent.preloadedImages.get(RgWebComponent.texturePaths.iChannel1Path));
+    //RgWebComponent.loadTexture(gl, RgWebComponent.textures[0], RgWebComponent.texturePaths.iChannel0Path, 0, RgWebComponent.preloadedImages.get(RgWebComponent.texturePaths.iChannel0Path));
+    //RgWebComponent.loadTexture(gl, RgWebComponent.textures[1], RgWebComponent.texturePaths.iChannel1Path, 1, RgWebComponent.preloadedImages.get(RgWebComponent.texturePaths.iChannel1Path));
 
     const draw = () => {
       const gl = RgWebComponent.gl;
@@ -247,6 +247,9 @@ export class RgWebComponent extends HTMLElement {
     }
 
     gl.uniform2f(resolutionUniformLocation, canvas.width, canvas.height);
+
+    RgWebComponent.textures = [gl.createTexture(), gl.createTexture()] as any[];
+    this.activate();
   }
 
   compileShader(gl, type, source) {
@@ -315,9 +318,6 @@ export class RgWebComponent extends HTMLElement {
     RgWebComponent.loadTexture(RgWebComponent.gl, RgWebComponent.textures[1], RgWebComponent.texturePaths.iChannel1Path, 1, RgWebComponent.preloadedImages.get(RgWebComponent.texturePaths.iChannel1Path));
   }
 
-  static initEngine() {
-
-  }
 }
 export const define = () =>
 {

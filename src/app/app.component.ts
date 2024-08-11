@@ -62,11 +62,5 @@ export class AppComponent implements AfterViewInit{
     const toPreloadC0 = this.images.map(textureInfo => textureInfo.channelo0TexturePath);
     const toPreloadC1 = this.images.map(textureInfo => textureInfo.channelo1TexturePath);
     await RgWebComponent.preloadImages([...toPreloadC0, ...toPreloadC1]);
-    await engineEl.activate({
-      texturePaths :{
-        iChannel0Path: this.images[0].channelo0TexturePath,
-        iChannel1Path: this.images[0].channelo1TexturePath
-      }
-    });
   }
 }
