@@ -30213,6 +30213,7 @@ var RgWebComponent = class _RgWebComponent extends HTMLElement {
     console.log(_RgWebComponent.texturePaths, this, _RgWebComponent.textures);
     _RgWebComponent.loadTexture(_RgWebComponent.gl, _RgWebComponent.textures[0], _RgWebComponent.texturePaths.iChannel0Path, 0, _RgWebComponent.preloadedImages.get(_RgWebComponent.texturePaths.iChannel0Path));
     _RgWebComponent.loadTexture(_RgWebComponent.gl, _RgWebComponent.textures[1], _RgWebComponent.texturePaths.iChannel1Path, 1, _RgWebComponent.preloadedImages.get(_RgWebComponent.texturePaths.iChannel1Path));
+    _RgWebComponent.gl.finish();
     _RgWebComponent.swappingInputs = false;
   });
 };

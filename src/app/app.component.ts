@@ -45,7 +45,15 @@ export class AppComponent implements AfterViewInit{
       channelo0TexturePath: '/troll.jpg',
       channelo1TexturePath: '/troll2.jpg',
       active: false,
-    }
+    },
+   /* {
+      id: '4',
+      shaderId: 'imgTransition4Shader',
+      shaderMinNameAbbvPath: '/img1.shader',
+      channelo0TexturePath: '/full/DSC_0031.jpg',
+      channelo1TexturePath: '/full/DSC_0031_2.jpg',
+      active: false,
+    }*/
   ];
   visibleCanvas: boolean = false;
 

@@ -141,13 +141,16 @@ export class RgWebComponent extends HTMLElement {
       gl.clearColor(0, 0, 0, 1);
       gl.clear(gl.COLOR_BUFFER_BIT);
 
-      if(RgWebComponent.firstFrameAfterChange) {
+      /*if(RgWebComponent.firstFrameAfterChange) {
         RgWebComponent.firstFrameAfterChange = false;
       }
       if(RgWebComponent.swappingInputs) {
         RgWebComponent.firstFrameAfterChange = true; // complete and utter shit but okay.
         return;
-      }
+      }*/
+ /*     if(RgWebComponent.swappingInputs) {
+        debugger;
+      }*/
       gl.uniform2f(RgWebComponent.mouseUniformLocation, RgWebComponent.mouse.x, RgWebComponent.mouse.y);
       gl.uniform1f(RgWebComponent.timeUniformLocation, (Date.now() - RgWebComponent.startTime) / 1000.0);
 
