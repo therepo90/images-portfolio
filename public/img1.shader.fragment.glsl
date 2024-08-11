@@ -102,10 +102,10 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
 {
 
     vec2 mouse = iMouse.xy / iResolution.xy;
-    if(mouse.x < 0.01) {
+    //if(mouse.x < 0.01) {
         // init
-        mouse.x = 0.5;
-    }
+        //mouse.x = 0.5;
+    //}
 
     vec2 uv = fragCoord/iResolution.xy;
     float asp = iResolution.y / iResolution.x;
