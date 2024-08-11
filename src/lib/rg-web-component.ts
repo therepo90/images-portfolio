@@ -94,7 +94,7 @@ export class RgWebComponent extends HTMLElement {
   }
 
   static loadTexture  = (gl, texture: WebGLTexture, path: string, unit: number, image: any) => {
-    console.log({gl, texture, path, unit, image})
+    console.log('Duupa',{gl, texture, path, unit, image, a:   image.width, b: image.height, c: image.data})
     gl.activeTexture(gl[`TEXTURE${unit}`]);
     gl.bindTexture(gl.TEXTURE_2D, texture);
 
@@ -287,7 +287,7 @@ export class RgWebComponent extends HTMLElement {
       const rect = canvas!.getBoundingClientRect();
       RgWebComponent.mouse.x = event.clientX - rect.left;
       RgWebComponent.mouse.y = rect.height - (event.clientY - rect.top);
-      console.log(RgWebComponent.mouse);
+      //console.log(RgWebComponent.mouse);
     });
 
     /*document.addEventListener('touchmove', function(e) {
