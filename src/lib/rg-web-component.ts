@@ -18,13 +18,30 @@ export class RgWebComponent extends HTMLElement {
   public static initialized: boolean = false;
   private static gl: WebGLRenderingContext;
   private static textures: any[];
-
+  private static preloadedImages = new Map<string, HTMLImageElement>();
   constructor() {
     super();
     this.attachShadow({mode: 'open'});
 
   }
 
+  public static preloadImages = async (paths: string[]) => {
+    console.log('Preloading images', paths);
+    const promises = paths.map(path => {
+      return new Promise<HTMLImageElement>((resolve, reject) => {
+        const image = new Image();
+        image.onload = () => resolve(image);
+        image.onerror = reject;
+        image.src = path;
+      });
+    });
+
+    const loadedImages = await Promise.all(promises);
+
+    paths.forEach((path, i) => {
+      this.preloadedImages.set(path, loadedImages[i]);
+    });
+  };
   init = ({
          shaderFragmentContent,
          vertexShaderContent,
@@ -63,23 +80,20 @@ export class RgWebComponent extends HTMLElement {
     console.log('connectedCallback rg-web-component');
   }
 
-  loadTexture  = (gl, texture: WebGLTexture, path: string, unit: number) => {
+  loadTexture  = (gl, texture: WebGLTexture, path: string, unit: number, image: any) => {
+    console.log({gl, texture, path, unit, image})
     gl.activeTexture(gl[`TEXTURE${unit}`]);
     gl.bindTexture(gl.TEXTURE_2D, texture);
 
-    // Set texture parameters
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
 
-    const image = new Image();
-    image.src = path;
-    image.onload = () => {
-      gl.bindTexture(gl.TEXTURE_2D, texture);
-      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
-      gl.bindTexture(gl.TEXTURE_2D, null as any);
-    };
+
+    gl.bindTexture(gl.TEXTURE_2D, texture);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
+    gl.bindTexture(gl.TEXTURE_2D, null as any);
   };
 
 
@@ -139,9 +153,11 @@ export class RgWebComponent extends HTMLElement {
     RgWebComponent.textures = [gl.createTexture(), gl.createTexture()] as any[];
 
     console.log('Dupa', {this: this, textures: RgWebComponent.textures, texturePaths: RgWebComponent.texturePaths});
+// print RgWebComponent.preloadedImages
+    console.log(RgWebComponent.preloadedImages);
 
-    this.loadTexture(gl, RgWebComponent.textures[0], RgWebComponent.texturePaths.iChannel0Path, 0);
-    this.loadTexture(gl, RgWebComponent.textures[1], RgWebComponent.texturePaths.iChannel1Path, 1);
+    this.loadTexture(gl, RgWebComponent.textures[0], RgWebComponent.texturePaths.iChannel0Path, 0, RgWebComponent.preloadedImages.get(RgWebComponent.texturePaths.iChannel0Path));
+    this.loadTexture(gl, RgWebComponent.textures[1], RgWebComponent.texturePaths.iChannel1Path, 1, RgWebComponent.preloadedImages.get(RgWebComponent.texturePaths.iChannel1Path));
 
     // Use program and set attributes and uniforms
     gl.useProgram(program);
@@ -271,8 +287,8 @@ export class RgWebComponent extends HTMLElement {
     RgWebComponent.texturePaths = inputs.texturePaths;
     console.log('Swapping inputs');
     console.log(RgWebComponent.texturePaths, this, RgWebComponent.textures);
-    this.loadTexture(RgWebComponent.gl, RgWebComponent.textures[0], RgWebComponent.texturePaths.iChannel0Path, 0);
-    this.loadTexture(RgWebComponent.gl, RgWebComponent.textures[1], RgWebComponent.texturePaths.iChannel1Path, 1);
+    this.loadTexture(RgWebComponent.gl, RgWebComponent.textures[0], RgWebComponent.texturePaths.iChannel0Path, 0, RgWebComponent.preloadedImages.get(RgWebComponent.texturePaths.iChannel0Path));
+    this.loadTexture(RgWebComponent.gl, RgWebComponent.textures[1], RgWebComponent.texturePaths.iChannel1Path, 1, RgWebComponent.preloadedImages.get(RgWebComponent.texturePaths.iChannel1Path));
   }
 }
 export const define = () =>

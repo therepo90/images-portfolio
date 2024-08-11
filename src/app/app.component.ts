@@ -25,7 +25,7 @@ export class AppComponent {
       shaderId: 'imgTransition2Shader',
       shaderMinNameAbbvPath: '/img1.shader',
       channelo0TexturePath: '/phone_followers.jpg',
-      channelo1TexturePath: '/phone_followers2.png',
+      channelo1TexturePath: '/phone_followers2.jpg',
      active: false,
     }
   ];
