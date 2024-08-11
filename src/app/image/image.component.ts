@@ -39,7 +39,7 @@ export class ImageComponent implements AfterViewInit {
 
 
   @ViewChild('rgImage') rgImage!: ElementRef<HTMLElement>;
-  private initialized: boolean = false;
+  public initialized: boolean = false;
 
   ngAfterViewInit() {
     this.afterViewInit = true;
@@ -58,6 +58,7 @@ export class ImageComponent implements AfterViewInit {
   }
 
   private async initApp() {
+    this.initialized = false;
     if(!this.afterViewInit) {
       this.wantsToInit = true;
       console.log('Delaying image init after view init.');
@@ -77,7 +78,7 @@ export class ImageComponent implements AfterViewInit {
       //move this.rgImage.nativeElement canvas to fixed:0
 
 
-      (this.rgImage.nativeElement as RgWebComponent).swapInputs(
+      await (this.rgImage.nativeElement as RgWebComponent).swapInputs(
         {
           texturePaths: {
             iChannel0Path: this.channelo0TexturePath,
@@ -86,6 +87,7 @@ export class ImageComponent implements AfterViewInit {
         }
       );
       (this.rgImage.nativeElement as RgWebComponent).moveCanvas(this.el.nativeElement);
+
     }else {
       console.log('Initing shit');
 
@@ -101,5 +103,6 @@ export class ImageComponent implements AfterViewInit {
       this.initialized = true;
 
     }
+    this.initialized = true;
   }
 }

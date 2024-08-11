@@ -52,8 +52,10 @@ export class RgWebComponent extends HTMLElement {
     const parentWidth = this.getBoundingClientRect().width;
     const parentHeight = this.getBoundingClientRect().height;
     console.log({this: this, r: this.getBoundingClientRect(), parentWidth, parentHeight});
+    // :host { display: block; width: 100%; height: 100%; }
     this.shadowRoot!.innerHTML = `
     <style>
+
       :host { display: block; width: 100%; height: 100%; }
     </style>
 
@@ -61,8 +63,8 @@ export class RgWebComponent extends HTMLElement {
     // add <canvas id="rg-web-component-canvas" width="${parentWidth}px" height="${parentHeight}px"></canvas> to document
     const canvas = document.createElement('canvas');
     canvas.id = 'rg-web-component-canvas';
-    canvas.width = parentWidth;
-    canvas.height = parentHeight;
+    canvas.width = 600; //parentWidth;
+    canvas.height = 400;//parentHeight;
     document.body.appendChild(canvas);
     RgWebComponent.vertexShaderContent = vertexShaderContent;
     RgWebComponent.shaderFragmentContent = shaderFragmentContent;
