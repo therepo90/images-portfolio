@@ -28,6 +28,7 @@ export class RgWebComponent extends HTMLElement {
   private static iChannel1UniformLocation: WebGLUniformLocation;
   private static shadowRoot: ShadowRoot | null;
   private static swappingInputs: boolean = false;
+  private static firstFrameAfterChange: boolean = false;
   constructor() {
     super();
     this.attachShadow({mode: 'open'});
@@ -140,7 +141,11 @@ export class RgWebComponent extends HTMLElement {
       gl.clearColor(0, 0, 0, 1);
       gl.clear(gl.COLOR_BUFFER_BIT);
 
+      if(RgWebComponent.firstFrameAfterChange) {
+        RgWebComponent.firstFrameAfterChange = false;
+      }
       if(RgWebComponent.swappingInputs) {
+        RgWebComponent.firstFrameAfterChange = true; // complete and utter shit but okay.
         return;
       }
       gl.uniform2f(RgWebComponent.mouseUniformLocation, RgWebComponent.mouse.x, RgWebComponent.mouse.y);

@@ -30244,6 +30244,7 @@ var ImageComponent = class _ImageComponent {
     this.http = http;
     this.el = el;
     this.base = window.origin.includes("localhost") ? "" : "/images-portfolio";
+    console.log("baseii", this.base);
   }
   ngOnChanges(changes) {
     if (changes["active"]?.currentValue === true) {
