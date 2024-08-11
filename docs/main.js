@@ -29990,6 +29990,7 @@ var RgWebComponent = class _RgWebComponent extends HTMLElement {
   }
   static preloadImages = (paths) => __async(this, null, function* () {
     const base = window.origin.includes("localhost") ? "" : "/images-portfolio";
+    console.log({ base });
     paths = paths.map((path) => base + path);
     console.log("Preloading images", paths);
     const promises = paths.map((path) => {
@@ -30343,6 +30344,7 @@ var AppComponent = class _AppComponent {
   initFuckingCanvas() {
     return __async(this, null, function* () {
       const base = window.origin.includes("localhost") ? "" : "/images-portfolio";
+      console.log({ base });
       this.shaderFragmentContent = this.shaderFragmentContent || (yield this.http.get(base + "/img1.shader.fragment.glsl", { responseType: "text" }).toPromise());
       this.vertexShaderContent = this.vertexShaderContent || (yield this.http.get(base + "/vertex.glsl", { responseType: "text" }).toPromise());
       let engineEl = this.rgImage.nativeElement;
