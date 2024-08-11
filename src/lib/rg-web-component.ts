@@ -155,6 +155,10 @@ export class RgWebComponent extends HTMLElement {
  /*     if(RgWebComponent.swappingInputs) {
         debugger;
       }*/
+      if(RgWebComponent.swappingInputs){
+        //debugger;
+        RgWebComponent.swappingInputs = false;
+      }
       gl.uniform2f(RgWebComponent.mouseUniformLocation, RgWebComponent.mouse.x, RgWebComponent.mouse.y);
       gl.uniform1f(RgWebComponent.timeUniformLocation, (Date.now() - RgWebComponent.startTime) / 1000.0);
       gl.uniform3fv(RgWebComponent.laserTintUniformLocation, new Float32Array(RgWebComponent.laserTint)); // vec3(1.0, 0.5, 0.) *
@@ -351,10 +355,9 @@ export class RgWebComponent extends HTMLElement {
 
     RgWebComponent.loadTexture(RgWebComponent.gl, RgWebComponent.textures[0], RgWebComponent.texturePaths.iChannel0Path, 0, RgWebComponent.preloadedImages.get(RgWebComponent.texturePaths.iChannel0Path));
     RgWebComponent.loadTexture(RgWebComponent.gl, RgWebComponent.textures[1], RgWebComponent.texturePaths.iChannel1Path, 1, RgWebComponent.preloadedImages.get(RgWebComponent.texturePaths.iChannel1Path));
-    //const delay = ms => new Promise(res => setTimeout(res, ms));
-    //await delay(17); // jak poczekac zeby nie rysowac poprzedniej ramki?
-    RgWebComponent.gl.finish();
-    RgWebComponent.swappingInputs = false;
+    const delay = ms => new Promise(res => setTimeout(res, ms));
+    await delay(17); // jak poczekac zeby nie rysowac poprzedniej ramki?
+    //RgWebComponent.gl.finish();
   }
 
 }

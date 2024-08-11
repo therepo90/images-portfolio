@@ -7,6 +7,7 @@ uniform sampler2D iChannel1;
 uniform sampler2D iChannel0;
 uniform vec2 iMouse;
 uniform vec2 iResolution;
+uniform vec3 laserTint;
 uniform float iTime;
 
 vec2 mod2(vec2 p, float d) {
@@ -33,7 +34,7 @@ vec3 laserTex(vec2 uv, vec2 mouse) {
 vec3 laserComposition(vec2 uv, vec2 mouse) {
 
     vec3 laserMask = laserTex(uv,mouse);
-    vec3 laserCol = vec3(1.0, 0.5, 0.);
+    vec3 laserCol = laserTint;
     return laserMask.x * laserCol *2.;
     //return laserMask;
 

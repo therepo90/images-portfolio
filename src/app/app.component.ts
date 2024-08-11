@@ -86,4 +86,16 @@ export class AppComponent implements AfterViewInit{
     const toPreloadC1 = this.images.map(textureInfo => textureInfo.channelo1TexturePath);
     await RgWebComponent.preloadImages([...toPreloadC0, ...toPreloadC1]);
   }
+
+/*
+  deactivate(id: string) {
+    this.visibleCanvas = false;
+    this.images.forEach(image => {
+      if(image.id === id){
+        console.log('deactivated'+id);
+        image.active = false;
+      }
+    });
+  }
+*/
 }

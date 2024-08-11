@@ -40,9 +40,14 @@ export class ImageComponent {
     if (changes['active']?.currentValue === true) {
         this.initImageCanvas();
     }
+    if (changes['active']?.currentValue === false) {
+      console.log('deactivated'+this.id);
+      this.ready = false;
+    }
   }
 
   private async initImageCanvas() {
+    RgWebComponent.moveCanvas(this.el.nativeElement);
     await RgWebComponent.swapInputs(
       {
         texturePaths: {
@@ -51,9 +56,9 @@ export class ImageComponent {
         }
       }
     );
-    /*const delay = ms => new Promise(res => setTimeout(res, ms));
-    await delay(10);*/
-    RgWebComponent.moveCanvas(this.el.nativeElement);
+    //const delay = ms => new Promise(res => setTimeout(res, ms));
+    //await delay(1000); // wait one frame?
+
     const randomTint = new Vector3(Math.random(), Math.random(), Math.random());
     RgWebComponent.changeLaserTint(randomTint);
     this.ready = true;
