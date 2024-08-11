@@ -1,6 +1,9 @@
-// grid row of 3 with paddings
 .images {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  grid-gap: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  padding: 20px 120px;
+  margin: 0 auto;
+  > * { // Targets direct children of .images
+    margin: 10px; // Set margin for each item
+  }
 }

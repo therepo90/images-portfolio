@@ -311,8 +311,8 @@ export class RgWebComponent extends HTMLElement {
     //move it with absolute position to el, calculate bounding rect
     canvas.style.position = 'absolute';
     const rect = el.getBoundingClientRect();
-    canvas.style.left = rect.left + 'px';
-    canvas.style.top = rect.top + 'px';
+    canvas.style.left = (rect.left + window.scrollX) + 'px';
+    canvas.style.top = (rect.top + window.scrollY) + 'px';
     console.log({canvas, rect})
   }
 
