@@ -60,9 +60,9 @@ export class ImageComponent implements AfterViewInit {
       console.log('Delaying image init after view init.');
       return;
     }
-    if(this.initialized) {
+    /*if(this.initialized) {
       return;
-    }
+    }*/
     console.log('activating:'+this.id);
     //const canvas = this.renderCanvas.nativeElement; // require('../loaders/loader1/fragment.glsl')
     //const shaderFragmentContent = await this.http.get('/tmp.glsl', { responseType: 'text' }).toPromise() as any;
