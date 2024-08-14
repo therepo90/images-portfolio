@@ -8,7 +8,7 @@
     "build:prod": "rm -rf docs && ng build --configuration production && mv docs/browser/* docs/ && rmdir docs/browser",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "cad": "tsc && git add . && git commit -m \"rls\" --allow-empty && npm run build:prod && git push origin main"
+    "cad": "npm run build:prod && git add . && git commit -m \"rls\" --allow-empty && git push origin main"
   },
   "private": true,
   "dependencies": {
