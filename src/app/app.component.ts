@@ -38,14 +38,14 @@ export class AppComponent implements AfterViewInit{
       channelo1TexturePath: '/phone_followers2.jpg',
      active: false,
     },
-    {
+   /* {
       id: '3',
       shaderId: 'imgTransition3Shader',
       shaderMinNameAbbvPath: '/img1.shader',
       channelo0TexturePath: '/troll.jpg',
       channelo1TexturePath: '/troll2.jpg',
       active: false,
-    },
+    },*/
    /* {
       id: '4',
       shaderId: 'imgTransition4Shader',

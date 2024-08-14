@@ -237,8 +237,6 @@ export class RgWebComponent extends HTMLElement {
     ]);
     gl.bufferData(gl.ARRAY_BUFFER, textureCoordinates, gl.STATIC_DRAW);
 
-    // Use program and set attributes and uniforms
-    gl.useProgram(program);
 
     const positionAttributeLocation = gl.getAttribLocation(program, 'a_position');
     if (positionAttributeLocation === -1) {
@@ -273,11 +271,14 @@ export class RgWebComponent extends HTMLElement {
     RgWebComponent.iChannel1UniformLocation = iChannel1UniformLocation as any;
     RgWebComponent.laserTintUniformLocation = laserTintUniformLocation as any;
 
+
+
+    gl.useProgram(program);
 //
     // todo mouse/time fix
     console.log({resolutionUniformLocation, mouseUniformLocation, timeUniformLocation, iChannel0UniformLocation, iChannel1UniformLocation});
-    if (resolutionUniformLocation === null || iChannel0UniformLocation === null || iChannel1UniformLocation === null || laserTintUniformLocation === null) {
-      console.error('Unable to get uniform location(s)');
+    if (resolutionUniformLocation === null) {
+      console.error('Unable to get required uniform location(s) - compiler might strip them if not used.');
       return;
     }
 
@@ -305,6 +306,7 @@ export class RgWebComponent extends HTMLElement {
     gl.attachShader(program, vertexShader);
     gl.attachShader(program, fragmentShader);
     gl.linkProgram(program);
+    gl.validateProgram(program);
 
     if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
       console.error(`Unable to initialize the shader program: ${gl.getProgramInfoLog(program)}`);
@@ -324,6 +326,12 @@ export class RgWebComponent extends HTMLElement {
       RgWebComponent.mouse.y = rect.height - (event.clientY - rect.top);
       //console.log(RgWebComponent.mouse);
     });
+      document.addEventListener('touchmove', (event) => {
+        const rect = canvas!.getBoundingClientRect();
+        RgWebComponent.mouse.x = event.touches[0].clientX - rect.left;
+        RgWebComponent.mouse.y = rect.height - (event.touches[0].clientX - rect.top);
+        //console.log(RgWebComponent.mouse);
+      });
 
     /*document.addEventListener('touchmove', function(e) {
         event.preventDefault();
