@@ -3,6 +3,11 @@
 .canvas-wrapper {
   width   : $canvasWidth;
   height  : $canvasHeight;
+  @media screen and (max-width: 992px) {
+    width: $canvasWidthMobile;
+    height: $canvasHeightMobile;
+    //x-width: 90vw;
+  }
   //border-top: 5px solid red;
   position: relative;
 

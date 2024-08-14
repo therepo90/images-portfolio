@@ -6,6 +6,10 @@
   //background: green;
   width: $canvasWidth;
   height: $canvasHeight;
+  @media screen and (max-width: 992px) {
+    width: $canvasWidthMobile;
+    height: $canvasHeightMobile;
+  }
 }
 
 .preview {

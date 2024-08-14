@@ -1,7 +1,7 @@
 {
   "version": 3,
   "sources": ["src/app/image/image.component.scss", "src/vars.scss"],
-  "sourcesContent": ["@import \"../../vars\";\r\n\r\n:host {\r\n  position: relative;\r\n  display: block;\r\n  //background: green;\r\n  width: $canvasWidth;\r\n  height: $canvasHeight;\r\n}\r\n\r\n.preview {\r\n  //background: teal;\r\n  width   : 100%;\r\n  height  : 100%;\r\n}\r\n", "$canvasWidth: 600px;\r\n$canvasHeight: 400px;\r\n"],
-  "mappings": ";AAEA;AACE,YAAA;AACA,WAAA;AAEA,SCNY;ADOZ,UCNa;;ADSf,CAAA;AAEE,SAAA;AACA,UAAA;;",
+  "sourcesContent": ["@import \"../../vars\";\r\n\r\n:host {\r\n  position: relative;\r\n  display: block;\r\n  //background: green;\r\n  width: $canvasWidth;\r\n  height: $canvasHeight;\r\n  @media screen and (max-width: 992px) {\r\n    width: $canvasWidthMobile;\r\n    height: $canvasHeightMobile;\r\n  }\r\n}\r\n\r\n.preview {\r\n  //background: teal;\r\n  width   : 100%;\r\n  height  : 100%;\r\n}\r\n", "$canvasWidth: 600px;\r\n$canvasHeight: 400px;\r\n\r\n$canvasWidthMobile: 300px;\r\n$canvasHeightMobile: 250px;\r\n\r\n"],
+  "mappings": ";AAEA;AACE,YAAA;AACA,WAAA;AAEA,SCNY;ADOZ,UCNa;;ADOb,OAAA,OAAA,IAAA,CAAA,SAAA,EAAA;AANF;AAOI,WCNgB;ADOhB,YCNiB;;;ADUrB,CAAA;AAEE,SAAA;AACA,UAAA;;",
   "names": []
 }

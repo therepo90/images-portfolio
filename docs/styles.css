@@ -4,6 +4,12 @@
   height: 400px;
   position: relative;
 }
+@media screen and (max-width: 992px) {
+  .canvas-wrapper {
+    width: 300px;
+    height: 250px;
+  }
+}
 .rocketed-somewhere {
   position: absolute;
   top: -9999px;

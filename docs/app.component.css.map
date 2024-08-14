@@ -1,7 +1,7 @@
 {
   "version": 3,
   "sources": ["src/app/app.component.scss"],
-  "sourcesContent": [".images {\r\n  display: grid;\r\n  max-width: 1200px;\r\n  // 2 columns grid\r\n  grid-template-columns: 1fr 1fr;\r\n  padding: 20px 20px;\r\n  margin: 0 auto;\r\n  grid-gap: 20px;\r\n  @media screen and (max-width:992px) {\r\n    grid-template-columns: 1fr;\r\n    max-width: 100%;\r\n  }\r\n}\r\n"],
-  "mappings": ";AAAA,CAAA;AACE,WAAA;AACA,aAAA;AAEA,yBAAA,IAAA;AACA,WAAA,KAAA;AACA,UAAA,EAAA;AACA,YAAA;;AACA,OAAA,OAAA,IAAA,CAAA,SAAA,EAAA;AARF,GAAA;AASI,2BAAA;AACA,eAAA;;;",
+  "sourcesContent": [".images {\r\n  display: grid;\r\n  max-width: 1200px;\r\n  // 2 columns grid\r\n  grid-template-columns: 1fr 1fr;\r\n  padding: 20px 20px;\r\n  margin: 0 auto;\r\n  grid-gap: 20px;\r\n  @media screen and (max-width:992px) {\r\n    grid-template-columns: 1fr;\r\n    max-width: 100%;\r\n  }\r\n}\r\n\r\n:host {\r\n  @media screen and (max-width:992px) {\r\n    width: 100%;\r\n  }\r\n  display: block;\r\n}\r\n"],
+  "mappings": ";AAAA,CAAA;AACE,WAAA;AACA,aAAA;AAEA,yBAAA,IAAA;AACA,WAAA,KAAA;AACA,UAAA,EAAA;AACA,YAAA;;AACA,OAAA,OAAA,IAAA,CAAA,SAAA,EAAA;AARF,GAAA;AASI,2BAAA;AACA,eAAA;;;AAIJ;AAIE,WAAA;;AAHA,OAAA,OAAA,IAAA,CAAA,SAAA,EAAA;AADF;AAEI,WAAA;;;",
   "names": []
 }

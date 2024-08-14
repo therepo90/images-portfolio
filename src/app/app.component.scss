@@ -11,3 +11,10 @@
     max-width: 100%;
   }
 }
+
+:host {
+  @media screen and (max-width:992px) {
+    width: 100%;
+  }
+  display: block;
+}
