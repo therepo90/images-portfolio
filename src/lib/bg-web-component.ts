@@ -1,5 +1,3 @@
-import {type Vector3} from "@babylonjs/core";
-
 interface InitParams {
   shaderFragmentContent: string;
   vertexShaderContent: string;
@@ -23,6 +21,10 @@ export class ProPlusShaderEngine {
   private shadowRoot!: ShadowRoot;
 
   public preloadedImages = new Map<string, HTMLImageElement>();
+
+  private  laserTintUniformLocation!: WebGLUniformLocation;
+  private  defaultLaserTint = [1.0, 1.0, 1.0];
+  private  laserTint = this.defaultLaserTint;
 
   public preloadImages = async (paths: string[]) => {
     const base = window.origin.includes('localhost') ? '' : '/images-portfolio';
@@ -121,6 +123,7 @@ export class ProPlusShaderEngine {
 
       gl.uniform2f(this.mouseUniformLocation, this.mouse.x, this.mouse.y);
       gl.uniform1f(this.timeUniformLocation, (Date.now() - this.startTime) / 1000.0);
+      gl.uniform3fv(this.laserTintUniformLocation, new Float32Array(this.laserTint)); // vec3(1.0, 0.5, 0.) *
 
       // Bind textures
       gl.activeTexture(gl.TEXTURE0);
@@ -227,6 +230,7 @@ export class ProPlusShaderEngine {
     this.timeUniformLocation = timeUniformLocation as any;
     this.iChannel0UniformLocation = iChannel0UniformLocation as any
     this.iChannel1UniformLocation = iChannel1UniformLocation as any;
+    this.laserTintUniformLocation = laserTintUniformLocation as any;
 
 
 
@@ -281,13 +285,11 @@ export class ProPlusShaderEngine {
       const rect = canvas!.getBoundingClientRect();
       this.mouse.x = event.clientX - rect.left;
       this.mouse.y = rect.height - (event.clientY - rect.top);
-      //console.log(RgWebComponent.mouse);
     });
     document.addEventListener('touchmove', (event) => {
       const rect = canvas!.getBoundingClientRect();
       this.mouse.x = event.touches[0].clientX - rect.left;
       this.mouse.y = rect.height - (event.touches[0].clientX - rect.top);
-      //console.log(RgWebComponent.mouse);
     });
 
   }
