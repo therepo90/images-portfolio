@@ -371,7 +371,7 @@ export class RgWebComponent extends HTMLElement {
   }
 
 }
-export const define = () =>
+export const defineRgImage = () =>
 {
   customElements.define('rg-image', RgWebComponent);
 }

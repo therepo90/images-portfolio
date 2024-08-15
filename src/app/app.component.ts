@@ -2,9 +2,11 @@ import {AfterViewInit, Component, CUSTOM_ELEMENTS_SCHEMA, ElementRef, Input, OnI
 import { RouterOutlet } from '@angular/router';
 import {ImageComponent} from "./image/image.component";
 import {CommonModule} from "@angular/common";
-import {RgWebComponent} from "../lib/rg-web-component";
+import {defineRgImage, RgWebComponent} from "../lib/rg-web-component";
 import {HttpClient, HttpClientModule} from "@angular/common/http";
+import {BackgroundWebComponent, defineBgWeb, ProPlusShaderEngine} from "../lib/bg-web-component";
 
+defineBgWeb()
 @Component({
   selector: 'app-root',
   standalone: true,
@@ -15,6 +17,7 @@ import {HttpClient, HttpClientModule} from "@angular/common/http";
 })
 export class AppComponent implements AfterViewInit{
   @ViewChild('rgImage') rgImage!: ElementRef<HTMLElement>;
+  @ViewChild('bgproplus') bgproplus!: ElementRef<HTMLElement>;
 
   private shaderFragmentContent!: string;
   private vertexShaderContent!: string;
@@ -69,9 +72,25 @@ export class AppComponent implements AfterViewInit{
   }
 
   ngAfterViewInit(): void {
-    this.initFuckingCanvas();
+    //this.initFuckingCanvas();
+    this.initFuckingBgCanvas();
   }
 
+  private async initFuckingBgCanvas() {
+    const base = window.origin.includes('localhost') ? '' : '/images-portfolio';
+    console.log('Bejs',{base})
+    this.shaderFragmentContent = this.shaderFragmentContent || await this.http.get(base+'/img1.shader.fragment.glsl', { responseType: 'text' }).toPromise() as any;
+    this.vertexShaderContent = this.vertexShaderContent || await this.http.get(base+'/vertex.glsl', { responseType: 'text' }).toPromise() as any;
+    let webel = this.bgproplus.nativeElement as BackgroundWebComponent;
+    const engine = new ProPlusShaderEngine();
+    await engine.init({
+      shaderFragmentContent: this.shaderFragmentContent,
+      vertexShaderContent: this.vertexShaderContent,
+      webElement: webel
+    })
+  }
+
+/*
   private async initFuckingCanvas() {
     const base = window.origin.includes('localhost') ? '' : '/images-portfolio';
     console.log('Bejs',{base})
@@ -86,6 +105,7 @@ export class AppComponent implements AfterViewInit{
     const toPreloadC1 = this.images.map(textureInfo => textureInfo.channelo1TexturePath);
     await RgWebComponent.preloadImages([...toPreloadC0, ...toPreloadC1]);
   }
+*/
 
 /*
   deactivate(id: string) {

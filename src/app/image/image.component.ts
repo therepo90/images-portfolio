@@ -9,10 +9,10 @@ import {
 } from '@angular/core';
 import {CommonModule} from "@angular/common";
 import {HttpClient, HttpClientModule} from "@angular/common/http";
-import {define, RgWebComponent} from "../../lib/rg-web-component";
+import {defineRgImage, RgWebComponent} from "../../lib/rg-web-component";
 import {Vector3} from "@babylonjs/core";
 
-define();
+defineRgImage();
 @Component({
   selector: 'app-image',
   standalone: true,
