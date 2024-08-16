@@ -1,15 +1,19 @@
-#version 100
-#ifdef GL_ES
+#version 300 es
 precision mediump float;
-#endif
 
-uniform vec2 iResolution;
-uniform float iTime; // seconds
+in vec2 vUV;
+uniform sampler2D iChannel1;
+uniform sampler2D iChannel0;
 uniform vec2 iMouse;
-
+uniform vec2 iResolution;
+uniform vec3 laserTint;
+uniform float iTime;
+uniform int iFrame;
+// Declare the output color variable
+out vec4 theFragColor;
 #include "fragment.glsl"
 
 void main()
 {
-    mainImage(gl_FragColor, gl_FragCoord.xy);
+  mainImage(theFragColor, gl_FragCoord.xy);
 }
