@@ -35,6 +35,8 @@ rg-image {
 }
 #rg-web-component-canvas {
   border-radius: 50px;
+  touch-action: none;
+  pointer-events: none;
 }
 
 /* angular:styles/global:styles */

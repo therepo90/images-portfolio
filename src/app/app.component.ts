@@ -108,8 +108,17 @@ export class AppComponent implements AfterViewInit{
     await RgWebComponent.preloadImages([...toPreloadC0, ...toPreloadC1]);
   }
 
-/*
+  deactivateAll() {
+    console.log('out');
+    this.visibleCanvas = false;
+    this.images = this.images.map(i => ({
+      ...i,
+      active: false
+    }));
+
+  }
   deactivate(id: string) {
+    console.log('out');
     this.visibleCanvas = false;
     this.images.forEach(image => {
       if(image.id === id){
@@ -118,7 +127,6 @@ export class AppComponent implements AfterViewInit{
       }
     });
   }
-*/
   private async startAsyncSheet() {
     await this.initFuckingCanvas();
     await this.initFuckingBgCanvas();

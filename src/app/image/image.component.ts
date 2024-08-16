@@ -44,6 +44,7 @@ export class ImageComponent {
       console.log('deactivated'+this.id);
       this.ready = false;
     }
+    RgWebComponent.deactivate();
   }
 
   private async initImageCanvas() {

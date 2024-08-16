@@ -370,6 +370,12 @@ export class RgWebComponent extends HTMLElement {
     //RgWebComponent.gl.finish();
   }
 
+  static deactivate() {
+    const canvas = document.getElementById('rg-canvas-wrapper') as HTMLCanvasElement;
+    canvas.style.position = 'absolute';
+    canvas.style.left = '-9999px';
+    canvas.style.top = '-9999px';
+  }
 }
 export const defineRgImage = () =>
 {
