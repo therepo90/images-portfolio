@@ -25,6 +25,7 @@ export class ProPlusShaderEngine {
   public preloadedImages = new Map<string, HTMLImageElement>();
 
   private  laserTintUniformLocation!: WebGLUniformLocation;
+  private frameUniformLocation!: WebGLUniformLocation;
   private  defaultLaserTint = [1.0, 1.0, 1.0];
   private  laserTint = this.defaultLaserTint;
 
@@ -118,8 +119,10 @@ export class ProPlusShaderEngine {
     gl.bindTexture(gl.TEXTURE_2D, null as any);
   };
 
+
    activate =  () => {
     console.log('activate');
+   let frame = 1;
     const draw = () => {
       const gl = this.gl;
       gl.clearColor(0, 0, 0, 1);
@@ -128,6 +131,7 @@ export class ProPlusShaderEngine {
       gl.uniform2f(this.mouseUniformLocation, this.mouse.x, this.mouse.y);
       gl.uniform1f(this.timeUniformLocation, (Date.now() - this.startTime) / 1000.0);
       gl.uniform3fv(this.laserTintUniformLocation, new Float32Array(this.laserTint)); // vec3(1.0, 0.5, 0.) *
+      gl.uniform1i(this.frameUniformLocation, frame++); // vec3(1.0, 0.5, 0.) *
 
       // Bind textures
       gl.activeTexture(gl.TEXTURE0);
@@ -153,7 +157,7 @@ export class ProPlusShaderEngine {
     console.log('setupWebGL');
     //debugger;
     const canvas = this.webEl.getCanvas();
-    const gl = canvas.getContext('webgl');
+    const gl = canvas.getContext('webgl2');
     this.gl = gl as any;
 
     if (!gl) {
@@ -235,11 +239,13 @@ export class ProPlusShaderEngine {
     const iChannel0UniformLocation = gl.getUniformLocation(program, 'iChannel0');
     const iChannel1UniformLocation = gl.getUniformLocation(program, 'iChannel1');
     const laserTintUniformLocation = gl.getUniformLocation(program, 'laserTint');
+    const frameUniformLocation = gl.getUniformLocation(program, 'iFrame');
     this.mouseUniformLocation = mouseUniformLocation as any;
     this.timeUniformLocation = timeUniformLocation as any;
     this.iChannel0UniformLocation = iChannel0UniformLocation as any
     this.iChannel1UniformLocation = iChannel1UniformLocation as any;
     this.laserTintUniformLocation = laserTintUniformLocation as any;
+    this.frameUniformLocation = frameUniformLocation as any;
 
 
 
@@ -256,6 +262,7 @@ export class ProPlusShaderEngine {
 
     this.textures = [gl.createTexture(), gl.createTexture()] as any[];
   }
+
 
 
   compileShader(gl, type, source) {
