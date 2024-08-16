@@ -73,10 +73,7 @@ export class AppComponent implements AfterViewInit{
   }
 
   ngAfterViewInit(): void {
-    /*this.initFuckingCanvas().then(e => {
-      this.initFuckingBgCanvas();
-    });*/
-    this.initFuckingBgCanvas();
+    this.startAsyncSheet();
 
   }
 
@@ -100,7 +97,7 @@ export class AppComponent implements AfterViewInit{
     const base = window.origin.includes('localhost') ? '' : '/images-portfolio';
     console.log('Bejs',{base})
     this.shaderFragmentContent = await this.http.get(base+'/img1.shader.fragment.glsl', { responseType: 'text' }).toPromise() as any;
-    this.vertexShaderContent = await this.http.get(base+'/vertex.glsl', { responseType: 'text' }).toPromise() as any;
+    this.vertexShaderContent = await this.http.get(base+'/vertex10.glsl', { responseType: 'text' }).toPromise() as any;
     let engineEl = this.rgImage.nativeElement as RgWebComponent;
     await engineEl.init({
       shaderFragmentContent: this.shaderFragmentContent,
@@ -122,4 +119,8 @@ export class AppComponent implements AfterViewInit{
     });
   }
 */
+  private async startAsyncSheet() {
+    await this.initFuckingCanvas();
+    await this.initFuckingBgCanvas();
+  }
 }
