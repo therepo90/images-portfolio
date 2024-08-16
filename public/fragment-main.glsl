@@ -8,6 +8,7 @@ uniform vec2 iMouse;
 uniform vec2 iResolution;
 uniform vec3 laserTint;
 uniform float iTime;
+uniform int iFrame;
 // Declare the output color variable
 out vec4 theFragColor;
 #include "fragment.glsl"
