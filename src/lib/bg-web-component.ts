@@ -1,4 +1,5 @@
 interface InitParams {
+  shaderFragmentTpl: string;
   shaderFragmentContent: string;
   vertexShaderContent: string;
   webElement: BackgroundWebComponent;
@@ -19,6 +20,7 @@ export class ProPlusShaderEngine {
   private iChannel1UniformLocation!: WebGLUniformLocation;
   private webEl!: BackgroundWebComponent;
   private shadowRoot!: ShadowRoot;
+  private shaderFragmentTpl!: string;
 
   public preloadedImages = new Map<string, HTMLImageElement>();
 
@@ -49,6 +51,7 @@ export class ProPlusShaderEngine {
   };
 
   init = async ({
+                  shaderFragmentTpl,
                   shaderFragmentContent,
                   vertexShaderContent,
                   webElement
@@ -77,6 +80,7 @@ export class ProPlusShaderEngine {
     console.log('init bg-component');
     this.vertexShaderContent = vertexShaderContent;
     this.shaderFragmentContent = shaderFragmentContent;
+    this.shaderFragmentTpl = shaderFragmentTpl;
 
     this.mouse = { x: 0, y: 0 };
     this.startTime = Date.now();
@@ -157,8 +161,13 @@ export class ProPlusShaderEngine {
       return;
     }
 
+
+    let fragmentTpl = this.shaderFragmentTpl;
+    // replace #include "fragment.glsl" with the actual content of fragment.glsl
+    const fragmentShaderSource = fragmentTpl.replace('#include "fragment.glsl"', this.shaderFragmentContent);
+
     const vertexShaderSource = this.vertexShaderContent;
-    const fragmentShaderSource = this.shaderFragmentContent;
+    //const fragmentShaderSource = this.shaderFragmentContent;
 
     console.log({vertexShaderSource, fragmentShaderSource});
 
@@ -238,15 +247,16 @@ export class ProPlusShaderEngine {
 //
     // todo mouse/time fix
     console.log({resolutionUniformLocation, mouseUniformLocation, timeUniformLocation, iChannel0UniformLocation, iChannel1UniformLocation});
-    if (resolutionUniformLocation === null) {
+    /*if (resolutionUniformLocation === null) {
       console.error('Unable to get required uniform location(s) - compiler might strip them if not used.');
       return;
-    }
+    }*/
 
     gl.uniform2f(resolutionUniformLocation, canvas.width, canvas.height);
 
     this.textures = [gl.createTexture(), gl.createTexture()] as any[];
   }
+
 
   compileShader(gl, type, source) {
     const shader = gl.createShader(type);

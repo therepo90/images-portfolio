@@ -21,6 +21,7 @@ export class AppComponent implements AfterViewInit{
 
   private shaderFragmentContent!: string;
   private vertexShaderContent!: string;
+  private shaderFragmentTpl!: string;
 
   constructor(private http: HttpClient) {
   }
@@ -72,9 +73,10 @@ export class AppComponent implements AfterViewInit{
   }
 
   ngAfterViewInit(): void {
-    this.initFuckingCanvas().then(e => {
+    /*this.initFuckingCanvas().then(e => {
       this.initFuckingBgCanvas();
-    });
+    });*/
+    this.initFuckingBgCanvas();
 
   }
 
@@ -83,9 +85,11 @@ export class AppComponent implements AfterViewInit{
     console.log('Bejs',{base})
     this.shaderFragmentContent = await this.http.get(base+'/bg.shader.fragment.glsl', { responseType: 'text' }).toPromise() as any;
     this.vertexShaderContent = await this.http.get(base+'/vertex.glsl', { responseType: 'text' }).toPromise() as any;
+    this.shaderFragmentTpl = await this.http.get(base+'/fragment-main.glsl', { responseType: 'text' }).toPromise() as any;
     let webel = this.bgproplus.nativeElement as BackgroundWebComponent;
     const engine = new ProPlusShaderEngine();
     await engine.init({
+      shaderFragmentTpl: this.shaderFragmentTpl,
       shaderFragmentContent: this.shaderFragmentContent,
       vertexShaderContent: this.vertexShaderContent,
       webElement: webel
