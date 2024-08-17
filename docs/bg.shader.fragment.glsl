@@ -1,3 +1,4 @@
+// https://www.shadertoy.com/view/tdG3Rd
 float colormap_red(float x) {
   if (x < 0.0) {
     return 54.0 / 255.0;

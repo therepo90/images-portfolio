@@ -73,7 +73,10 @@ export class AppComponent implements AfterViewInit{
   }
 
   ngAfterViewInit(): void {
-    this.startAsyncSheet();
+    this.startAsyncSheet().catch(e => {
+      alert(e);
+      throw e;
+    });
 
   }
 
@@ -81,8 +84,8 @@ export class AppComponent implements AfterViewInit{
     const base = window.origin.includes('localhost') ? '' : '/images-portfolio';
     console.log('Bejs',{base})
     this.shaderFragmentContent = await this.http.get(base+'/bg.shader.fragment.glsl', { responseType: 'text' }).toPromise() as any;
-    this.vertexShaderContent = await this.http.get(base+'/vertex.glsl', { responseType: 'text' }).toPromise() as any;
-    this.shaderFragmentTpl = await this.http.get(base+'/fragment-main.glsl', { responseType: 'text' }).toPromise() as any;
+    this.vertexShaderContent = await this.http.get(base+'/vertex100.glsl', { responseType: 'text' }).toPromise() as any;
+    this.shaderFragmentTpl = await this.http.get(base+'/fragment-main100.glsl', { responseType: 'text' }).toPromise() as any;
     let webel = this.bgproplus.nativeElement as BackgroundWebComponent;
     const engine = new ProPlusShaderEngine();
     await engine.init({
@@ -90,14 +93,14 @@ export class AppComponent implements AfterViewInit{
       shaderFragmentContent: this.shaderFragmentContent,
       vertexShaderContent: this.vertexShaderContent,
       webElement: webel
-    })
+    });
   }
 
   private async initFuckingCanvas() {
     const base = window.origin.includes('localhost') ? '' : '/images-portfolio';
     console.log('Bejs',{base})
     this.shaderFragmentContent = await this.http.get(base+'/img1.shader.fragment.glsl', { responseType: 'text' }).toPromise() as any;
-    this.vertexShaderContent = await this.http.get(base+'/vertex10.glsl', { responseType: 'text' }).toPromise() as any;
+    this.vertexShaderContent = await this.http.get(base+'/vertex100.glsl', { responseType: 'text' }).toPromise() as any;
     let engineEl = this.rgImage.nativeElement as RgWebComponent;
     await engineEl.init({
       shaderFragmentContent: this.shaderFragmentContent,

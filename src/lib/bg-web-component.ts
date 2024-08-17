@@ -92,7 +92,8 @@ export class ProPlusShaderEngine {
     canvas.width = parentWidth;
     canvas.height = parentHeight;
 
-    await this.setupWebGL().then(() => {
+    await this.setupWebGL()
+      .then(() => {
       this.setupMouseListeners();
     });
     this.initialized = true;
@@ -157,7 +158,7 @@ export class ProPlusShaderEngine {
     console.log('setupWebGL');
     //debugger;
     const canvas = this.webEl.getCanvas();
-    const gl = canvas.getContext('webgl2');
+    const gl = canvas.getContext('webgl');
     this.gl = gl as any;
 
     if (!gl) {
