@@ -127,7 +127,7 @@ export class ProPlusShaderEngine {
     const draw = () => {
       try {
         const gl = this.gl;
-        if(gl) {
+        if(gl && this.textures) {
           gl.clearColor(0, 0, 0, 1);
           gl.clear(gl.COLOR_BUFFER_BIT);
 
