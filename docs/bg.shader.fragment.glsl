@@ -94,6 +94,7 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
   vec2 uv = fragCoord/iResolution.x;
   float shade = pattern(uv);
   fragColor = vec4(colormap(shade).rgb, shade);
+  fragColor.rgb = vec3(0.);//pow(fragColor.rgb, vec3(1.0 / 9.2));
 }
 
 /** SHADERDATA
