@@ -125,25 +125,29 @@ export class ProPlusShaderEngine {
     console.log('activate');
    let frame = 1;
     const draw = () => {
-      const gl = this.gl;
-      gl.clearColor(0, 0, 0, 1);
-      gl.clear(gl.COLOR_BUFFER_BIT);
+      try {
+        const gl = this.gl;
+        gl.clearColor(0, 0, 0, 1);
+        gl.clear(gl.COLOR_BUFFER_BIT);
 
-      gl.uniform2f(this.mouseUniformLocation, this.mouse.x, this.mouse.y);
-      gl.uniform1f(this.timeUniformLocation, (Date.now() - this.startTime) / 1000.0);
-      gl.uniform3fv(this.laserTintUniformLocation, new Float32Array(this.laserTint)); // vec3(1.0, 0.5, 0.) *
-      gl.uniform1i(this.frameUniformLocation, frame++); // vec3(1.0, 0.5, 0.) *
+        gl.uniform2f(this.mouseUniformLocation, this.mouse.x, this.mouse.y);
+        gl.uniform1f(this.timeUniformLocation, (Date.now() - this.startTime) / 1000.0);
+        gl.uniform3fv(this.laserTintUniformLocation, new Float32Array(this.laserTint)); // vec3(1.0, 0.5, 0.) *
+        gl.uniform1i(this.frameUniformLocation, frame++); // vec3(1.0, 0.5, 0.) *
 
-      // Bind textures
-      gl.activeTexture(gl.TEXTURE0);
-      gl.bindTexture(gl.TEXTURE_2D, this.textures[0]);
-      gl.uniform1i(this.iChannel0UniformLocation, 0);
+        // Bind textures
+        gl.activeTexture(gl.TEXTURE0);
+        gl.bindTexture(gl.TEXTURE_2D, this.textures[0]);
+        gl.uniform1i(this.iChannel0UniformLocation, 0);
 
-      gl.activeTexture(gl.TEXTURE1);
-      gl.bindTexture(gl.TEXTURE_2D, this.textures[1]);
-      gl.uniform1i(this.iChannel1UniformLocation, 1);
+        gl.activeTexture(gl.TEXTURE1);
+        gl.bindTexture(gl.TEXTURE_2D, this.textures[1]);
+        gl.uniform1i(this.iChannel1UniformLocation, 1);
 
-      gl.drawArrays(gl.TRIANGLES, 0, 6);
+        gl.drawArrays(gl.TRIANGLES, 0, 6);
+      }catch(e){
+        console.error(e);
+      }
     };
 
     const animate = () => {
