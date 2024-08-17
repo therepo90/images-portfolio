@@ -91,7 +91,13 @@ float pattern( in vec2 p )
 
 void mainImage( out vec4 fragColor, in vec2 fragCoord )
 {
-  vec2 uv = fragCoord/iResolution.x;
+  vec2 uv = fragCoord/iResolution.xy;
+  vec2 mouse = iMouse.xy / iResolution.xy;
+  // distort
+  float d = distance(mouse, uv);
+  //float p = 0.4*tan(d);//0.02 * (1./(d * d));
+  float p = min(0.05 * (1./(d * d)), 2.) ;
+  uv =  mix(uv, mouse, p);
   float shade = pattern(uv);
   fragColor = vec4(colormap(shade).rgb, 1.);
 }

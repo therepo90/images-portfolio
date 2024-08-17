@@ -302,7 +302,7 @@ export class ProPlusShaderEngine {
   }
 
   setupMouseListeners = () => {
-    const canvas = document.getElementById('rg-web-component-canvas');
+    const canvas = this.webEl.getCanvas();
 
     document.addEventListener('mousemove', (event) => {
 
