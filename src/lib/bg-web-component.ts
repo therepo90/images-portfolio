@@ -161,7 +161,7 @@ export class ProPlusShaderEngine {
     this.gl = gl as any;
 
     if (!gl) {
-      console.error('Unable to initialize WebGL. Your browser may not support it.');
+      alert('Unable to initialize WebGL2. Your browser may not support it.');
       return;
     }
 

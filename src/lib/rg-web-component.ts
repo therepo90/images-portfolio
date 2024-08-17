@@ -192,7 +192,7 @@ export class RgWebComponent extends HTMLElement {
     RgWebComponent.gl = gl as any;
 
     if (!gl) {
-      console.error('Unable to initialize WebGL. Your browser may not support it.');
+      alert('Unable to initialize WebGL. Your browser may not support it.');
       return;
     }
 
