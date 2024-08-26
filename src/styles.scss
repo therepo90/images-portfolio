@@ -1,5 +1,8 @@
 @import "vars";
 
+html {
+  background: #d1d1d1;
+}
 .canvas-wrapper {
   width   : $canvasWidth;
   height  : $canvasHeight;
