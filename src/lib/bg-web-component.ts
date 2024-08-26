@@ -98,8 +98,8 @@ export class ProPlusShaderEngine {
     });
     this.initialized = true;
     console.log('Initialized web component');
-    await this.activate();
-    console.log('activated');
+    /*await this.activate();
+    console.log('activated');*/
 
   }
 
@@ -121,8 +121,13 @@ export class ProPlusShaderEngine {
   };
 
 
+  setTexturePaths = (texturePaths: { iChannel1Path: string; iChannel0Path: string }) => {
+    this.texturePaths = texturePaths;
+  }
    activate =  () => {
-    console.log('activate');
+    console.log('activate bg');
+
+     this.loadTexture(this.gl, this.textures[0], this.texturePaths.iChannel0Path, 1, this.preloadedImages.get(this.texturePaths.iChannel0Path));
    let frame = 1;
     const draw = () => {
       try {
@@ -266,7 +271,6 @@ export class ProPlusShaderEngine {
     }*/
 
     gl.uniform2f(resolutionUniformLocation, canvas.width, canvas.height);
-
     this.textures = [gl.createTexture(), gl.createTexture()] as any[];
   }
 

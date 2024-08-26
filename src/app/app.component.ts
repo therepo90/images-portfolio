@@ -25,6 +25,9 @@ export class AppComponent implements AfterViewInit{
 
   constructor(private http: HttpClient) {
   }
+  bgImages = [{
+    channelo0TexturePath: '/helmet.png',
+  }];
   images = [
     /*{
       id: '1',
@@ -46,7 +49,7 @@ export class AppComponent implements AfterViewInit{
       id: '3',
       shaderId: 'imgTransition3Shader',
       shaderMinNameAbbvPath: '/img1.shader',
-      channelo0TexturePath: '/troll.jpg',
+      channelo0TexturePath: '/troll.jpg', //
       channelo1TexturePath: '/troll2.jpg',
       active: false,
     },
@@ -94,6 +97,15 @@ export class AppComponent implements AfterViewInit{
       vertexShaderContent: this.vertexShaderContent,
       webElement: webel
     });
+    const toPreloadC0 = this.bgImages.map(textureInfo => textureInfo.channelo0TexturePath);
+    await engine.preloadImages([...toPreloadC0]);
+    await engine.setTexturePaths(
+      {
+        iChannel0Path: base + this.bgImages[0].channelo0TexturePath,
+        iChannel1Path: ''
+      },
+    )
+    await engine.activate();
   }
 
   private async initFuckingCanvas() {
@@ -109,6 +121,7 @@ export class AppComponent implements AfterViewInit{
     const toPreloadC0 = this.images.map(textureInfo => textureInfo.channelo0TexturePath);
     const toPreloadC1 = this.images.map(textureInfo => textureInfo.channelo1TexturePath);
     await RgWebComponent.preloadImages([...toPreloadC0, ...toPreloadC1]);
+
   }
 
   deactivateAll() {
