@@ -44,7 +44,8 @@
               "outputPath": "docs",
               "optimization": false,
               "extractLicenses": false,
-              "sourceMap": true
+              "sourceMap": true,
+              "namedChunks": true
             },
             "development": {
               "optimization": false,
