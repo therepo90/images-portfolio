@@ -104,10 +104,19 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
   //col+=line(center, target, uv, 0.1) * vec3(1.); // white at middle
   //fragColor = vec4(col, 1.0);
   vec4 texCol=texture2D(iChannel0, vUV);
-  float texAM = step(0.1, texCol.a);
-  vec4 finalCol=mix(vec4(vec3(0.),0.0),texCol, texAM); // wez kolory z tex tylko jak jest jakas rozsadna alfa
+  float texAM = step(0.5, texCol.a);
+  vec3 tc = mix(vec3(0.), texCol.xyz, texAM);
+  //vec4 finalCol=mix(vec4(vec3(0.),0.0),texCol, texAM); // wez kolory z tex tylko jak jest jakas rozsadna alfa
+  vec4 finalCol = vec4(tc.xyz,texCol.a);
+  //vec4 finalCol = texCol;
+  float laserAM = step(0.01, col.r + col.g + col.b);
   finalCol.xyz+=col;
-  finalCol.a += step(0.001, col.r + col.g + col.b);
+  finalCol.a += laserAM;
+  //finalCol.a=1.0;
+  //if(texCol.a<0.001 && col.r + col.g + col.b > 0.01){
+    //finalCol.a=1.;
+  //}
+  //finalCol.a += step(0.001, col.r + col.g + col.b);
   //finalCol.xyz=vec3(step(0.01,texCol.a));
   //finalCol.a=1.0;
   /*if(col.r + col.g + col.b > 0.1 && texCol.a < 0.01){ // col.r + col.g + col.b > 0.1 &&
