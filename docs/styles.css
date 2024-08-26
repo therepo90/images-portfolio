@@ -1,4 +1,7 @@
 /* src/styles.scss */
+html {
+  background: #d1d1d1;
+}
 .canvas-wrapper {
   width: 600px;
   height: 400px;

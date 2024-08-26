@@ -11,6 +11,7 @@ uniform float iTime;
 uniform int iFrame;
 // Declare the output color variable
 out vec4 theFragColor;
+
 #include "fragment.glsl"
 
 void main()
