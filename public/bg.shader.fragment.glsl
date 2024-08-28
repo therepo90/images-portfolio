@@ -42,7 +42,7 @@ vec3 skewedLaser(vec2 center, vec2 target, vec2 uv, float w, vec3 inCol, float i
 
   vec2 pc = vec2(d, alpha); // polar coords holding (dist, angle)
 
-  float sinVal = (sin(t*7.+time*3.+PI*3.)*0.3+cos(t*22.+time*3.+pc.y*2.)*.7)*0.4;
+  float sinVal = (sin(t*7.+time*3.+PI*3.+pc.x*7.)*0.3+cos(t*22.+time*3.+pc.x*2.)*.7)*0.4;
   sinVal+=pow(t,14.)*0.6;
   //sinVal+=cos(pc.y*17.+time*3.)*0.1;
   //float sinVal = cos(pc.x*17.+time*3.)*.025 ;
@@ -71,35 +71,76 @@ vec3 skewedLaser(vec2 center, vec2 target, vec2 uv, float w, vec3 inCol, float i
 
 
 #define OUT_N 3.0
-#define IN_N 4.0
+#define IN_N 2.0
+#define BALL_W 5.5 // inversed
+#define CENTER_X -0.63
+#define CENTER_Y -0.62
 
 vec3 clusteredBeam(vec2 center, vec2 target, vec2 uv, float w, vec3 inCol, float offsetWyg, float time) {
+  // col+=skewedLaser(center, target, uv, w, inCol,0.15, time*2.+0.6, offsetWyg*ddd);
 
-  //float n = 4.;
   vec3 col=vec3(0.);
   for(float i=1.;i<=IN_N;i+=1.){
-    col+=skewedLaser(center, target, uv, w, inCol*i*(1./IN_N),i*0.15, time*4.+i*14., offsetWyg);
+    col+=skewedLaser(center, target, uv, w, inCol,0.15, time*2., offsetWyg);
+    col+=skewedLaser(center, target, uv, w, inCol,0.15, time*2.+0.6, offsetWyg);
+
   }
   return col;
 }
 
-void mainImage( out vec4 fragColor, in vec2 fragCoord )
-{
+void processLaser( out vec4 fragColor, in vec2 fragCoord ) {
   vec2 uv = 2.0*(fragCoord-.5*iResolution.xy)/iResolution.xy; // -1, 1
   vec2 mouse = 2.0*(iMouse.xy-.5*iResolution.xy)/iResolution.xy;
 
-  vec2 center = vec2(-0.66,-0.70);
-  vec2 target=mouse;
+  vec2 center = vec2(CENTER_X,CENTER_Y);
+  vec2 target=mouse;//vec2(1.0,0.0);//mouse;
   vec3 col = vec3(0.);
 
   float time = iTime*1.;
   float w = 0.2;
-  //float n = 3.;
-  float offsetWyg = .1;// * abs(sin(iTime*1.4));
-  for(float i=-OUT_N/2.;i<OUT_N/2.;i+=1.){
+  vec3 inCol = vec3(0.,0.2,0.8);
+  float offsetWyg = 1.2;// * abs(sin(iTime*1.4));
+  /*for(float i=-n/2.;i<n/2.;i+=1.){
 
-    col+=clusteredBeam(center, target, uv, w, vec3(0.,0.2,0.8), i*offsetWyg,  iTime+ i *15.);
+      col+=clusteredBeam(center, target, uv, w, inCol, i*offsetWyg,  iTime+ i *15.);
+  }*/
+  float l = length(target-center);
+  vec2 dir = normalize(target-center);
+  vec2 down=vec2(0.,-1);
+
+  // for some reason we need perp to that.
+  vec2 p = normalize(vec2(-dir.y, dir.x));
+  float ddd = -dot(p,down);
+
+  for(float i=0.;i<OUT_N;i+=1.){
+
+    col+=clusteredBeam(center, target, uv, w, inCol, offsetWyg*ddd*(1.-0.2*i),  iTime+ i *2.);
+
   }
+
+  float d = min(1.,length(uv-center)*BALL_W);//step(0.2, length(uv-center));
+  col+=vec3(1.)*(1.-d)*1.4;
+  col+=inCol*(1.-d)*3.;
+  /*col+=skewedLaser(center, target, uv, w, inCol,0.15, time*2., offsetWyg*ddd);
+  col+=skewedLaser(center, target, uv, w, inCol,0.15, time*2.+0.6, offsetWyg*ddd);
+
+  col+=skewedLaser(center, target, uv, w, inCol,0.15, time*1.5+15.7, offsetWyg*ddd+0.1);
+  col+=skewedLaser(center, target, uv, w, inCol,0.15, time*1.5+0.6+15.7, offsetWyg*ddd+0.1);
+
+  col+=skewedLaser(center, target, uv, w, inCol,0.15, time*1.5+15.7, offsetWyg*ddd*0.5+0.1);
+  col+=skewedLaser(center, target, uv, w, inCol,0.15, time*1.5+0.6+15.7, offsetWyg*ddd*0.5+0.1);*/
+
+
+  fragColor = vec4(col, 1.0);
+}
+
+
+void mainImage( out vec4 fragColor, in vec2 fragCoord )
+{
+  vec4 outLaser;
+  vec3 col = vec3(0.);
+  processLaser(outLaser, fragCoord);
+  col+=outLaser.xyz;
 
   //col+=line(center, target, uv, 0.1) * vec3(1.); // white at middle
   //fragColor = vec4(col, 1.0);
