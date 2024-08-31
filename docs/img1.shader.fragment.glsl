@@ -189,7 +189,7 @@ void processBorder( out vec4 fragColor, in vec2 fragCoord, out float sqOut, in v
   float sq = fancyScene(changedUv, center, squareSize, edge);
 
   //vec3 tex =texture2D(iChannel0,uv).xyz * (abs(sin(iTime*0.3)) +0.5);
-  vec3 sqCol= sq*barCol* (1.+pow(sq,15.));
+  vec3 sqCol= sq*barCol* (1.+pow(sq,15.)); // fade to tint color fast.
   //col=mix(tex, sqCol,sq);
   col = sqCol;
   col+=vec3(1.) * pow(sq,3.); // fade to white at the end
@@ -197,7 +197,17 @@ void processBorder( out vec4 fragColor, in vec2 fragCoord, out float sqOut, in v
 
 
   sqOut = sq;
-  fragColor = vec4(col,1.0);
+  float a = 1.0;
+  //if(col.x > 1. && col.y > 1. && col.z > 1.){
+    //a =0.;
+  //}
+  //a=0.1;
+ /* if(sq < 0.1) {
+    a = 0.0;
+  }
+  a=0.;*/
+  //a = 1.-pow(sq,1.0);//1.0;
+  fragColor = vec4(col,a);
 }
 
 void main()
@@ -208,4 +218,13 @@ void main()
   float sq;
   processBorder(borderColor, vUV * iResolution.xy, sq, laserTint);
   gl_FragColor = mix(mainCol, borderColor, sq);
+  //gl_FragColor=borderColor;
+  float a=1.;
+  //if(sq> 0.98){
+    a=1.-smoothstep(0.98,0.99,sq);
+  //}
+  //a = 1.-pow(sq,3.);
+  //}
+  gl_FragColor.a = a;
 }
+

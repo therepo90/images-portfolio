@@ -3,8 +3,8 @@ html {
   background: #d1d1d1;
 }
 .canvas-wrapper {
-  width: 600px;
-  height: 400px;
+  width: 800px;
+  height: 500px;
   position: relative;
 }
 @media screen and (max-width: 992px) {

@@ -73,8 +73,10 @@ vec3 skewedLaser(vec2 center, vec2 target, vec2 uv, float w, vec3 inCol, float i
 #define OUT_N 3.0
 #define IN_N 2.0
 #define BALL_W 5.5 // inversed
-#define CENTER_X -0.63
-#define CENTER_Y -0.62
+#define CENTER_X -1.//-0.63
+#define CENTER_Y 1.//-0.62
+#define CENTER_X2 1.//-0.63
+#define CENTER_Y2 1.//-0.62
 
 vec3 clusteredBeam(vec2 center, vec2 target, vec2 uv, float w, vec3 inCol, float offsetWyg, float time) {
   // col+=skewedLaser(center, target, uv, w, inCol,0.15, time*2.+0.6, offsetWyg*ddd);
@@ -88,18 +90,18 @@ vec3 clusteredBeam(vec2 center, vec2 target, vec2 uv, float w, vec3 inCol, float
   return col;
 }
 
-void processLaser( out vec4 fragColor, in vec2 fragCoord ) {
+void processLaser( out vec4 fragColor, in vec2 fragCoord, vec2 center ) {
   vec2 uv = 2.0*(fragCoord-.5*iResolution.xy)/iResolution.xy; // -1, 1
   vec2 mouse = 2.0*(iMouse.xy-.5*iResolution.xy)/iResolution.xy;
 
-  vec2 center = vec2(CENTER_X,CENTER_Y);
+
   vec2 target=mouse;//vec2(1.0,0.0);//mouse;
   vec3 col = vec3(0.);
 
   float time = iTime*1.;
   float w = 0.2;
   vec3 inCol = vec3(0.,0.2,0.8);
-  float offsetWyg = 1.2;// * abs(sin(iTime*1.4));
+  float offsetWyg = 0.2;// * abs(sin(iTime*1.4));
   /*for(float i=-n/2.;i<n/2.;i+=1.){
 
       col+=clusteredBeam(center, target, uv, w, inCol, i*offsetWyg,  iTime+ i *15.);
@@ -138,45 +140,26 @@ void processLaser( out vec4 fragColor, in vec2 fragCoord ) {
 void mainImage( out vec4 fragColor, in vec2 fragCoord )
 {
   vec4 outLaser;
+  vec4 outLaser2;
   vec3 col = vec3(0.);
-  processLaser(outLaser, fragCoord);
+  vec2 center = vec2(CENTER_X,CENTER_Y);
+  vec2 center2 = vec2(CENTER_X2,CENTER_Y2);
+  processLaser(outLaser, fragCoord, center);
+  processLaser(outLaser2, fragCoord, center2);
+  //col+=vec3(0.,0.2,0.8);
   col+=outLaser.xyz;
+  col+=outLaser2.xyz;
 
-  //col+=line(center, target, uv, 0.1) * vec3(1.); // white at middle
-  //fragColor = vec4(col, 1.0);
-  vec4 texCol=texture2D(iChannel0, vUV);
+  //float laserAM = step(0.01, col.r + col.g + col.b);
+  vec4 finalCol = vec4(col, 1.0);//0.2);
+  /*vec4 texCol=texture2D(iChannel0, vUV);
   float texAM = step(0.5, texCol.a);
   vec3 tc = mix(vec3(0.), texCol.xyz, texAM);
-  //vec4 finalCol=mix(vec4(vec3(0.),0.0),texCol, texAM); // wez kolory z tex tylko jak jest jakas rozsadna alfa
   vec4 finalCol = vec4(tc.xyz,texCol.a);
-  //vec4 finalCol = texCol;
   float laserAM = step(0.01, col.r + col.g + col.b);
   finalCol.xyz+=col;
-  finalCol.a += laserAM;
-  //finalCol.a=1.0;
-  //if(texCol.a<0.001 && col.r + col.g + col.b > 0.01){
-    //finalCol.a=1.;
-  //}
-  //finalCol.a += step(0.001, col.r + col.g + col.b);
-  //finalCol.xyz=vec3(step(0.01,texCol.a));
-  //finalCol.a=1.0;
-  /*if(col.r + col.g + col.b > 0.1 && texCol.a < 0.01){ // col.r + col.g + col.b > 0.1 &&
-    finalCol.xyz = mix(col, texCol.xyz,0.9);
-    //finalCol.xyz=vec3(1.0,0.0,0.0);
-    //finalCol.a=1.0;
-  }*/
-  //if()
-  //finalCol.a=0.;
-  /*vec4 finalCol=vec4(0.);
-  finalCol.a=1.;
-  finalCol.xyz+=col;*/
- /* if(vUV.y > 0.5 && vUV.x < 0.3){
-    finalCol.a = texCol.a;
-  }else{
-    finalCol.a = 1.;
-  }*/
-  // if any of col components is greater than 0 then set alpha to 1
-  //finalCol.a = step(0.0, col.r + col.g + col.b + texCol.a);
+  finalCol.a += laserAM;*/
+
   fragColor = finalCol;
 }
 

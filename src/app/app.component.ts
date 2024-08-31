@@ -30,6 +30,30 @@ export class AppComponent implements AfterViewInit{
   }];
   images = [
     {
+      id: '4',
+      shaderId: 'imgTransition3Shader',
+      shaderMinNameAbbvPath: '/img1.shader',
+      channelo0TexturePath: '/037_2.jpg', //
+      channelo1TexturePath: '/037_orig.jpg',
+      active: false,
+    },
+    {
+      id: '3',
+      shaderId: 'imgTransition3Shader',
+      shaderMinNameAbbvPath: '/img1.shader',
+      channelo0TexturePath: '/troll.jpg', //
+      channelo1TexturePath: '/troll2.jpg',
+      active: false,
+    },
+    {
+      id: '2',
+      shaderId: 'imgTransition2Shader',
+      shaderMinNameAbbvPath: '/img1.shader',
+      channelo0TexturePath: '/phone_followers.jpg',
+      channelo1TexturePath: '/phone_followers2.jpg',
+      active: false,
+    },
+    {
       id: '1',
       shaderId: 'imgTransition1Shader',
       shaderMinNameAbbvPath: '/img1.shader',
@@ -37,22 +61,14 @@ export class AppComponent implements AfterViewInit{
       channelo1TexturePath: '/DSC_0031_2.jpg',
       active: false,
     },
-     {
-       id: '2',
-      shaderId: 'imgTransition2Shader',
-      shaderMinNameAbbvPath: '/img1.shader',
-      channelo0TexturePath: '/phone_followers.jpg',
-      channelo1TexturePath: '/phone_followers2.jpg',
-     active: false,
-    },
-   /* {
-      id: '3',
+    {
+      id: '5',
       shaderId: 'imgTransition3Shader',
       shaderMinNameAbbvPath: '/img1.shader',
-      channelo0TexturePath: '/troll.jpg', //
-      channelo1TexturePath: '/troll2.jpg',
+      channelo0TexturePath: '/228.jpg', //
+      channelo1TexturePath: '/228_1.jpg',
       active: false,
-    },*/
+    },
    /* {
       id: '4',
       shaderId: 'imgTransition4Shader',
