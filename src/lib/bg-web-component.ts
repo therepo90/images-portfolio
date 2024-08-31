@@ -322,7 +322,7 @@ export class ProPlusShaderEngine {
       const rect = canvas!.getBoundingClientRect();
       if(event.touches[0]) {
         this.mouse.x = event.touches[0].clientX - rect.left;
-        this.mouse.y = rect.height - (event.touches[0].clientX - rect.top);
+        this.mouse.y = rect.height - (event.touches[0].clientY - rect.top);
       }
     });
 

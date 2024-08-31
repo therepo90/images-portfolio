@@ -334,7 +334,7 @@ export class RgWebComponent extends HTMLElement {
       document.addEventListener('touchmove', (event) => {
         const rect = canvas!.getBoundingClientRect();
         RgWebComponent.mouse.x = event.touches[0].clientX - rect.left;
-        RgWebComponent.mouse.y = rect.height - (event.touches[0].clientX - rect.top);
+        RgWebComponent.mouse.y = rect.height - (event.touches[0].clientY - rect.top);
         //console.log(RgWebComponent.mouse);
       });
 
