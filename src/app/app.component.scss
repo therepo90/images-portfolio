@@ -1,15 +1,21 @@
 .images {
-  display: grid;
-  max-width: 1200px;
+  display: flex;
+  flex-direction: column;
+  max-width: 100%;
+  //justify-content: center;
+  align-items: center;
   // 2 columns grid
-  grid-template-columns: 1fr 1fr;
+  //grid-template-columns: 1fr;
   padding: 20px 20px;
   margin: 0 auto;
-  grid-gap: 20px;
   @media screen and (max-width:992px) {
-    grid-template-columns: 1fr;
+    //grid-template-columns: 1fr;
     max-width: 100%;
   }
+  > * {
+    margin-bottom: 40px;
+  }
+
 }
 
 :host {

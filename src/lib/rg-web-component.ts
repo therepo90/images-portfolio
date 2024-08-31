@@ -150,6 +150,11 @@ export class RgWebComponent extends HTMLElement {
       gl.clearColor(0, 0, 0, 1);
       gl.clear(gl.COLOR_BUFFER_BIT);
 
+      gl.enable(gl.BLEND);
+      //gl.blend(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+      gl.blendEquationSeparate(gl.FUNC_ADD, gl.FUNC_ADD);
+      gl.blendFuncSeparate(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA, gl.ONE, gl.ZERO);
+
       /*if(RgWebComponent.firstFrameAfterChange) {
         RgWebComponent.firstFrameAfterChange = false;
       }

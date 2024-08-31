@@ -29,7 +29,7 @@ export class AppComponent implements AfterViewInit{
     channelo0TexturePath: '/helmet.png',
   }];
   images = [
-    /*{
+    {
       id: '1',
       shaderId: 'imgTransition1Shader',
       shaderMinNameAbbvPath: '/img1.shader',
@@ -44,7 +44,7 @@ export class AppComponent implements AfterViewInit{
       channelo0TexturePath: '/phone_followers.jpg',
       channelo1TexturePath: '/phone_followers2.jpg',
      active: false,
-    },*/
+    },
    /* {
       id: '3',
       shaderId: 'imgTransition3Shader',

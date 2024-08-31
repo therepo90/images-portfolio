@@ -197,7 +197,13 @@ void processBorder( out vec4 fragColor, in vec2 fragCoord, out float sqOut, in v
 
 
   sqOut = sq;
-  fragColor = vec4(col,1.0);
+  float a = 1.0;
+  /*if(sq > 0.){
+    a =0.;
+  }*/
+  //a=0.1;
+  a = 1.-pow(sq,3.0);//1.0;
+  fragColor = vec4(col,a);
 }
 
 void main()

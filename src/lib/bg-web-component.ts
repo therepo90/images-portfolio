@@ -133,10 +133,10 @@ export class ProPlusShaderEngine {
       try {
         const gl = this.gl;
         if(gl && this.textures) {
-          gl.enable(gl.BLEND);
-          gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+
           gl.clearColor(0, 0, 0, 1);
           gl.clear(gl.COLOR_BUFFER_BIT);
+
 
           gl.uniform2f(this.mouseUniformLocation, this.mouse.x, this.mouse.y);
           gl.uniform1f(this.timeUniformLocation, (Date.now() - this.startTime) / 1000.0);
@@ -152,6 +152,8 @@ export class ProPlusShaderEngine {
           gl.bindTexture(gl.TEXTURE_2D, this.textures[1]);
           gl.uniform1i(this.iChannel1UniformLocation, 1);
 
+          gl.enable(gl.BLEND);
+          gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
           gl.drawArrays(gl.TRIANGLES, 0, 6);
         }
       }catch(e){
