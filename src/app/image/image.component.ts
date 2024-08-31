@@ -60,7 +60,10 @@ export class ImageComponent {
     //const delay = ms => new Promise(res => setTimeout(res, ms));
     //await delay(1000); // wait one frame?
     RgWebComponent.moveCanvas(this.el.nativeElement);
-    const randomTint = new Vector3(Math.random(), Math.random(), Math.random());
+    //const randomTint = new Vector3(Math.random(), Math.random(), Math.random());
+    //const randomTint = new Vector3(0.0, 0.5, 0.5);
+    //const randomTint = new Vector3(0.0, 0.2, 0.8);
+    const randomTint = new Vector3(0.5, 1.0, 1.0);
     RgWebComponent.changeLaserTint(randomTint);
     this.ready = true;
   }

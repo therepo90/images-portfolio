@@ -74,9 +74,9 @@ vec3 skewedLaser(vec2 center, vec2 target, vec2 uv, float w, vec3 inCol, float i
 #define IN_N 2.0
 #define BALL_W 5.5 // inversed
 #define CENTER_X -1.//-0.63
-#define CENTER_Y 0.//-0.62
+#define CENTER_Y 1.//-0.62
 #define CENTER_X2 1.//-0.63
-#define CENTER_Y2 0.//-0.62
+#define CENTER_Y2 1.//-0.62
 
 vec3 clusteredBeam(vec2 center, vec2 target, vec2 uv, float w, vec3 inCol, float offsetWyg, float time) {
   // col+=skewedLaser(center, target, uv, w, inCol,0.15, time*2.+0.6, offsetWyg*ddd);
