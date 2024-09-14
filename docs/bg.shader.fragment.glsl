@@ -101,12 +101,13 @@ void processLaser( out vec4 fragColor, in vec2 fragCoord, vec2 center ) {
   float time = iTime*1.;
   float w = 0.2;
   vec3 inCol = vec3(0.,0.2,0.8);
-  float offsetWyg = 0.2;// * abs(sin(iTime*1.4));
+
   /*for(float i=-n/2.;i<n/2.;i+=1.){
 
       col+=clusteredBeam(center, target, uv, w, inCol, i*offsetWyg,  iTime+ i *15.);
   }*/
   float l = length(target-center);
+  float offsetWyg = 1.0*l*0.5;// * abs(sin(iTime*1.4));
   vec2 dir = normalize(target-center);
   vec2 down=vec2(0.,-1);
 
