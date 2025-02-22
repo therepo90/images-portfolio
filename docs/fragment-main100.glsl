@@ -7,6 +7,7 @@ uniform sampler2D iChannel0;
 uniform vec2 iMouse;
 uniform vec2 iResolution;
 uniform vec3 laserTint;
+uniform vec2 beamTarget;
 uniform float iTime;
 uniform int iFrame;
 // Declare the output color variable

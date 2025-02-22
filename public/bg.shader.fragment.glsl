@@ -1,3 +1,11 @@
+#define OUT_N 1.0
+#define IN_N 2.0
+#define BALL_W 12.5 // inversed - bigger is smaller lol
+#define CENTER_X -0.0//-0.63
+#define CENTER_Y -1.//-0.62
+#define CENTER_X2 1.//-0.63
+#define CENTER_Y2 1.//-0.62
+
 float PI=3.141592653589;
 vec3 lineColor=vec3(1.,0.,0.);
 
@@ -70,13 +78,7 @@ vec3 skewedLaser(vec2 center, vec2 target, vec2 uv, float w, vec3 inCol, float i
 }
 
 
-#define OUT_N 3.0
-#define IN_N 2.0
-#define BALL_W 5.5 // inversed
-#define CENTER_X -1.//-0.63
-#define CENTER_Y 1.//-0.62
-#define CENTER_X2 1.//-0.63
-#define CENTER_Y2 1.//-0.62
+
 
 vec3 clusteredBeam(vec2 center, vec2 target, vec2 uv, float w, vec3 inCol, float offsetWyg, float time) {
   // col+=skewedLaser(center, target, uv, w, inCol,0.15, time*2.+0.6, offsetWyg*ddd);
@@ -90,16 +92,16 @@ vec3 clusteredBeam(vec2 center, vec2 target, vec2 uv, float w, vec3 inCol, float
   return col;
 }
 
-void processLaser( out vec4 fragColor, in vec2 fragCoord, vec2 center ) {
+void processLaser( out vec4 fragColor, in vec2 fragCoord, vec2 center, vec2 mouse ) {
   vec2 uv = 2.0*(fragCoord-.5*iResolution.xy)/iResolution.xy; // -1, 1
-  vec2 mouse = 2.0*(iMouse.xy-.5*iResolution.xy)/iResolution.xy;
+
 
 
   vec2 target=mouse;//vec2(1.0,0.0);//mouse;
   vec3 col = vec3(0.);
 
   float time = iTime*1.;
-  float w = 0.2;
+  float w = 0.1;
   vec3 inCol = vec3(0.,0.2,0.8);
 
   /*for(float i=-n/2.;i<n/2.;i+=1.){
@@ -107,7 +109,7 @@ void processLaser( out vec4 fragColor, in vec2 fragCoord, vec2 center ) {
       col+=clusteredBeam(center, target, uv, w, inCol, i*offsetWyg,  iTime+ i *15.);
   }*/
   float l = length(target-center);
-  float offsetWyg = 1.0*l*0.5;// * abs(sin(iTime*1.4));
+  float offsetWyg = 1.0*l*0.5;// * abs(sin(iTime*1.4)); // jak bardzo sie wygina na roznicy w bok
   vec2 dir = normalize(target-center);
   vec2 down=vec2(0.,-1);
 
@@ -121,7 +123,9 @@ void processLaser( out vec4 fragColor, in vec2 fragCoord, vec2 center ) {
 
   }
 
-  float d = min(1.,length(uv-center)*BALL_W);//step(0.2, length(uv-center));
+  // add ball pulsing
+  float r = BALL_W + sin(time*3.) * 0.3;// * sin(time) * 0.1;
+  float d = min(1.,length(uv-center)*r);//step(0.2, length(uv-center));
   col+=vec3(1.)*(1.-d)*1.4;
   col+=inCol*(1.-d)*3.;
   /*col+=skewedLaser(center, target, uv, w, inCol,0.15, time*2., offsetWyg*ddd);
@@ -143,10 +147,14 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
   vec4 outLaser;
   vec4 outLaser2;
   vec3 col = vec3(0.);
-  vec2 center = vec2(CENTER_X,CENTER_Y);
-  vec2 center2 = vec2(CENTER_X2,CENTER_Y2);
-  processLaser(outLaser, fragCoord, center);
-  processLaser(outLaser2, fragCoord, center2);
+
+  vec2 beamTargetV = 2.0*(beamTarget.xy-.5*iResolution.xy)/iResolution.xy;
+
+  vec2 center = vec2(beamTargetV.x,beamTargetV.y);
+  //vec2 center2 = vec2(beamTargetV.x,beamTargetV.y);
+  vec2 mouse = 2.0*(iMouse.xy-.5*iResolution.xy)/iResolution.xy;
+  processLaser(outLaser, fragCoord, mouse, center);
+  //processLaser(outLaser2, fragCoord, mouse, center2);
   //col+=vec3(0.,0.2,0.8);
   col+=outLaser.xyz;
   col+=outLaser2.xyz;

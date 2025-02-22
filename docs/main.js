@@ -30224,8 +30224,13 @@ var RgWebComponent = class _RgWebComponent extends HTMLElement {
   static swappingInputs = false;
   static firstFrameAfterChange = false;
   static laserTintUniformLocation;
+  static beamTargetUniformLocation;
   static defaultLaserTint = [1, 0.5, 0];
   static laserTint = [1, 0.5, 0];
+  static beamTarget = {
+    x: -1,
+    y: -1
+  };
   constructor() {
     super();
     this.attachShadow({ mode: "open" });
@@ -30312,6 +30317,7 @@ var RgWebComponent = class _RgWebComponent extends HTMLElement {
       gl.uniform2f(_RgWebComponent.mouseUniformLocation, _RgWebComponent.mouse.x, _RgWebComponent.mouse.y);
       gl.uniform1f(_RgWebComponent.timeUniformLocation, (Date.now() - _RgWebComponent.startTime) / 1e3);
       gl.uniform3fv(_RgWebComponent.laserTintUniformLocation, new Float32Array(_RgWebComponent.laserTint));
+      gl.uniform2f(_RgWebComponent.beamTargetUniformLocation, _RgWebComponent.beamTarget.x, _RgWebComponent.beamTarget.y);
       gl.activeTexture(gl.TEXTURE0);
       gl.bindTexture(gl.TEXTURE_2D, _RgWebComponent.textures[0]);
       gl.uniform1i(_RgWebComponent.iChannel0UniformLocation, 0);
@@ -30398,13 +30404,22 @@ var RgWebComponent = class _RgWebComponent extends HTMLElement {
     const iChannel0UniformLocation = gl.getUniformLocation(program, "iChannel0");
     const iChannel1UniformLocation = gl.getUniformLocation(program, "iChannel1");
     const laserTintUniformLocation = gl.getUniformLocation(program, "laserTint");
+    const beamTargetUniformLocation = gl.getUniformLocation(program, "beamTarget");
     _RgWebComponent.mouseUniformLocation = mouseUniformLocation;
     _RgWebComponent.timeUniformLocation = timeUniformLocation;
     _RgWebComponent.iChannel0UniformLocation = iChannel0UniformLocation;
     _RgWebComponent.iChannel1UniformLocation = iChannel1UniformLocation;
     _RgWebComponent.laserTintUniformLocation = laserTintUniformLocation;
+    _RgWebComponent.beamTargetUniformLocation = beamTargetUniformLocation;
     gl.useProgram(program);
-    console.log({ resolutionUniformLocation, mouseUniformLocation, timeUniformLocation, iChannel0UniformLocation, iChannel1UniformLocation });
+    console.log({
+      resolutionUniformLocation,
+      mouseUniformLocation,
+      timeUniformLocation,
+      iChannel0UniformLocation,
+      iChannel1UniformLocation,
+      beamTargetUniformLocation
+    });
     if (resolutionUniformLocation === null) {
       console.error("Unable to get required uniform location(s) - compiler might strip them if not used.");
       return;
@@ -216494,7 +216509,9 @@ var ProPlusShaderEngine = class {
   preloadedImages = /* @__PURE__ */ new Map();
   laserTintUniformLocation;
   frameUniformLocation;
+  beamTargetUniformLocation;
   defaultLaserTint = [1, 1, 1];
+  beamTarget = void 0;
   laserTint = this.defaultLaserTint;
   preloadImages = (paths) => __async(this, null, function* () {
     const base = window.origin.includes("localhost") ? "" : "/images-portfolio";
@@ -216571,6 +216588,9 @@ var ProPlusShaderEngine = class {
           gl.uniform1f(this.timeUniformLocation, (Date.now() - this.startTime) / 1e3);
           gl.uniform3fv(this.laserTintUniformLocation, new Float32Array(this.laserTint));
           gl.uniform1i(this.frameUniformLocation, frame++);
+          if (this.beamTarget) {
+            gl.uniform2f(this.beamTargetUniformLocation, this.beamTarget.x, this.beamTarget.y);
+          }
           gl.activeTexture(gl.TEXTURE0);
           gl.bindTexture(gl.TEXTURE_2D, this.textures[0]);
           gl.uniform1i(this.iChannel0UniformLocation, 0);
@@ -216586,6 +216606,7 @@ var ProPlusShaderEngine = class {
       }
     };
     const animate = () => {
+      this.updateBeamTarget();
       draw();
       requestAnimationFrame(animate);
     };
@@ -216665,14 +216686,16 @@ var ProPlusShaderEngine = class {
     const iChannel1UniformLocation = gl.getUniformLocation(program, "iChannel1");
     const laserTintUniformLocation = gl.getUniformLocation(program, "laserTint");
     const frameUniformLocation = gl.getUniformLocation(program, "iFrame");
+    const beamTargetUniformLocation = gl.getUniformLocation(program, "beamTarget");
     this.mouseUniformLocation = mouseUniformLocation;
     this.timeUniformLocation = timeUniformLocation;
     this.iChannel0UniformLocation = iChannel0UniformLocation;
     this.iChannel1UniformLocation = iChannel1UniformLocation;
     this.laserTintUniformLocation = laserTintUniformLocation;
     this.frameUniformLocation = frameUniformLocation;
+    this.beamTargetUniformLocation = beamTargetUniformLocation;
     gl.useProgram(program);
-    console.log({ resolutionUniformLocation, mouseUniformLocation, timeUniformLocation, iChannel0UniformLocation, iChannel1UniformLocation });
+    console.log({ resolutionUniformLocation, mouseUniformLocation, timeUniformLocation, iChannel0UniformLocation, iChannel1UniformLocation, beamTargetUniformLocation });
     gl.uniform2f(resolutionUniformLocation, canvas.width, canvas.height);
     this.textures = [gl.createTexture(), gl.createTexture()];
   });
@@ -216714,6 +216737,25 @@ var ProPlusShaderEngine = class {
       }
     });
   };
+  updateBeamTarget() {
+    const targetX = this.mouse.x;
+    const targetY = this.mouse.y;
+    if (!this.beamTarget) {
+      this.beamTarget = { x: targetX - 50, y: targetY + 100, vx: 0, vy: 0 };
+    }
+    const dx = targetX - this.beamTarget.x;
+    const dy = targetY - this.beamTarget.y;
+    const dist = Math.sqrt(dx * dx + dy * dy);
+    const attractionStrength = 5e-6 * dist;
+    this.beamTarget.vx += dx * attractionStrength;
+    this.beamTarget.vy += dy * attractionStrength;
+    const gravity = -0.65;
+    this.beamTarget.vy += gravity;
+    this.beamTarget.x += this.beamTarget.vx;
+    this.beamTarget.y += this.beamTarget.vy;
+    this.beamTarget.vx *= 0.95;
+    this.beamTarget.vy *= 0.95;
+  }
 };
 var BackgroundWebComponent = class extends HTMLElement {
   canvas;

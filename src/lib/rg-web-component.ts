@@ -31,8 +31,14 @@ export class RgWebComponent extends HTMLElement {
   private static swappingInputs: boolean = false;
   private static firstFrameAfterChange: boolean = false;
   private static laserTintUniformLocation: WebGLUniformLocation;
+  private static beamTargetUniformLocation: WebGLUniformLocation;
+
   private static defaultLaserTint = [1.0, 0.5, 0.0];
   private static laserTint = [1.0, 0.5, 0.0];
+  private static beamTarget: { x: number; y: number } = {
+    x: -1,
+    y: -1
+  };
   constructor() {
     super();
     this.attachShadow({mode: 'open'});
@@ -168,6 +174,8 @@ export class RgWebComponent extends HTMLElement {
       gl.uniform2f(RgWebComponent.mouseUniformLocation, RgWebComponent.mouse.x, RgWebComponent.mouse.y);
       gl.uniform1f(RgWebComponent.timeUniformLocation, (Date.now() - RgWebComponent.startTime) / 1000.0);
       gl.uniform3fv(RgWebComponent.laserTintUniformLocation, new Float32Array(RgWebComponent.laserTint)); // vec3(1.0, 0.5, 0.) *
+      gl.uniform2f(RgWebComponent.beamTargetUniformLocation, RgWebComponent.beamTarget.x, RgWebComponent.beamTarget.y); // vec3(1.0, 0.5, 0.) *
+
 
       // Bind textures
       gl.activeTexture(gl.TEXTURE0);
@@ -270,18 +278,24 @@ export class RgWebComponent extends HTMLElement {
     const iChannel0UniformLocation = gl.getUniformLocation(program, 'iChannel0');
     const iChannel1UniformLocation = gl.getUniformLocation(program, 'iChannel1');
     const laserTintUniformLocation = gl.getUniformLocation(program, 'laserTint');
+    const beamTargetUniformLocation = gl.getUniformLocation(program, 'beamTarget');
     RgWebComponent.mouseUniformLocation = mouseUniformLocation as any;
     RgWebComponent.timeUniformLocation = timeUniformLocation as any;
     RgWebComponent.iChannel0UniformLocation = iChannel0UniformLocation as any
     RgWebComponent.iChannel1UniformLocation = iChannel1UniformLocation as any;
     RgWebComponent.laserTintUniformLocation = laserTintUniformLocation as any;
+    RgWebComponent.beamTargetUniformLocation = beamTargetUniformLocation as any;
+
 
 
 
     gl.useProgram(program);
 //
     // todo mouse/time fix
-    console.log({resolutionUniformLocation, mouseUniformLocation, timeUniformLocation, iChannel0UniformLocation, iChannel1UniformLocation});
+    console.log({resolutionUniformLocation, mouseUniformLocation, timeUniformLocation, iChannel0UniformLocation,
+      iChannel1UniformLocation,
+      beamTargetUniformLocation});
+
     if (resolutionUniformLocation === null) {
       console.error('Unable to get required uniform location(s) - compiler might strip them if not used.');
       return;

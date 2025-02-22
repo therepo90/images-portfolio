@@ -26,8 +26,14 @@ export class ProPlusShaderEngine {
 
   private  laserTintUniformLocation!: WebGLUniformLocation;
   private frameUniformLocation!: WebGLUniformLocation;
+  private beamTargetUniformLocation!: WebGLUniformLocation;
   private  defaultLaserTint = [1.0, 1.0, 1.0];
+  private beamTarget?: {
+    vy: number;
+    vx: number;
+    x: number; y: number } = undefined;
   private  laserTint = this.defaultLaserTint;
+
 
   public preloadImages = async (paths: string[]) => {
     const base = window.origin.includes('localhost') ? '' : '/images-portfolio';
@@ -142,6 +148,9 @@ export class ProPlusShaderEngine {
           gl.uniform1f(this.timeUniformLocation, (Date.now() - this.startTime) / 1000.0);
           gl.uniform3fv(this.laserTintUniformLocation, new Float32Array(this.laserTint)); // vec3(1.0, 0.5, 0.) *
           gl.uniform1i(this.frameUniformLocation, frame++); // vec3(1.0, 0.5, 0.) *
+          if(this.beamTarget){
+              gl.uniform2f(this.beamTargetUniformLocation, this.beamTarget.x, this.beamTarget.y); // vec3(1.0, 0.5, 0.) *
+          }
 
           // Bind textures
           gl.activeTexture(gl.TEXTURE0);
@@ -162,6 +171,7 @@ export class ProPlusShaderEngine {
     };
 
     const animate = () => {
+      this.updateBeamTarget();
       draw();
       requestAnimationFrame(animate);
     };
@@ -256,19 +266,21 @@ export class ProPlusShaderEngine {
     const iChannel1UniformLocation = gl.getUniformLocation(program, 'iChannel1');
     const laserTintUniformLocation = gl.getUniformLocation(program, 'laserTint');
     const frameUniformLocation = gl.getUniformLocation(program, 'iFrame');
+    const beamTargetUniformLocation = gl.getUniformLocation(program, 'beamTarget');
     this.mouseUniformLocation = mouseUniformLocation as any;
     this.timeUniformLocation = timeUniformLocation as any;
     this.iChannel0UniformLocation = iChannel0UniformLocation as any
     this.iChannel1UniformLocation = iChannel1UniformLocation as any;
     this.laserTintUniformLocation = laserTintUniformLocation as any;
     this.frameUniformLocation = frameUniformLocation as any;
+    this.beamTargetUniformLocation = beamTargetUniformLocation as any;
 
 
 
     gl.useProgram(program);
 //
     // todo mouse/time fix
-    console.log({resolutionUniformLocation, mouseUniformLocation, timeUniformLocation, iChannel0UniformLocation, iChannel1UniformLocation});
+    console.log({resolutionUniformLocation, mouseUniformLocation, timeUniformLocation, iChannel0UniformLocation, iChannel1UniformLocation, beamTargetUniformLocation});
     /*if (resolutionUniformLocation === null) {
       console.error('Unable to get required uniform location(s) - compiler might strip them if not used.');
       return;
@@ -276,6 +288,9 @@ export class ProPlusShaderEngine {
 
     gl.uniform2f(resolutionUniformLocation, canvas.width, canvas.height);
     this.textures = [gl.createTexture(), gl.createTexture()] as any[];
+
+    //this.beamTarget.x = this.mouse.x - 50;
+    //this.beamTarget.y = this.mouse.y + 50;
   }
 
 
@@ -328,6 +343,37 @@ export class ProPlusShaderEngine {
 
   }
 
+  private updateBeamTarget() {
+    const targetX = this.mouse.x;
+    const targetY = this.mouse.y;
+
+    if (!this.beamTarget) {
+      this.beamTarget = { x: targetX - 50, y: targetY + 100, vx: 0, vy: 0 };
+    }
+
+    // Obliczamy różnicę w pozycji (X i Y)
+    const dx = targetX - this.beamTarget.x;
+    const dy = targetY - this.beamTarget.y;
+    const dist = Math.sqrt(dx * dx + dy * dy);
+
+    // Przyciąganie do myszy
+    const attractionStrength = 0.000005 * dist;
+    this.beamTarget.vx += dx * attractionStrength;
+    this.beamTarget.vy += dy * attractionStrength;
+
+    // Dodanie efektu grawitacji (ciągłe opadanie w dół)
+    const gravity = -0.65;
+    this.beamTarget.vy += gravity;
+
+    // Aktualizacja pozycji
+    this.beamTarget.x += this.beamTarget.vx;
+    this.beamTarget.y += this.beamTarget.vy;
+
+
+    // Tłumienie prędkości (symulacja oporu powietrza)
+    this.beamTarget.vx *= 0.95;
+    this.beamTarget.vy *= 0.95;
+  }
 }
 
 
