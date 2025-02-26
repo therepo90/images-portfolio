@@ -3,7 +3,7 @@
 precision mediump float;
 #endif
 
-varying vec2 vUV;
+//varying vec2 vUV;
 uniform sampler2D iChannel1;
 uniform sampler2D iChannel0;
 uniform vec2 iMouse;

@@ -253,16 +253,16 @@ export class ProPlusShaderEngine {
     gl.vertexAttribPointer(positionAttributeLocation, 2, gl.FLOAT, false, 0, 0);
 
     // Set texture coordinates (UV) attribute
-    const uvAttributeLocation = gl.getAttribLocation(program, 'a_uv');
+    /*const uvAttributeLocation = gl.getAttribLocation(program, 'a_uv');
     if (uvAttributeLocation === -1) {
       console.error('Unable to get attribute location for a_uv');
       alert('Unable to get attribute location for a_uv')
       return;
-    }
+    }*/
 
-    gl.enableVertexAttribArray(uvAttributeLocation);
+    //gl.enableVertexAttribArray(uvAttributeLocation);
     gl.bindBuffer(gl.ARRAY_BUFFER, uvBuffer);
-    gl.vertexAttribPointer(uvAttributeLocation, 2, gl.FLOAT, false, 0, 0);
+    //gl.vertexAttribPointer(uvAttributeLocation, 2, gl.FLOAT, false, 0, 0);
 
     const resolutionUniformLocation = gl.getUniformLocation(program, 'iResolution');
     const mouseUniformLocation = gl.getUniformLocation(program, 'iMouse');
