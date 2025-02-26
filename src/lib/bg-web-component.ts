@@ -188,7 +188,7 @@ export class ProPlusShaderEngine {
     this.gl = gl as any;
 
     if (!gl) {
-      alert('Unable to initialize WebGL2. Your browser may not support it.');
+      alert('Unable to initialize WebGL. Your browser may not support it.');
       return;
     }
 
@@ -255,8 +255,8 @@ export class ProPlusShaderEngine {
     // Set texture coordinates (UV) attribute
     const uvAttributeLocation = gl.getAttribLocation(program, 'a_uv');
     if (uvAttributeLocation === -1) {
-      console.error('Unable to get attribute location for a_uv');
-      alert('Unable to get attribute location for a_uv'+'(bg wc), but thats fine')
+      console.warn('Unable to get attribute location for a_uv'); // mb not used
+      //alert('Unable to get attribute location for a_uv'+'(bg wc), but thats fine')
       //return;
     }else {
       gl.enableVertexAttribArray(uvAttributeLocation);
