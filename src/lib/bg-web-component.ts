@@ -256,13 +256,14 @@ export class ProPlusShaderEngine {
     const uvAttributeLocation = gl.getAttribLocation(program, 'a_uv');
     if (uvAttributeLocation === -1) {
       console.error('Unable to get attribute location for a_uv');
-      alert('Unable to get attribute location for a_uv'+'(bg wc)')
-      return;
+      alert('Unable to get attribute location for a_uv'+'(bg wc), but thats fine')
+      //return;
+    }else {
+      gl.enableVertexAttribArray(uvAttributeLocation);
+      gl.bindBuffer(gl.ARRAY_BUFFER, uvBuffer);
+      gl.vertexAttribPointer(uvAttributeLocation, 2, gl.FLOAT, false, 0, 0);
     }
 
-    gl.enableVertexAttribArray(uvAttributeLocation);
-    gl.bindBuffer(gl.ARRAY_BUFFER, uvBuffer);
-    gl.vertexAttribPointer(uvAttributeLocation, 2, gl.FLOAT, false, 0, 0);
 
     const resolutionUniformLocation = gl.getUniformLocation(program, 'iResolution');
     const mouseUniformLocation = gl.getUniformLocation(program, 'iMouse');
