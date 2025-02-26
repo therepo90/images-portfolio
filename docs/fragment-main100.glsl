@@ -1,5 +1,7 @@
 #version 100
+#ifdef GL_ES
 precision mediump float;
+#endif
 
 varying vec2 vUV;
 uniform sampler2D iChannel1;

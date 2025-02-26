@@ -30348,11 +30348,13 @@ var RgWebComponent = class _RgWebComponent extends HTMLElement {
     const fragmentShader = this.compileShader(gl, gl.FRAGMENT_SHADER, fragmentShaderSource);
     if (!vertexShader || !fragmentShader) {
       console.error("Shader compilation failed.");
+      alert("Shader compilation failed.");
       return;
     }
     const program = this.createProgram(gl, vertexShader, fragmentShader);
     if (!program) {
       console.error("Shader program linking failed.");
+      alert("Shader program linking failed.");
       return;
     }
     const positionBuffer = gl.createBuffer();
@@ -30385,6 +30387,7 @@ var RgWebComponent = class _RgWebComponent extends HTMLElement {
     const positionAttributeLocation = gl.getAttribLocation(program, "a_position");
     if (positionAttributeLocation === -1) {
       console.error("Unable to get attribute location for a_position");
+      alert("Unable to get attribute location for a_position");
       return;
     }
     gl.enableVertexAttribArray(positionAttributeLocation);
@@ -30393,6 +30396,7 @@ var RgWebComponent = class _RgWebComponent extends HTMLElement {
     const uvAttributeLocation = gl.getAttribLocation(program, "a_uv");
     if (uvAttributeLocation === -1) {
       console.error("Unable to get attribute location for a_uv");
+      alert("Unable to get attribute location for a_uv");
       return;
     }
     gl.enableVertexAttribArray(uvAttributeLocation);
@@ -30422,6 +30426,7 @@ var RgWebComponent = class _RgWebComponent extends HTMLElement {
     });
     if (resolutionUniformLocation === null) {
       console.error("Unable to get required uniform location(s) - compiler might strip them if not used.");
+      alert("Unable to get required uniform location(s) - compiler might strip them if not used.");
       return;
     }
     gl.uniform2f(resolutionUniformLocation, canvas.width, canvas.height);
@@ -30433,6 +30438,7 @@ var RgWebComponent = class _RgWebComponent extends HTMLElement {
     gl.compileShader(shader127);
     if (!gl.getShaderParameter(shader127, gl.COMPILE_STATUS)) {
       console.error(`Error compiling shader: ${gl.getShaderInfoLog(shader127)}`);
+      alert(`Error compiling shader: ${gl.getShaderInfoLog(shader127)}`);
       gl.deleteShader(shader127);
       return null;
     }
@@ -30446,6 +30452,7 @@ var RgWebComponent = class _RgWebComponent extends HTMLElement {
     gl.validateProgram(program);
     if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
       console.error(`Unable to initialize the shader program: ${gl.getProgramInfoLog(program)}`);
+      alert(`Unable to initialize the shader program: ${gl.getProgramInfoLog(program)}`);
       return null;
     }
     return program;
@@ -216603,6 +216610,7 @@ var ProPlusShaderEngine = class {
         }
       } catch (e) {
         console.error(e);
+        alert(e);
       }
     };
     const animate = () => {
@@ -216629,11 +216637,13 @@ var ProPlusShaderEngine = class {
     const fragmentShader = this.compileShader(gl, gl.FRAGMENT_SHADER, fragmentShaderSource);
     if (!vertexShader || !fragmentShader) {
       console.error("Shader compilation failed.");
+      alert("Shader compilation failed.");
       return;
     }
     const program = this.createProgram(gl, vertexShader, fragmentShader);
     if (!program) {
       console.error("Shader program linking failed.");
+      alert("Shader program linking failed.");
       return;
     }
     const positionBuffer = gl.createBuffer();
@@ -216666,6 +216676,7 @@ var ProPlusShaderEngine = class {
     const positionAttributeLocation = gl.getAttribLocation(program, "a_position");
     if (positionAttributeLocation === -1) {
       console.error("Unable to get attribute location for a_position");
+      alert("Unable to get attribute location for a_position");
       return;
     }
     gl.enableVertexAttribArray(positionAttributeLocation);
@@ -216674,6 +216685,7 @@ var ProPlusShaderEngine = class {
     const uvAttributeLocation = gl.getAttribLocation(program, "a_uv");
     if (uvAttributeLocation === -1) {
       console.error("Unable to get attribute location for a_uv");
+      alert("Unable to get attribute location for a_uv");
       return;
     }
     gl.enableVertexAttribArray(uvAttributeLocation);
@@ -216705,6 +216717,7 @@ var ProPlusShaderEngine = class {
     gl.compileShader(shader127);
     if (!gl.getShaderParameter(shader127, gl.COMPILE_STATUS)) {
       console.error(`Error compiling shader: ${gl.getShaderInfoLog(shader127)}`);
+      alert(`Error compiling shader: ${gl.getShaderInfoLog(shader127)}`);
       gl.deleteShader(shader127);
       return null;
     }
@@ -216718,6 +216731,7 @@ var ProPlusShaderEngine = class {
     gl.validateProgram(program);
     if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
       console.error(`Unable to initialize the shader program: ${gl.getProgramInfoLog(program)}`);
+      alert(`Unable to initialize the shader program: ${gl.getProgramInfoLog(program)}`);
       return null;
     }
     return program;
@@ -216995,7 +217009,10 @@ var AppComponent = class _AppComponent {
 })();
 
 // src/main.ts
-bootstrapApplication(AppComponent, appConfig).catch((err) => console.error(err));
+bootstrapApplication(AppComponent, appConfig).catch((err) => {
+  console.error(err);
+  alert("bootstrap err:" + err);
+});
 /*! Bundled license information:
 
 @angular/core/fesm2022/primitives/signals.mjs:

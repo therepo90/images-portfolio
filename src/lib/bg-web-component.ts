@@ -167,6 +167,7 @@ export class ProPlusShaderEngine {
         }
       }catch(e){
         console.error(e);
+        alert(e)
       }
     };
 
@@ -207,6 +208,7 @@ export class ProPlusShaderEngine {
 
     if (!vertexShader || !fragmentShader) {
       console.error('Shader compilation failed.');
+      alert('Shader compilation failed.');
       return;
     }
 
@@ -215,6 +217,7 @@ export class ProPlusShaderEngine {
 
     if (!program) {
       console.error('Shader program linking failed.');
+      alert('Shader program linking failed.');
       return;
     }
 
@@ -241,6 +244,7 @@ export class ProPlusShaderEngine {
     const positionAttributeLocation = gl.getAttribLocation(program, 'a_position');
     if (positionAttributeLocation === -1) {
       console.error('Unable to get attribute location for a_position');
+      alert('Unable to get attribute location for a_position')
       return;
     }
 
@@ -252,6 +256,7 @@ export class ProPlusShaderEngine {
     const uvAttributeLocation = gl.getAttribLocation(program, 'a_uv');
     if (uvAttributeLocation === -1) {
       console.error('Unable to get attribute location for a_uv');
+      alert('Unable to get attribute location for a_uv')
       return;
     }
 
@@ -302,6 +307,7 @@ export class ProPlusShaderEngine {
 
     if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
       console.error(`Error compiling shader: ${gl.getShaderInfoLog(shader)}`);
+      alert(`Error compiling shader: ${gl.getShaderInfoLog(shader)}`);
       gl.deleteShader(shader);
       return null;
     }
@@ -318,6 +324,7 @@ export class ProPlusShaderEngine {
 
     if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
       console.error(`Unable to initialize the shader program: ${gl.getProgramInfoLog(program)}`);
+      alert(`Unable to initialize the shader program: ${gl.getProgramInfoLog(program)}`);
       return null;
     }
 

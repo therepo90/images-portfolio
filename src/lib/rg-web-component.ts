@@ -220,6 +220,7 @@ export class RgWebComponent extends HTMLElement {
 
     if (!vertexShader || !fragmentShader) {
       console.error('Shader compilation failed.');
+      alert('Shader compilation failed.')
       return;
     }
 
@@ -228,6 +229,7 @@ export class RgWebComponent extends HTMLElement {
 
     if (!program) {
       console.error('Shader program linking failed.');
+      alert('Shader program linking failed.')
       return;
     }
 
@@ -254,6 +256,7 @@ export class RgWebComponent extends HTMLElement {
     const positionAttributeLocation = gl.getAttribLocation(program, 'a_position');
     if (positionAttributeLocation === -1) {
       console.error('Unable to get attribute location for a_position');
+      alert('Unable to get attribute location for a_position')
       return;
     }
 
@@ -265,6 +268,7 @@ export class RgWebComponent extends HTMLElement {
     const uvAttributeLocation = gl.getAttribLocation(program, 'a_uv');
     if (uvAttributeLocation === -1) {
       console.error('Unable to get attribute location for a_uv');
+      alert('Unable to get attribute location for a_uv')
       return;
     }
 
@@ -298,6 +302,7 @@ export class RgWebComponent extends HTMLElement {
 
     if (resolutionUniformLocation === null) {
       console.error('Unable to get required uniform location(s) - compiler might strip them if not used.');
+      alert('Unable to get required uniform location(s) - compiler might strip them if not used.');
       return;
     }
 
@@ -313,6 +318,7 @@ export class RgWebComponent extends HTMLElement {
 
     if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
       console.error(`Error compiling shader: ${gl.getShaderInfoLog(shader)}`);
+      alert(`Error compiling shader: ${gl.getShaderInfoLog(shader)}`);
       gl.deleteShader(shader);
       return null;
     }
@@ -329,6 +335,7 @@ export class RgWebComponent extends HTMLElement {
 
     if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
       console.error(`Unable to initialize the shader program: ${gl.getProgramInfoLog(program)}`);
+      alert(`Unable to initialize the shader program: ${gl.getProgramInfoLog(program)}`);
       return null;
     }
 
