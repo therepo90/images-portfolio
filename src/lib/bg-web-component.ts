@@ -335,18 +335,18 @@ export class ProPlusShaderEngine {
     const canvas = this.webEl.getCanvas();
 
     document.addEventListener('mousemove', (event) => {
-
       const rect = canvas!.getBoundingClientRect();
       this.mouse.x = event.clientX - rect.left;
       this.mouse.y = rect.height - (event.clientY - rect.top);
     });
-    document.addEventListener('touchmove', (event) => {
+    canvas.addEventListener('touchmove', (event) => {
+      event.preventDefault();
       const rect = canvas!.getBoundingClientRect();
       if(event.touches[0]) {
         this.mouse.x = event.touches[0].clientX - rect.left;
         this.mouse.y = rect.height - (event.touches[0].clientY - rect.top);//
       }
-    });
+    }, {passive: false});
 
   }
 

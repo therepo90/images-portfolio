@@ -30464,11 +30464,12 @@ var RgWebComponent = class _RgWebComponent extends HTMLElement {
       _RgWebComponent.mouse.x = event.clientX - rect.left;
       _RgWebComponent.mouse.y = rect.height - (event.clientY - rect.top);
     });
-    document.addEventListener("touchmove", (event) => {
+    canvas.addEventListener("touchmove", (event) => {
+      event.preventDefault();
       const rect = canvas.getBoundingClientRect();
       _RgWebComponent.mouse.x = event.touches[0].clientX - rect.left;
       _RgWebComponent.mouse.y = rect.height - (event.touches[0].clientY - rect.top);
-    });
+    }, { passive: false });
   };
   static changeLaserTint = (color) => {
     this.laserTint = [color.x, color.y, color.z];
@@ -216743,13 +216744,14 @@ var ProPlusShaderEngine = class {
       this.mouse.x = event.clientX - rect.left;
       this.mouse.y = rect.height - (event.clientY - rect.top);
     });
-    document.addEventListener("touchmove", (event) => {
+    canvas.addEventListener("touchmove", (event) => {
+      event.preventDefault();
       const rect = canvas.getBoundingClientRect();
       if (event.touches[0]) {
         this.mouse.x = event.touches[0].clientX - rect.left;
         this.mouse.y = rect.height - (event.touches[0].clientY - rect.top);
       }
-    });
+    }, { passive: false });
   };
   updateBeamTarget() {
     const targetX = this.mouse.x;
