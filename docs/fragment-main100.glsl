@@ -19,6 +19,6 @@ void main()
 {
   //vUV=vec2(0,0);// just use it so auv is not stripped
   vec2 zz = vUV;
-  z=vec2(0,0);
-  mainImage(gl_FragColor, gl_FragCoord.xy+z);
+  zz=vec2(0,0);
+  mainImage(gl_FragColor, gl_FragCoord.xy+zz);
 }
