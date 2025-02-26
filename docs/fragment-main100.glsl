@@ -3,7 +3,7 @@
 precision mediump float;
 #endif
 
-//varying vec2 vUV;
+varying vec2 vUV;
 uniform sampler2D iChannel1;
 uniform sampler2D iChannel0;
 uniform vec2 iMouse;
@@ -17,5 +17,6 @@ uniform int iFrame;
 
 void main()
 {
-  mainImage(gl_FragColor, gl_FragCoord.xy);
+  vUV=vec2(0,0);// just use it so auv is not stripped
+  mainImage(gl_FragColor, gl_FragCoord.xy + vUV);
 }
