@@ -256,7 +256,7 @@ export class ProPlusShaderEngine {
     const uvAttributeLocation = gl.getAttribLocation(program, 'a_uv');
     if (uvAttributeLocation === -1) {
       console.error('Unable to get attribute location for a_uv');
-      alert('Unable to get attribute location for a_uv')
+      alert('Unable to get attribute location for a_uv'+'(bg wc)')
       return;
     }
 

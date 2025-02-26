@@ -30396,7 +30396,7 @@ var RgWebComponent = class _RgWebComponent extends HTMLElement {
     const uvAttributeLocation = gl.getAttribLocation(program, "a_uv");
     if (uvAttributeLocation === -1) {
       console.error("Unable to get attribute location for a_uv");
-      alert("Unable to get attribute location for a_uv");
+      alert("Unable to get attribute location for a_uv (rg wc)");
       return;
     }
     gl.enableVertexAttribArray(uvAttributeLocation);
@@ -216686,7 +216686,7 @@ var ProPlusShaderEngine = class {
     const uvAttributeLocation = gl.getAttribLocation(program, "a_uv");
     if (uvAttributeLocation === -1) {
       console.error("Unable to get attribute location for a_uv");
-      alert("Unable to get attribute location for a_uv");
+      alert("Unable to get attribute location for a_uv(bg wc)");
       return;
     }
     gl.enableVertexAttribArray(uvAttributeLocation);

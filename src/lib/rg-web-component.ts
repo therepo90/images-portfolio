@@ -268,7 +268,7 @@ export class RgWebComponent extends HTMLElement {
     const uvAttributeLocation = gl.getAttribLocation(program, 'a_uv');
     if (uvAttributeLocation === -1) {
       console.error('Unable to get attribute location for a_uv');
-      alert('Unable to get attribute location for a_uv')
+      alert('Unable to get attribute location for a_uv (rg wc)')
       return;
     }
 
