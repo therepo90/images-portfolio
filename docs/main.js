@@ -30464,6 +30464,12 @@ var RgWebComponent = class _RgWebComponent extends HTMLElement {
       _RgWebComponent.mouse.x = event.clientX - rect.left;
       _RgWebComponent.mouse.y = rect.height - (event.clientY - rect.top);
     });
+    canvas.addEventListener("touchmove", (event) => {
+      event.preventDefault();
+      const rect = canvas.getBoundingClientRect();
+      _RgWebComponent.mouse.x = event.touches[0].clientX - rect.left;
+      _RgWebComponent.mouse.y = rect.height - (event.touches[0].clientY - rect.top);
+    }, { passive: false });
   };
   static changeLaserTint = (color) => {
     this.laserTint = [color.x, color.y, color.z];
@@ -216793,6 +216799,26 @@ var defineBgWeb = () => {
 // src/app/app.component.ts
 var _c0 = ["rgImage"];
 var _c1 = ["bgproplus"];
+function AppComponent_app_image_1_Template(rf, ctx) {
+  if (rf & 1) {
+    const _r2 = \u0275\u0275getCurrentView();
+    \u0275\u0275elementStart(0, "app-image", 6);
+    \u0275\u0275listener("mouseenter", function AppComponent_app_image_1_Template_app_image_mouseenter_0_listener() {
+      const image_r3 = \u0275\u0275restoreView(_r2).$implicit;
+      const ctx_r3 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r3.activate(image_r3.id));
+    })("touchstart", function AppComponent_app_image_1_Template_app_image_touchstart_0_listener() {
+      const image_r3 = \u0275\u0275restoreView(_r2).$implicit;
+      const ctx_r3 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r3.activate(image_r3.id));
+    });
+    \u0275\u0275elementEnd();
+  }
+  if (rf & 2) {
+    const image_r3 = ctx.$implicit;
+    \u0275\u0275property("id", image_r3.id)("active", image_r3.active)("shaderId", image_r3.shaderId)("shaderMinNameAbbvPath", image_r3.shaderMinNameAbbvPath)("channelo0TexturePath", image_r3.channelo0TexturePath)("channelo1TexturePath", image_r3.channelo1TexturePath);
+  }
+}
 defineBgWeb();
 var AppComponent = class _AppComponent {
   http;
@@ -216952,24 +216978,30 @@ var AppComponent = class _AppComponent {
       \u0275\u0275queryRefresh(_t = \u0275\u0275loadQuery()) && (ctx.rgImage = _t.first);
       \u0275\u0275queryRefresh(_t = \u0275\u0275loadQuery()) && (ctx.bgproplus = _t.first);
     }
-  }, standalone: true, features: [\u0275\u0275StandaloneFeature], decls: 6, vars: 2, consts: [["rgImage", ""], ["bgproplus", ""], ["id", "rg-canvas-wrapper", 1, "canvas-wrapper", 3, "mouseout"], [1, "bg-canvas-wrapper"]], template: function AppComponent_Template(rf, ctx) {
+  }, standalone: true, features: [\u0275\u0275StandaloneFeature], decls: 8, vars: 3, consts: [["rgImage", ""], ["bgproplus", ""], [1, "images"], [3, "id", "active", "shaderId", "shaderMinNameAbbvPath", "channelo0TexturePath", "channelo1TexturePath", "mouseenter", "touchstart", 4, "ngFor", "ngForOf"], ["id", "rg-canvas-wrapper", 1, "canvas-wrapper", 3, "mouseout"], [1, "bg-canvas-wrapper"], [3, "mouseenter", "touchstart", "id", "active", "shaderId", "shaderMinNameAbbvPath", "channelo0TexturePath", "channelo1TexturePath"]], template: function AppComponent_Template(rf, ctx) {
     if (rf & 1) {
       const _r1 = \u0275\u0275getCurrentView();
       \u0275\u0275elementStart(0, "div", 2);
-      \u0275\u0275listener("mouseout", function AppComponent_Template_div_mouseout_0_listener() {
+      \u0275\u0275template(1, AppComponent_app_image_1_Template, 1, 6, "app-image", 3);
+      \u0275\u0275elementEnd();
+      \u0275\u0275elementStart(2, "div", 4);
+      \u0275\u0275listener("mouseout", function AppComponent_Template_div_mouseout_2_listener() {
         \u0275\u0275restoreView(_r1);
         return \u0275\u0275resetView(ctx.deactivateAll());
       });
-      \u0275\u0275element(1, "rg-image", null, 0);
+      \u0275\u0275element(3, "rg-image", null, 0);
       \u0275\u0275elementEnd();
-      \u0275\u0275elementStart(3, "div", 3);
-      \u0275\u0275element(4, "bg-pro-plus", null, 1);
+      \u0275\u0275elementStart(5, "div", 5);
+      \u0275\u0275element(6, "bg-pro-plus", null, 1);
       \u0275\u0275elementEnd();
     }
     if (rf & 2) {
+      \u0275\u0275advance();
+      \u0275\u0275property("ngForOf", ctx.images);
+      \u0275\u0275advance();
       \u0275\u0275classProp("rocketed-somewhere", !ctx.visibleCanvas);
     }
-  }, dependencies: [CommonModule, HttpClientModule], styles: ["\n\n.images[_ngcontent-%COMP%] {\n  display: flex;\n  flex-direction: column;\n  max-width: 100%;\n  align-items: center;\n  padding: 20px 20px;\n  margin: 0 auto;\n}\n@media screen and (max-width: 992px) {\n  .images[_ngcontent-%COMP%] {\n    max-width: 100%;\n  }\n}\n.images[_ngcontent-%COMP%]    > *[_ngcontent-%COMP%] {\n  margin-bottom: 40px;\n}\n[_nghost-%COMP%] {\n  display: block;\n}\n@media screen and (max-width: 992px) {\n  [_nghost-%COMP%] {\n    width: 100%;\n  }\n}\n.bg-canvas[_ngcontent-%COMP%] {\n  width: 100%;\n  height: 100%;\n}\n.bg-canvas-wrapper[_ngcontent-%COMP%] {\n  position: fixed;\n  top: 0;\n  left: 0;\n  z-index: -1;\n  width: 100vw;\n  height: 100vh;\n}\n/*# sourceMappingURL=/images-portfolio/app.component.css.map */"] });
+  }, dependencies: [CommonModule, NgForOf, ImageComponent, HttpClientModule], styles: ["\n\n.images[_ngcontent-%COMP%] {\n  display: flex;\n  flex-direction: column;\n  max-width: 100%;\n  align-items: center;\n  padding: 20px 20px;\n  margin: 0 auto;\n}\n@media screen and (max-width: 992px) {\n  .images[_ngcontent-%COMP%] {\n    max-width: 100%;\n  }\n}\n.images[_ngcontent-%COMP%]    > *[_ngcontent-%COMP%] {\n  margin-bottom: 40px;\n}\n[_nghost-%COMP%] {\n  display: block;\n}\n@media screen and (max-width: 992px) {\n  [_nghost-%COMP%] {\n    width: 100%;\n  }\n}\n.bg-canvas[_ngcontent-%COMP%] {\n  width: 100%;\n  height: 100%;\n}\n.bg-canvas-wrapper[_ngcontent-%COMP%] {\n  position: fixed;\n  top: 0;\n  left: 0;\n  z-index: -1;\n  width: 100vw;\n  height: 100vh;\n}\n/*# sourceMappingURL=/images-portfolio/app.component.css.map */"] });
 };
 (() => {
   (typeof ngDevMode === "undefined" || ngDevMode) && \u0275setClassDebugInfo(AppComponent, { className: "AppComponent", filePath: "src/app/app.component.ts", lineNumber: 18 });

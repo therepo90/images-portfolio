@@ -352,13 +352,13 @@ export class RgWebComponent extends HTMLElement {
       RgWebComponent.mouse.y = rect.height - (event.clientY - rect.top);
       //console.log(RgWebComponent.mouse);
     });
-      /*canvas!.addEventListener('touchmove', (event) => {
+      canvas!.addEventListener('touchmove', (event) => {
         event.preventDefault();
         const rect = canvas!.getBoundingClientRect();
         RgWebComponent.mouse.x = event.touches[0].clientX - rect.left;
         RgWebComponent.mouse.y = rect.height - (event.touches[0].clientY - rect.top);
         //console.log(RgWebComponent.mouse);
-      }, {passive: false});*/
+      }, {passive: false});
 
     /*document.addEventListener('touchmove', function(e) {
         event.preventDefault();
