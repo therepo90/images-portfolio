@@ -36,11 +36,6 @@ rg-image {
   height: 0px;
   background: yellow;
 }
-#rg-web-component-canvas {
-  border-radius: 50px;
-  touch-action: none;
-  pointer-events: none;
-}
 
 /* angular:styles/global:styles */
 /*# sourceMappingURL=styles.css.map */
