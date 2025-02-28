@@ -9,11 +9,10 @@
 <!--
 (mouseenter)="activate(image.id)"
     (touchstart)="activate(image.id)"-->
-<div class="canvas-wrapper" id="rg-canvas-wrapper"
-
->
+<div class="canvas-wrapper" id="rg-canvas-wrapper">
   <!--(mouseout)="deactivateAll()"-->
   <rg-image #rgImage></rg-image>
+  <div id="rg-image-loader">Loading...</div>
 </div>
 <!--[class.rocketed-somewhere]="!visibleCanvas"-->
 <!--<div class="bg-canvas-wrapper">

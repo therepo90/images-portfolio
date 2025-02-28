@@ -231,8 +231,8 @@ export class ShaderEngine<T extends WebComponent> {
   };
 
   @measureExecutionTime()
-  compileShader(gl, type, source) {
-    const shader = gl.createShader(type);
+  compileShader(gl: WebGLRenderingContext, type: GLenum, source: string) {
+    const shader:WebGLShader = gl.createShader(type) as unknown as any;
     gl.shaderSource(shader, source);
     gl.compileShader(shader);
 

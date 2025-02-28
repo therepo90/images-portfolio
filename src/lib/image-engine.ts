@@ -1,5 +1,6 @@
 import { ShaderEngine } from './shader-engine';
 import { ImageWebComponent } from './image-web-component';
+import {measureExecutionTime} from "../utils";
 
 export class ImageEngine extends ShaderEngine<ImageWebComponent> {
   private swappingInputs: boolean = false;
@@ -15,7 +16,8 @@ export class ImageEngine extends ShaderEngine<ImageWebComponent> {
   private laserTintUniformLocation!: WebGLUniformLocation;
   private beamTargetUniformLocation!: WebGLUniformLocation;
 
-  activate = () => {
+  @measureExecutionTime()
+  activate() {
     console.log('ImageEngine::activate');
 
     this.loadTexture(
@@ -108,7 +110,8 @@ export class ImageEngine extends ShaderEngine<ImageWebComponent> {
   }
 */
 
-  swapInputs = async (inputs: { texturePaths: { iChannel1Path: string; iChannel0Path: string } }) => {//
+  @measureExecutionTime()
+  async swapInputs (inputs: { texturePaths: { iChannel1Path: string; iChannel0Path: string } }) {
     this.swappingInputs = true;
     this.texturePaths = inputs.texturePaths;
     console.log('Swapping inputs to ');

@@ -30351,7 +30351,7 @@ var ImageEngine = class extends ShaderEngine {
   laserTint = this.defaultLaserTint;
   laserTintUniformLocation;
   beamTargetUniformLocation;
-  activate = () => {
+  activate() {
     console.log("ImageEngine::activate");
     this.loadTexture(this.gl, this.textures[0], this.texturePaths.iChannel0Path, 1, this.preloadedImages.get(this.texturePaths.iChannel0Path));
     let frame = 1;
@@ -30388,7 +30388,7 @@ var ImageEngine = class extends ShaderEngine {
       requestAnimationFrame(animate);
     };
     animate();
-  };
+  }
   setupAdditionalUniforms(program) {
     const laserTintUniformLocation = this.gl.getUniformLocation(program, "laserTint");
     const beamTargetUniformLocation = this.gl.getUniformLocation(program, "beamTarget");
@@ -30427,18 +30427,26 @@ var ImageEngine = class extends ShaderEngine {
       this.beamTarget.vy *= 0.95;
     }
   */
-  swapInputs = (inputs) => __async(this, null, function* () {
-    this.swappingInputs = true;
-    this.texturePaths = inputs.texturePaths;
-    console.log("Swapping inputs to ");
-    console.log(this.texturePaths, this, this.textures);
-    this.loadTexture(this.gl, this.textures[0], this.texturePaths.iChannel0Path, 0, this.preloadedImages.get(this.texturePaths.iChannel0Path));
-    this.loadTexture(this.gl, this.textures[1], this.texturePaths.iChannel1Path, 1, this.preloadedImages.get(this.texturePaths.iChannel1Path));
-    const delay = (ms) => new Promise((res) => setTimeout(res, ms));
-    yield delay(17);
-    this.swappingInputs = false;
-  });
+  swapInputs(inputs) {
+    return __async(this, null, function* () {
+      this.swappingInputs = true;
+      this.texturePaths = inputs.texturePaths;
+      console.log("Swapping inputs to ");
+      console.log(this.texturePaths, this, this.textures);
+      this.loadTexture(this.gl, this.textures[0], this.texturePaths.iChannel0Path, 0, this.preloadedImages.get(this.texturePaths.iChannel0Path));
+      this.loadTexture(this.gl, this.textures[1], this.texturePaths.iChannel1Path, 1, this.preloadedImages.get(this.texturePaths.iChannel1Path));
+      const delay = (ms) => new Promise((res) => setTimeout(res, ms));
+      yield delay(17);
+      this.swappingInputs = false;
+    });
+  }
 };
+__decorate([
+  measureExecutionTime()
+], ImageEngine.prototype, "activate", null);
+__decorate([
+  measureExecutionTime()
+], ImageEngine.prototype, "swapInputs", null);
 
 // src/app/resource.service.ts
 var ResourceService = class _ResourceService {
@@ -30621,6 +30629,7 @@ var AppComponent = class _AppComponent {
         }
       });
       yield engine.activate();
+      document.getElementById("rg-image-loader").classList.add("hidden");
     });
   }
   deactivateAll() {
@@ -30658,16 +30667,21 @@ var AppComponent = class _AppComponent {
       \u0275\u0275queryRefresh(_t = \u0275\u0275loadQuery()) && (ctx.rgImage = _t.first);
       \u0275\u0275queryRefresh(_t = \u0275\u0275loadQuery()) && (ctx.bgproplus = _t.first);
     }
-  }, standalone: true, features: [\u0275\u0275StandaloneFeature], decls: 3, vars: 0, consts: [["rgImage", ""], ["id", "rg-canvas-wrapper", 1, "canvas-wrapper"]], template: function AppComponent_Template(rf, ctx) {
+  }, standalone: true, features: [\u0275\u0275StandaloneFeature], decls: 5, vars: 0, consts: [["rgImage", ""], ["id", "rg-canvas-wrapper", 1, "canvas-wrapper"], ["id", "rg-image-loader"]], template: function AppComponent_Template(rf, ctx) {
     if (rf & 1) {
       \u0275\u0275elementStart(0, "div", 1);
       \u0275\u0275element(1, "rg-image", null, 0);
-      \u0275\u0275elementEnd();
+      \u0275\u0275elementStart(3, "div", 2);
+      \u0275\u0275text(4, "Loading...");
+      \u0275\u0275elementEnd()();
     }
   }, dependencies: [CommonModule, HttpClientModule], styles: ["\n\n.images[_ngcontent-%COMP%] {\n  display: flex;\n  flex-direction: column;\n  max-width: 100%;\n  align-items: center;\n  padding: 20px 20px;\n  margin: 0 auto;\n}\n@media screen and (max-width: 992px) {\n  .images[_ngcontent-%COMP%] {\n    max-width: 100%;\n  }\n}\n.images[_ngcontent-%COMP%]    > *[_ngcontent-%COMP%] {\n  margin-bottom: 40px;\n}\n[_nghost-%COMP%] {\n  display: block;\n}\n@media screen and (max-width: 992px) {\n  [_nghost-%COMP%] {\n    width: 100%;\n  }\n}\n.bg-canvas[_ngcontent-%COMP%] {\n  width: 100%;\n  height: 100%;\n}\n.bg-canvas-wrapper[_ngcontent-%COMP%] {\n  position: fixed;\n  top: 0;\n  left: 0;\n  z-index: -1;\n  width: 100vw;\n  height: 100vh;\n}\n/*# sourceMappingURL=/images-portfolio/app.component.css.map */"] });
 };
+__decorate([
+  measureExecutionTime()
+], AppComponent.prototype, "initImgCanvas", null);
 (() => {
-  (typeof ngDevMode === "undefined" || ngDevMode) && \u0275setClassDebugInfo(AppComponent, { className: "AppComponent", filePath: "src/app/app.component.ts", lineNumber: 21 });
+  (typeof ngDevMode === "undefined" || ngDevMode) && \u0275setClassDebugInfo(AppComponent, { className: "AppComponent", filePath: "src/app/app.component.ts", lineNumber: 22 });
 })();
 
 // src/main.ts

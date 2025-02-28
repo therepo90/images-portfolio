@@ -8,6 +8,7 @@ import { BackgroundWebComponent, defineBgWeb } from '../lib/bg-web-component';
 import {ShaderEngine} from "../lib/shader-engine";
 import {ResourceService} from "./resource.service";
 import {ImageEngine} from "../lib/image-engine";
+import {measureExecutionTime} from "../utils";
 
 defineBgWeb();
 @Component({
@@ -143,6 +144,7 @@ export class AppComponent implements AfterViewInit, OnInit {
   }
 */
 
+  @measureExecutionTime()
   private async initImgCanvas() {
     this.shaderFragmentContent = await this.resourceService.loadShader('img1.shader.fragment.glsl');
     this.vertexShaderContent = await this.resourceService.loadShader('/base/vertex100.glsl');
@@ -174,6 +176,7 @@ export class AppComponent implements AfterViewInit, OnInit {
       },
     });
     await engine.activate();
+    document.getElementById('rg-image-loader')!.classList.add('hidden');
   }
 
   deactivateAll() {

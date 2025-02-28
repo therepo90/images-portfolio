@@ -45,6 +45,9 @@ rg-image {
     height: 100%;
   }
 }
+.hidden {
+  display: none !important;
+}
 
 /* angular:styles/global:styles */
 /*# sourceMappingURL=styles.css.map */
