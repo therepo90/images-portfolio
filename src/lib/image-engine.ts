@@ -1,7 +1,7 @@
 import { ShaderEngine } from './shader-engine';
-import { RgWebComponent } from './rg-web-component';
+import { ImageWebComponent } from './image-web-component';
 
-export class ImageEngine extends ShaderEngine<RgWebComponent> {
+export class ImageEngine extends ShaderEngine<ImageWebComponent> {
   private static swappingInputs: boolean = false;
   private defaultLaserTint = [1.0, 1.0, 1.0];
   private beamTarget?: {
@@ -111,18 +111,18 @@ export class ImageEngine extends ShaderEngine<RgWebComponent> {
   }
 
   static swapInputs = async (inputs: { texturePaths: { iChannel1Path: string; iChannel0Path: string } }) => {//
-    RgWebComponent.swappingInputs = true;
-    RgWebComponent.texturePaths = inputs.texturePaths;
+    ImageWebComponent.swappingInputs = true;
+    ImageWebComponent.texturePaths = inputs.texturePaths;
     console.log('Swapping inputs to ');
-    console.log(RgWebComponent.texturePaths, this, RgWebComponent.textures);
+    console.log(ImageWebComponent.texturePaths, this, ImageWebComponent.textures);
     // a moze wyjeb poprzednie tekstury
 
-    RgWebComponent.loadTexture(RgWebComponent.gl, RgWebComponent.textures[0], RgWebComponent.texturePaths.iChannel0Path, 0, RgWebComponent.preloadedImages.get(RgWebComponent.texturePaths.iChannel0Path));
-    RgWebComponent.loadTexture(RgWebComponent.gl, RgWebComponent.textures[1], RgWebComponent.texturePaths.iChannel1Path, 1, RgWebComponent.preloadedImages.get(RgWebComponent.texturePaths.iChannel1Path));
+    ImageWebComponent.loadTexture(ImageWebComponent.gl, ImageWebComponent.textures[0], ImageWebComponent.texturePaths.iChannel0Path, 0, ImageWebComponent.preloadedImages.get(ImageWebComponent.texturePaths.iChannel0Path));
+    ImageWebComponent.loadTexture(ImageWebComponent.gl, ImageWebComponent.textures[1], ImageWebComponent.texturePaths.iChannel1Path, 1, ImageWebComponent.preloadedImages.get(ImageWebComponent.texturePaths.iChannel1Path));
     const delay = ms => new Promise(res => setTimeout(res, ms));
     await delay(17); // jak poczekac zeby nie rysowac poprzedniej ramki?
-    RgWebComponent.swappingInputs = false;
-    //RgWebComponent.gl.finish();
+    ImageWebComponent.swappingInputs = false;
+    //ImageWebComponent.gl.finish();
   }
 
   static deactivate() {
@@ -134,7 +134,7 @@ export class ImageEngine extends ShaderEngine<RgWebComponent> {
 
   public static moveCanvas = (el: HTMLElement) => {
     const canvas = document.getElementById('rg-canvas-wrapper') as HTMLCanvasElement;
-    console.log({canvas, shadowRoot: RgWebComponent.shadowRoot, el});
+    console.log({canvas, shadowRoot: ImageWebComponent.shadowRoot, el});
     //move it with absolute position to el, calculate bounding rect
     canvas.style.position = 'absolute';
     const rect = el.getBoundingClientRect();

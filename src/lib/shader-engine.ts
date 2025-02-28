@@ -56,7 +56,7 @@ export class ShaderEngine<T extends WebComponent> {
       throw new Error('no canvas dupa');
     }
     const wrapper = webElement;
-    console.log('init', wrapper);
+    console.log('ShaderEngine::init', wrapper);
     this.vertexShaderContent = vertexShaderContent;
     this.shaderFragmentContent = shaderFragmentContent;
     this.shaderFragmentTpl = shaderFragmentTpl;

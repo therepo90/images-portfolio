@@ -2,7 +2,7 @@ import { AfterViewInit, Component, CUSTOM_ELEMENTS_SCHEMA, ElementRef, Input, On
 import { RouterOutlet } from '@angular/router';
 import { ImageComponent } from './image/image.component';
 import { CommonModule } from '@angular/common';
-import { defineRgImage, RgWebComponent } from '../lib/rg-web-component';
+import { defineImageWebComponent, ImageWebComponent } from '../lib/image-web-component';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { BackgroundWebComponent, defineBgWeb } from '../lib/bg-web-component';
 import {ShaderEngine} from "../lib/shader-engine";
@@ -83,12 +83,12 @@ export class AppComponent implements AfterViewInit {
       active: false,
     }*/
   ] as any[];
-  visibleCanvas: boolean = false;
+  visibleCanvas: boolean = true;
 
 /*
   activate(imageId: string) {
     if (!this.visibleCanvas) {
-      RgWebComponent.activate();
+      ImageWebComponent.activate();
     }
     this.visibleCanvas = true;
     this.images.forEach((image) => {
@@ -139,7 +139,7 @@ export class AppComponent implements AfterViewInit {
 
     this.shaderFragmentContent = await this.resourceService.loadShader('img1.shader.fragment.glsl');
     this.vertexShaderContent = await this.resourceService.loadShader('/base/vertex100.glsl');
-    let webEl = this.rgImage.nativeElement as RgWebComponent; // Mamy jeden web component z canvasem. I tylko jego inicjalizujemy.
+    let webEl = this.rgImage.nativeElement as ImageWebComponent; // Mamy jeden web component z canvasem. I tylko jego inicjalizujemy.
 
     const engine = new ImageEngine();
     await engine.init({

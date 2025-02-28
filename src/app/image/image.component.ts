@@ -9,10 +9,9 @@ import {
 } from '@angular/core';
 import {CommonModule} from "@angular/common";
 import {HttpClient, HttpClientModule} from "@angular/common/http";
-import {defineRgImage, RgWebComponent} from "../../lib/rg-web-component";
-import {Vector3} from "@babylonjs/core";
+import {defineImageWebComponent, ImageWebComponent} from "../../lib/image-web-component";
 
-defineRgImage();
+defineImageWebComponent();
 @Component({
   selector: 'app-image',
   standalone: true,
@@ -42,13 +41,13 @@ export class ImageComponent {
       console.log('deactivated'+this.id);
       this.ready = false;
     }
-    //RgWebComponent.deactivate();
+    //ImageWebComponent.deactivate();
   }
 
 /*
   private async initImageCanvas() {
 
-    await RgWebComponent.swapInputs(
+    await ImageWebComponent.swapInputs(
       {
         texturePaths: {
           iChannel0Path: this.base + this.channelo0TexturePath,
@@ -58,12 +57,12 @@ export class ImageComponent {
     );
     //const delay = ms => new Promise(res => setTimeout(res, ms));
     //await delay(1000); // wait one frame?
-    RgWebComponent.moveCanvas(this.el.nativeElement);
+    ImageWebComponent.moveCanvas(this.el.nativeElement);
     const randomTint = new Vector3(Math.random(), Math.random(), Math.random());
     //const randomTint = new Vector3(0.0, 0.5, 0.5);
     //const randomTint = new Vector3(0.0, 0.2, 0.8);
     //const randomTint = new Vector3(0.33, 1.0, 1.0);//
-    RgWebComponent.changeLaserTint(randomTint);
+    ImageWebComponent.changeLaserTint(randomTint);
     this.ready = true;
   }
 */
