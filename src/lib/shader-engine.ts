@@ -22,7 +22,7 @@ export class ShaderEngine<T extends WebComponent> {
   protected shaderFragmentTpl!: string;
 
   public preloadedImages = new Map<string, HTMLImageElement>();
-
+  shaderFragmentPath= 'img1.shader.fragment.glsl';
 
   constructor(protected resourceService:ResourceService) {
   }
@@ -52,7 +52,7 @@ export class ShaderEngine<T extends WebComponent> {
     const toPreloadC0 = initParams.images.map((textureInfo) => textureInfo.channelo0TexturePath);
     const toPreloadC1 = initParams.images.map((textureInfo) => textureInfo.channelo1TexturePath);
     const preloadedImagesPromise = this.preloadImages([...toPreloadC0, ...toPreloadC1]);
-    this.shaderFragmentContent = await this.resourceService.loadShader('img1.shader.fragment.glsl');
+    this.shaderFragmentContent = await this.resourceService.loadShader(this.shaderFragmentPath);
     this.vertexShaderContent = await this.resourceService.loadShader('/base/vertex100.glsl');
     this.shaderFragmentTpl = await this.resourceService.loadShader('/base/fragment-main100.glsl');
 

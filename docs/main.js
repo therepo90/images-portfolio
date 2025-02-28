@@ -30121,6 +30121,7 @@ var ShaderEngine = class {
   shadowRoot;
   shaderFragmentTpl;
   preloadedImages = /* @__PURE__ */ new Map();
+  shaderFragmentPath = "img1.shader.fragment.glsl";
   constructor(resourceService) {
     this.resourceService = resourceService;
   }
@@ -30146,7 +30147,7 @@ var ShaderEngine = class {
       const toPreloadC0 = initParams.images.map((textureInfo) => textureInfo.channelo0TexturePath);
       const toPreloadC1 = initParams.images.map((textureInfo) => textureInfo.channelo1TexturePath);
       const preloadedImagesPromise = this.preloadImages([...toPreloadC0, ...toPreloadC1]);
-      this.shaderFragmentContent = yield this.resourceService.loadShader("img1.shader.fragment.glsl");
+      this.shaderFragmentContent = yield this.resourceService.loadShader(this.shaderFragmentPath);
       this.vertexShaderContent = yield this.resourceService.loadShader("/base/vertex100.glsl");
       this.shaderFragmentTpl = yield this.resourceService.loadShader("/base/fragment-main100.glsl");
       const { webElement } = initParams;
