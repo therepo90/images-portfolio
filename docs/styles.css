@@ -37,6 +37,7 @@ rg-image {
   height: 100%;
   max-width: 1200px;
   max-height: 800px;
+  background: #e5e5e5;
 }
 @media screen and (max-width: 992px) {
   rg-image {
