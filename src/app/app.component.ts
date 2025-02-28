@@ -4,7 +4,8 @@ import { ImageComponent } from './image/image.component';
 import { CommonModule } from '@angular/common';
 import { defineRgImage, RgWebComponent } from '../lib/rg-web-component';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { BackgroundWebComponent, defineBgWeb, ProPlusShaderEngine } from '../lib/bg-web-component';
+import { BackgroundWebComponent, defineBgWeb } from '../lib/bg-web-component';
+import {ShaderEngine} from "../lib/shader-engine";
 
 defineBgWeb();
 @Component({
@@ -83,6 +84,7 @@ export class AppComponent implements AfterViewInit {
   ] as any[];
   visibleCanvas: boolean = false;
 
+/*
   activate(imageId: string) {
     if (!this.visibleCanvas) {
       RgWebComponent.activate();
@@ -92,14 +94,16 @@ export class AppComponent implements AfterViewInit {
       image.active = image.id === imageId;
     });
   }
+*/
 
   ngAfterViewInit(): void {
-    this.startAsyncSheet().catch((e) => {
+    this.initCanvases().catch((e) => {
       alert(e);
       throw e;
     });
   }
 
+/*
   private async initBgCanvas() {
     const base = window.origin.includes('localhost') ? '' : '/images-portfolio';
     console.log('Bejs', { base });
@@ -113,7 +117,7 @@ export class AppComponent implements AfterViewInit {
       .get(base + this.shadersDir+'/base/fragment-main100.glsl', { responseType: 'text' })
       .toPromise()) as any;
     let webel = this.bgproplus.nativeElement as BackgroundWebComponent;
-    const engine = new ProPlusShaderEngine();
+    const engine = new ShaderEngine();
     await engine.init({
       shaderFragmentTpl: this.shaderFragmentTpl,
       shaderFragmentContent: this.shaderFragmentContent,
@@ -128,6 +132,7 @@ export class AppComponent implements AfterViewInit {
     });
     await engine.activate();
   }
+*/
 
   private async initImgCanvas() {
     const base = window.origin.includes('localhost') ? '' : '/images-portfolio';
@@ -166,7 +171,7 @@ export class AppComponent implements AfterViewInit {
       }
     });
   }
-  private async startAsyncSheet() {
+  private async initCanvases() {
     await this.initImgCanvas();
     //await this.initBgCanvas();
   }
