@@ -2,7 +2,7 @@ import { ShaderEngine } from './shader-engine';
 import { ImageWebComponent } from './image-web-component';
 
 export class ImageEngine extends ShaderEngine<ImageWebComponent> {
-  private static swappingInputs: boolean = false;
+  private swappingInputs: boolean = false;
   private defaultLaserTint = [1.0, 1.0, 1.0];
   private beamTarget?: {
     vy: number;
@@ -16,7 +16,7 @@ export class ImageEngine extends ShaderEngine<ImageWebComponent> {
   private beamTargetUniformLocation!: WebGLUniformLocation;
 
   activate = () => {
-    console.log('activate bg');
+    console.log('ImageEngine::activate');
 
     this.loadTexture(
       this.gl,
@@ -30,7 +30,7 @@ export class ImageEngine extends ShaderEngine<ImageWebComponent> {
       try {
         const gl = this.gl;
         if (gl && this.textures) {
-          gl.clearColor(0, 0, 0, 1);
+          gl.clearColor(1, 0, 0, 1);
           gl.clear(gl.COLOR_BUFFER_BIT);
 
           gl.uniform2f(this.mouseUniformLocation, this.mouse.x, this.mouse.y);
@@ -61,7 +61,7 @@ export class ImageEngine extends ShaderEngine<ImageWebComponent> {
     };
 
     const animate = () => {
-      this.updateBeamTarget();
+      /*this.updateBeamTarget();*/
       draw();
       requestAnimationFrame(animate);
     };
@@ -75,6 +75,7 @@ export class ImageEngine extends ShaderEngine<ImageWebComponent> {
     this.beamTargetUniformLocation = beamTargetUniformLocation as any;
   }
 
+/*
   private updateBeamTarget() {
     const targetX = this.mouse.x;
     const targetY = this.mouse.y;
@@ -105,25 +106,27 @@ export class ImageEngine extends ShaderEngine<ImageWebComponent> {
     this.beamTarget.vx *= 0.95;
     this.beamTarget.vy *= 0.95;
   }
+*/
+
+  swapInputs = async (inputs: { texturePaths: { iChannel1Path: string; iChannel0Path: string } }) => {//
+    this.swappingInputs = true;
+    this.texturePaths = inputs.texturePaths;
+    console.log('Swapping inputs to ');
+    console.log(this.texturePaths, this, this.textures);
+    // a moze wyjeb poprzednie tekstury
+
+    this.loadTexture(this.gl, this.textures[0], this.texturePaths.iChannel0Path, 0, this.preloadedImages.get(this.texturePaths.iChannel0Path));
+    this.loadTexture(this.gl, this.textures[1], this.texturePaths.iChannel1Path, 1, this.preloadedImages.get(this.texturePaths.iChannel1Path));
+    const delay = ms => new Promise(res => setTimeout(res, ms));
+    await delay(17); // jak poczekac zeby nie rysowac poprzedniej ramki?
+    this.swappingInputs = false;
+  }
   /*
   public static changeLaserTint = (color: Vector3) => {
     this.laserTint = [color.x, color.y, color.z];
   }
 
-  static swapInputs = async (inputs: { texturePaths: { iChannel1Path: string; iChannel0Path: string } }) => {//
-    ImageWebComponent.swappingInputs = true;
-    ImageWebComponent.texturePaths = inputs.texturePaths;
-    console.log('Swapping inputs to ');
-    console.log(ImageWebComponent.texturePaths, this, ImageWebComponent.textures);
-    // a moze wyjeb poprzednie tekstury
 
-    ImageWebComponent.loadTexture(ImageWebComponent.gl, ImageWebComponent.textures[0], ImageWebComponent.texturePaths.iChannel0Path, 0, ImageWebComponent.preloadedImages.get(ImageWebComponent.texturePaths.iChannel0Path));
-    ImageWebComponent.loadTexture(ImageWebComponent.gl, ImageWebComponent.textures[1], ImageWebComponent.texturePaths.iChannel1Path, 1, ImageWebComponent.preloadedImages.get(ImageWebComponent.texturePaths.iChannel1Path));
-    const delay = ms => new Promise(res => setTimeout(res, ms));
-    await delay(17); // jak poczekac zeby nie rysowac poprzedniej ramki?
-    ImageWebComponent.swappingInputs = false;
-    //ImageWebComponent.gl.finish();
-  }
 
   static deactivate() {
     const canvas = document.getElementById('rg-canvas-wrapper') as HTMLCanvasElement;

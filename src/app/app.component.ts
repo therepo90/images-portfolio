@@ -139,6 +139,7 @@ export class AppComponent implements AfterViewInit {
 
     this.shaderFragmentContent = await this.resourceService.loadShader('img1.shader.fragment.glsl');
     this.vertexShaderContent = await this.resourceService.loadShader('/base/vertex100.glsl');
+    this.shaderFragmentTpl = await this.resourceService.loadShader('/base/fragment-main100.glsl');
     let webEl = this.rgImage.nativeElement as ImageWebComponent; // Mamy jeden web component z canvasem. I tylko jego inicjalizujemy.
 
     const engine = new ImageEngine();
@@ -151,6 +152,24 @@ export class AppComponent implements AfterViewInit {
     const toPreloadC0 = this.images.map((textureInfo) => textureInfo.channelo0TexturePath);
     const toPreloadC1 = this.images.map((textureInfo) => textureInfo.channelo1TexturePath);
     await engine.preloadImages([...toPreloadC0, ...toPreloadC1]);
+
+
+    await engine.setTexturePaths({
+      iChannel0Path: this.images[0].channelo0TexturePath,
+      iChannel1Path: this.images[0].channelo1TexturePath,
+    });
+
+    await engine.swapInputs(
+      {
+        texturePaths: {
+          /*iChannel0Path: this.base + this.channelo0TexturePath,
+          iChannel1Path: this.base + this.channelo1TexturePath*/
+          iChannel0Path: this.images[0].channelo0TexturePath,
+          iChannel1Path: this.images[0].channelo1TexturePath
+        }
+      }
+    );
+    await engine.activate();
   }
 
   deactivateAll() {

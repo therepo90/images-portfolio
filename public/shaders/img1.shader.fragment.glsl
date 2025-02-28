@@ -1,15 +1,5 @@
-#version 100
-#ifdef GL_ES
-precision mediump float;
-#endif
-
-varying vec2 vUV;
-uniform sampler2D iChannel1;
-uniform sampler2D iChannel0;
-uniform vec2 iMouse;
-uniform vec2 iResolution;
 uniform vec3 laserTint;
-uniform float iTime;
+uniform vec2 beamTarget;
 
 vec2 mod2(vec2 p, float d) {
   float a = mod(p.x,d);
@@ -100,7 +90,7 @@ void Unity_Lerp_float4(vec4 A, vec4 B, vec4 T, out vec4 Out)
   Out = mix(A, B, T);
 }
 
-void mainImage(out vec4 fragColor, in vec2 fragCoord)
+void mainImage2(out vec4 fragColor, in vec2 fragCoord)
 {
 
   vec2 mouse = iMouse.xy / iResolution.xy;
@@ -211,10 +201,10 @@ void processBorder( out vec4 fragColor, in vec2 fragCoord, out float sqOut, in v
   fragColor = vec4(col,a);
 }
 
-void main()
+void mainImage(out vec4 fragColor, in vec2 fragCoord)
 {
   vec4 mainCol;
-  mainImage(mainCol, vUV * iResolution.xy);
+  mainImage2(mainCol, vUV * iResolution.xy);
   vec4 borderColor;
   float sq;
   processBorder(borderColor, vUV * iResolution.xy, sq, laserTint);

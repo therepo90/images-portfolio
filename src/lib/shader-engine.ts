@@ -44,7 +44,9 @@ export class ShaderEngine<T extends WebComponent> {
     });
   };
 
-  init = async ({ shaderFragmentTpl, shaderFragmentContent, vertexShaderContent, webElement }: InitParams<T>) => {
+  init = async (initParams: InitParams<T>) => {
+
+    const { shaderFragmentTpl, shaderFragmentContent, vertexShaderContent, webElement } = initParams;
     this.webEl = webElement;
     this.shadowRoot = webElement.shadowRoot as ShadowRoot;
     if (!this.shadowRoot) {
@@ -56,7 +58,7 @@ export class ShaderEngine<T extends WebComponent> {
       throw new Error('no canvas dupa');
     }
     const wrapper = webElement;
-    console.log('ShaderEngine::init', wrapper);
+    console.log('ShaderEngine::init', wrapper, initParams);
     this.vertexShaderContent = vertexShaderContent;
     this.shaderFragmentContent = shaderFragmentContent;
     this.shaderFragmentTpl = shaderFragmentTpl;
@@ -78,7 +80,12 @@ export class ShaderEngine<T extends WebComponent> {
   };
 
   loadTexture = (gl, texture: WebGLTexture, path: string, unit: number, image: any) => {
-    console.log('Duupa', { gl, texture, path, unit, image, a: image.width, b: image.height, c: image.data });
+    console.log('ShaderEngine::loadTexture', { gl, texture, path, unit, image, width: image.width, height: image.height, imageData: image.data });
+    if(!image) {
+      console.error('No image ');
+      alert('No image ')
+      return;
+    }
     gl.activeTexture(gl[`TEXTURE${unit}`]);
     gl.bindTexture(gl.TEXTURE_2D, texture);
 
