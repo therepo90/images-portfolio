@@ -1,5 +1,6 @@
 import { WebComponent } from './web-component';
 import { InitParams } from './init-params';
+import {measureExecutionTime} from "../utils";
 
 export class ShaderEngine<T extends WebComponent> {
   protected shaderFragmentContent!: string;
@@ -22,6 +23,7 @@ export class ShaderEngine<T extends WebComponent> {
   public preloadedImages = new Map<string, HTMLImageElement>();
 
 
+
   public preloadImages = async (paths: string[]) => {
     console.log('Preloading images', paths);
     const promises = paths.map((path) => {
@@ -41,7 +43,8 @@ export class ShaderEngine<T extends WebComponent> {
     });
   };
 
-  init = async (initParams: InitParams<T>) => {
+  @measureExecutionTime()
+  async init (initParams: InitParams<T>) {
 
     const { shaderFragmentTpl, shaderFragmentContent, vertexShaderContent, webElement } = initParams;
     this.webEl = webElement;
@@ -76,7 +79,9 @@ export class ShaderEngine<T extends WebComponent> {
     console.log('Initialized engine');
   };
 
-  loadTexture = (gl, texture: WebGLTexture, path: string, unit: number, image: any) => {
+
+  @measureExecutionTime()
+  loadTexture (gl, texture: WebGLTexture, path: string, unit: number, image: any) {
     if(!image) {
       console.error('No image ');
       alert('No image ')
@@ -101,7 +106,8 @@ export class ShaderEngine<T extends WebComponent> {
   };
 
 
-  setupWebGL = async () => {
+  @measureExecutionTime()
+  async setupWebGL () {
     console.log('setupWebGL');
     //debugger;
     const canvas = this.webEl.getCanvas();
@@ -224,6 +230,7 @@ export class ShaderEngine<T extends WebComponent> {
     //this.beamTarget.y = this.mouse.y + 50;
   };
 
+  @measureExecutionTime()
   compileShader(gl, type, source) {
     const shader = gl.createShader(type);
     gl.shaderSource(shader, source);
@@ -239,7 +246,8 @@ export class ShaderEngine<T extends WebComponent> {
     return shader;
   }
 
-  createProgram = (gl, vertexShader, fragmentShader) => {
+  @measureExecutionTime()
+  createProgram (gl, vertexShader, fragmentShader) {
     const program = gl.createProgram();
     gl.attachShader(program, vertexShader);
     gl.attachShader(program, fragmentShader);
@@ -255,7 +263,8 @@ export class ShaderEngine<T extends WebComponent> {
     return program;
   };
 
-  setupMouseListeners = () => {
+  @measureExecutionTime()
+  setupMouseListeners() {
     const canvas = this.webEl.getCanvas();
 
     document.addEventListener('mousemove', (event) => {

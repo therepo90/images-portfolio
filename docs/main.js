@@ -1112,6 +1112,12 @@ function popScheduler(args) {
 }
 
 // node_modules/tslib/tslib.es6.mjs
+function __decorate(decorators, target, key, desc) {
+  var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+  if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+  else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+  return c > 3 && r && Object.defineProperty(target, key, r), r;
+}
 function __awaiter(thisArg, _arguments, P, generator) {
   function adopt(value) {
     return value instanceof P ? value : new P(function(resolve) {
@@ -30066,6 +30072,35 @@ var defineBgWeb = () => {
   customElements.define("bg-web", BackgroundWebComponent);
 };
 
+// src/utils.ts
+var total = 0;
+function measureExecutionTime(label) {
+  return function(target, propertyKey, descriptor) {
+    const originalMethod = descriptor.value;
+    descriptor.value = function(...args) {
+      console.log(`\u23F3 Start: ${propertyKey}`);
+      const start = performance.now();
+      document.getElementById("debug").innerHTML += propertyKey + "...<br/>";
+      const result = originalMethod.apply(this, args);
+      if (result instanceof Promise) {
+        return result.then((res) => {
+          const end2 = performance.now();
+          total += end2 - start;
+          console.log(`\u2705 End: ${propertyKey} | Time: ${(end2 - start).toFixed(2)} ms`);
+          document.getElementById("debug").innerHTML += propertyKey + " executed in " + (end2 - start).toFixed(2) + " ms, Total: " + total.toFixed(2) + " ms<br/>";
+          return res;
+        });
+      }
+      const end = performance.now();
+      total += end - start;
+      console.log(`\u2705 End: ${propertyKey} | Time: ${(end - start).toFixed(2)} ms`);
+      document.getElementById("debug").innerHTML += propertyKey + " executed in " + (end - start).toFixed(2) + " ms ,Total: " + total.toFixed(2) + " ms<br/>";
+      return result;
+    };
+    return descriptor;
+  };
+}
+
 // src/lib/shader-engine.ts
 var ShaderEngine = class {
   shaderFragmentContent;
@@ -30100,36 +30135,38 @@ var ShaderEngine = class {
       this.preloadedImages.set(path, loadedImages[i]);
     });
   });
-  init = (initParams) => __async(this, null, function* () {
-    const { shaderFragmentTpl, shaderFragmentContent, vertexShaderContent, webElement } = initParams;
-    this.webEl = webElement;
-    this.shadowRoot = webElement.shadowRoot;
-    if (!this.shadowRoot) {
-      throw new Error("no shadow root");
-    }
-    const canvas = webElement.getCanvas();
-    if (!canvas) {
-      throw new Error("no canvas dupa");
-    }
-    const wrapper = webElement;
-    console.log("ShaderEngine::init", wrapper, initParams);
-    this.vertexShaderContent = vertexShaderContent;
-    this.shaderFragmentContent = shaderFragmentContent;
-    this.shaderFragmentTpl = shaderFragmentTpl;
-    this.mouse = { x: 0, y: 0 };
-    this.startTime = Date.now();
-    const parentWidth = wrapper.getBoundingClientRect().width;
-    const parentHeight = wrapper.getBoundingClientRect().height;
-    console.log("Rekt", { r: wrapper.getBoundingClientRect(), parentWidth, parentHeight });
-    canvas.width = parentWidth;
-    canvas.height = parentHeight;
-    yield this.setupWebGL().then(() => {
-      this.setupMouseListeners();
+  init(initParams) {
+    return __async(this, null, function* () {
+      const { shaderFragmentTpl, shaderFragmentContent, vertexShaderContent, webElement } = initParams;
+      this.webEl = webElement;
+      this.shadowRoot = webElement.shadowRoot;
+      if (!this.shadowRoot) {
+        throw new Error("no shadow root");
+      }
+      const canvas = webElement.getCanvas();
+      if (!canvas) {
+        throw new Error("no canvas dupa");
+      }
+      const wrapper = webElement;
+      console.log("ShaderEngine::init", wrapper, initParams);
+      this.vertexShaderContent = vertexShaderContent;
+      this.shaderFragmentContent = shaderFragmentContent;
+      this.shaderFragmentTpl = shaderFragmentTpl;
+      this.mouse = { x: 0, y: 0 };
+      this.startTime = Date.now();
+      const parentWidth = wrapper.getBoundingClientRect().width;
+      const parentHeight = wrapper.getBoundingClientRect().height;
+      console.log("Rekt", { r: wrapper.getBoundingClientRect(), parentWidth, parentHeight });
+      canvas.width = parentWidth;
+      canvas.height = parentHeight;
+      yield this.setupWebGL().then(() => {
+        this.setupMouseListeners();
+      });
+      this.initialized = true;
+      console.log("Initialized engine");
     });
-    this.initialized = true;
-    console.log("Initialized engine");
-  });
-  loadTexture = (gl, texture, path, unit, image) => {
+  }
+  loadTexture(gl, texture, path, unit, image) {
     if (!image) {
       console.error("No image ");
       alert("No image ");
@@ -30145,104 +30182,106 @@ var ShaderEngine = class {
     gl.bindTexture(gl.TEXTURE_2D, texture);
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
     gl.bindTexture(gl.TEXTURE_2D, null);
-  };
+  }
   setTexturePaths = (texturePaths) => {
     this.texturePaths = texturePaths;
   };
-  setupWebGL = () => __async(this, null, function* () {
-    console.log("setupWebGL");
-    const canvas = this.webEl.getCanvas();
-    const gl = canvas.getContext("webgl");
-    this.gl = gl;
-    if (!gl) {
-      alert("Unable to initialize WebGL. Your browser may not support it.");
-      return;
-    }
-    let fragmentTpl = this.shaderFragmentTpl;
-    const fragmentShaderSource = fragmentTpl.replace('#include "fragment.glsl"', this.shaderFragmentContent);
-    const vertexShaderSource = this.vertexShaderContent;
-    console.log({ vertexShaderSource, fragmentShaderSource });
-    const vertexShader = this.compileShader(gl, gl.VERTEX_SHADER, vertexShaderSource);
-    const fragmentShader = this.compileShader(gl, gl.FRAGMENT_SHADER, fragmentShaderSource);
-    if (!vertexShader || !fragmentShader) {
-      console.error("Shader compilation failed.");
-      alert("Shader compilation failed.");
-      return;
-    }
-    const program = this.createProgram(gl, vertexShader, fragmentShader);
-    if (!program) {
-      console.error("Shader program linking failed.");
-      alert("Shader program linking failed.");
-      return;
-    }
-    const positionBuffer = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
-    const vertices = new Float32Array([-1, -1, -1, 1, 1, 1, -1, -1, 1, 1, 1, -1]);
-    gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.STATIC_DRAW);
-    const uvBuffer = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, uvBuffer);
-    const textureCoordinates = new Float32Array([
-      0,
-      1,
-      // Top-Left
-      0,
-      0,
-      // Bottom-Left
-      1,
-      0,
-      // Bottom-Right
-      0,
-      1,
-      // Top-Left
-      1,
-      0,
-      // Bottom-Right
-      1,
-      1
-      // Top-Right
-    ]);
-    gl.bufferData(gl.ARRAY_BUFFER, textureCoordinates, gl.STATIC_DRAW);
-    const positionAttributeLocation = gl.getAttribLocation(program, "a_position");
-    if (positionAttributeLocation === -1) {
-      console.error("Unable to get attribute location for a_position");
-      alert("Unable to get attribute location for a_position");
-      return;
-    }
-    gl.enableVertexAttribArray(positionAttributeLocation);
-    gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
-    gl.vertexAttribPointer(positionAttributeLocation, 2, gl.FLOAT, false, 0, 0);
-    const uvAttributeLocation = gl.getAttribLocation(program, "a_uv");
-    if (uvAttributeLocation === -1) {
-      console.warn("Unable to get attribute location for a_uv");
-    } else {
-      gl.enableVertexAttribArray(uvAttributeLocation);
+  setupWebGL() {
+    return __async(this, null, function* () {
+      console.log("setupWebGL");
+      const canvas = this.webEl.getCanvas();
+      const gl = canvas.getContext("webgl");
+      this.gl = gl;
+      if (!gl) {
+        alert("Unable to initialize WebGL. Your browser may not support it.");
+        return;
+      }
+      let fragmentTpl = this.shaderFragmentTpl;
+      const fragmentShaderSource = fragmentTpl.replace('#include "fragment.glsl"', this.shaderFragmentContent);
+      const vertexShaderSource = this.vertexShaderContent;
+      console.log({ vertexShaderSource, fragmentShaderSource });
+      const vertexShader = this.compileShader(gl, gl.VERTEX_SHADER, vertexShaderSource);
+      const fragmentShader = this.compileShader(gl, gl.FRAGMENT_SHADER, fragmentShaderSource);
+      if (!vertexShader || !fragmentShader) {
+        console.error("Shader compilation failed.");
+        alert("Shader compilation failed.");
+        return;
+      }
+      const program = this.createProgram(gl, vertexShader, fragmentShader);
+      if (!program) {
+        console.error("Shader program linking failed.");
+        alert("Shader program linking failed.");
+        return;
+      }
+      const positionBuffer = gl.createBuffer();
+      gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+      const vertices = new Float32Array([-1, -1, -1, 1, 1, 1, -1, -1, 1, 1, 1, -1]);
+      gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.STATIC_DRAW);
+      const uvBuffer = gl.createBuffer();
       gl.bindBuffer(gl.ARRAY_BUFFER, uvBuffer);
-      gl.vertexAttribPointer(uvAttributeLocation, 2, gl.FLOAT, false, 0, 0);
-    }
-    const resolutionUniformLocation = gl.getUniformLocation(program, "iResolution");
-    const mouseUniformLocation = gl.getUniformLocation(program, "iMouse");
-    const timeUniformLocation = gl.getUniformLocation(program, "iTime");
-    const iChannel0UniformLocation = gl.getUniformLocation(program, "iChannel0");
-    const iChannel1UniformLocation = gl.getUniformLocation(program, "iChannel1");
-    const frameUniformLocation = gl.getUniformLocation(program, "iFrame");
-    this.mouseUniformLocation = mouseUniformLocation;
-    this.timeUniformLocation = timeUniformLocation;
-    this.iChannel0UniformLocation = iChannel0UniformLocation;
-    this.iChannel1UniformLocation = iChannel1UniformLocation;
-    this.frameUniformLocation = frameUniformLocation;
-    this.setupAdditionalUniforms(program);
-    gl.useProgram(program);
-    console.log({
-      resolutionUniformLocation,
-      mouseUniformLocation,
-      timeUniformLocation,
-      iChannel0UniformLocation,
-      iChannel1UniformLocation
+      const textureCoordinates = new Float32Array([
+        0,
+        1,
+        // Top-Left
+        0,
+        0,
+        // Bottom-Left
+        1,
+        0,
+        // Bottom-Right
+        0,
+        1,
+        // Top-Left
+        1,
+        0,
+        // Bottom-Right
+        1,
+        1
+        // Top-Right
+      ]);
+      gl.bufferData(gl.ARRAY_BUFFER, textureCoordinates, gl.STATIC_DRAW);
+      const positionAttributeLocation = gl.getAttribLocation(program, "a_position");
+      if (positionAttributeLocation === -1) {
+        console.error("Unable to get attribute location for a_position");
+        alert("Unable to get attribute location for a_position");
+        return;
+      }
+      gl.enableVertexAttribArray(positionAttributeLocation);
+      gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+      gl.vertexAttribPointer(positionAttributeLocation, 2, gl.FLOAT, false, 0, 0);
+      const uvAttributeLocation = gl.getAttribLocation(program, "a_uv");
+      if (uvAttributeLocation === -1) {
+        console.warn("Unable to get attribute location for a_uv");
+      } else {
+        gl.enableVertexAttribArray(uvAttributeLocation);
+        gl.bindBuffer(gl.ARRAY_BUFFER, uvBuffer);
+        gl.vertexAttribPointer(uvAttributeLocation, 2, gl.FLOAT, false, 0, 0);
+      }
+      const resolutionUniformLocation = gl.getUniformLocation(program, "iResolution");
+      const mouseUniformLocation = gl.getUniformLocation(program, "iMouse");
+      const timeUniformLocation = gl.getUniformLocation(program, "iTime");
+      const iChannel0UniformLocation = gl.getUniformLocation(program, "iChannel0");
+      const iChannel1UniformLocation = gl.getUniformLocation(program, "iChannel1");
+      const frameUniformLocation = gl.getUniformLocation(program, "iFrame");
+      this.mouseUniformLocation = mouseUniformLocation;
+      this.timeUniformLocation = timeUniformLocation;
+      this.iChannel0UniformLocation = iChannel0UniformLocation;
+      this.iChannel1UniformLocation = iChannel1UniformLocation;
+      this.frameUniformLocation = frameUniformLocation;
+      this.setupAdditionalUniforms(program);
+      gl.useProgram(program);
+      console.log({
+        resolutionUniformLocation,
+        mouseUniformLocation,
+        timeUniformLocation,
+        iChannel0UniformLocation,
+        iChannel1UniformLocation
+      });
+      gl.uniform2f(resolutionUniformLocation, canvas.width, canvas.height);
+      this.textures = [gl.createTexture(), gl.createTexture()];
+      console.log("WebGL initialized.");
     });
-    gl.uniform2f(resolutionUniformLocation, canvas.width, canvas.height);
-    this.textures = [gl.createTexture(), gl.createTexture()];
-    console.log("WebGL initialized.");
-  });
+  }
   compileShader(gl, type, source) {
     const shader = gl.createShader(type);
     gl.shaderSource(shader, source);
@@ -30255,7 +30294,7 @@ var ShaderEngine = class {
     }
     return shader;
   }
-  createProgram = (gl, vertexShader, fragmentShader) => {
+  createProgram(gl, vertexShader, fragmentShader) {
     const program = gl.createProgram();
     gl.attachShader(program, vertexShader);
     gl.attachShader(program, fragmentShader);
@@ -30267,8 +30306,8 @@ var ShaderEngine = class {
       return null;
     }
     return program;
-  };
-  setupMouseListeners = () => {
+  }
+  setupMouseListeners() {
     const canvas = this.webEl.getCanvas();
     document.addEventListener("mousemove", (event) => {
       const rect = canvas.getBoundingClientRect();
@@ -30281,10 +30320,28 @@ var ShaderEngine = class {
       this.mouse.x = event.touches[0].clientX - rect.left;
       this.mouse.y = rect.height - (event.touches[0].clientY - rect.top);
     }, { passive: false });
-  };
+  }
   setupAdditionalUniforms(program) {
   }
 };
+__decorate([
+  measureExecutionTime()
+], ShaderEngine.prototype, "init", null);
+__decorate([
+  measureExecutionTime()
+], ShaderEngine.prototype, "loadTexture", null);
+__decorate([
+  measureExecutionTime()
+], ShaderEngine.prototype, "setupWebGL", null);
+__decorate([
+  measureExecutionTime()
+], ShaderEngine.prototype, "compileShader", null);
+__decorate([
+  measureExecutionTime()
+], ShaderEngine.prototype, "createProgram", null);
+__decorate([
+  measureExecutionTime()
+], ShaderEngine.prototype, "setupMouseListeners", null);
 
 // src/lib/image-engine.ts
 var ImageEngine = class extends ShaderEngine {
