@@ -6,6 +6,8 @@ import { defineRgImage, RgWebComponent } from '../lib/rg-web-component';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { BackgroundWebComponent, defineBgWeb } from '../lib/bg-web-component';
 import {ShaderEngine} from "../lib/shader-engine";
+import {ResourceService} from "./resource.service";
+import {ImageEngine} from "../lib/image-engine";
 
 defineBgWeb();
 @Component({
@@ -23,10 +25,9 @@ export class AppComponent implements AfterViewInit {
   private shaderFragmentContent!: string;
   private vertexShaderContent!: string;
   private shaderFragmentTpl!: string;
+  private imgDir: string = '/images';
 
-  private imgDir = 'images';
-  private shadersDir = 'shaders';
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private resourceService:ResourceService) {}
   bgImages = [
     {
       channelo0TexturePath:this.imgDir+'/helmet.png',
@@ -35,13 +36,13 @@ export class AppComponent implements AfterViewInit {
   images = [
     {
       id: '4',
-      shaderId: 'imgTransition3Shader',
-      shaderMinNameAbbvPath: this.shadersDir+'/img1.shader',
+      /*shaderId: 'imgTransition3Shader',*/
+      //shaderMinNameAbbvPath: this.shadersDir+'/img1.shader',
       channelo0TexturePath:this.imgDir+'/037_2.jpg', //
       channelo1TexturePath:this.imgDir+'/037_orig.jpg',
-      active: false,
+      active: true,
     },
-    {
+   /* {
       id: '3',
       shaderId: 'imgTransition3Shader',
       shaderMinNameAbbvPath: this.shadersDir+'/img1.shader',
@@ -72,7 +73,7 @@ export class AppComponent implements AfterViewInit {
       channelo0TexturePath:this.imgDir+'/228.jpg', //
       channelo1TexturePath:this.imgDir+'/228_1.jpg',
       active: false,
-    },
+    },*/
     /* {
       id: '4',
       shaderId: 'imgTransition4Shader',
@@ -135,22 +136,21 @@ export class AppComponent implements AfterViewInit {
 */
 
   private async initImgCanvas() {
-    const base = window.origin.includes('localhost') ? '' : '/images-portfolio';
-    console.log('Bejs', { base });
-    this.shaderFragmentContent = (await this.http
-      .get(base + this.shadersDir+'/img1.shader.fragment.glsl', { responseType: 'text' })
-      .toPromise()) as any;
-    this.vertexShaderContent = (await this.http
-      .get(base + this.shadersDir+'/base/vertex100.glsl', { responseType: 'text' })
-      .toPromise()) as any;
-    let engineEl = this.rgImage.nativeElement as RgWebComponent;
-    await engineEl.init({
+
+    this.shaderFragmentContent = await this.resourceService.loadShader('img1.shader.fragment.glsl');
+    this.vertexShaderContent = await this.resourceService.loadShader('/base/vertex100.glsl');
+    let webEl = this.rgImage.nativeElement as RgWebComponent; // Mamy jeden web component z canvasem. I tylko jego inicjalizujemy.
+
+    const engine = new ImageEngine();
+    await engine.init({
+      shaderFragmentTpl: this.shaderFragmentTpl,
       shaderFragmentContent: this.shaderFragmentContent,
       vertexShaderContent: this.vertexShaderContent,
+      webElement: webEl,
     });
     const toPreloadC0 = this.images.map((textureInfo) => textureInfo.channelo0TexturePath);
     const toPreloadC1 = this.images.map((textureInfo) => textureInfo.channelo1TexturePath);
-    await RgWebComponent.preloadImages([...toPreloadC0, ...toPreloadC1]);
+    await engine.preloadImages([...toPreloadC0, ...toPreloadC1]);
   }
 
   deactivateAll() {

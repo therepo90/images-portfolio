@@ -2,14 +2,13 @@
   <app-image  *ngFor="let image of images"
     [id]="image.id"
     [active]="image.active"
-    (mouseenter)="activate(image.id)"
-    (touchstart)="activate(image.id)"
-    [shaderId]="image.shaderId"
-    [shaderMinNameAbbvPath]="image.shaderMinNameAbbvPath"
     [channelo0TexturePath]="image.channelo0TexturePath"
     [channelo1TexturePath]="image.channelo1TexturePath">
   </app-image>
 </div>
+<!--
+(mouseenter)="activate(image.id)"
+    (touchstart)="activate(image.id)"-->
 <div class="canvas-wrapper" id="rg-canvas-wrapper" [class.rocketed-somewhere]="!visibleCanvas"
      (mouseout)="deactivateAll()"
 >

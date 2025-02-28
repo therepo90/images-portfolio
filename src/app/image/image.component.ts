@@ -24,8 +24,6 @@ defineRgImage();
 })
 export class ImageComponent {
   @Input({required:false}) id?: string;
-  @Input() shaderId: string = 'imgTransition1Shader';
-  @Input() shaderMinNameAbbvPath: string = '/img1.shader';
   @Input() channelo0TexturePath: string = '/DSC_0031.jpg';
   @Input() channelo1TexturePath: string = '/DSC_0031_2.jpg';
   @Input() active: boolean = false;
@@ -38,15 +36,16 @@ export class ImageComponent {
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['active']?.currentValue === true) {
-        this.initImageCanvas();
+        //this.initImageCanvas();
     }
     if (changes['active']?.currentValue === false) {
       console.log('deactivated'+this.id);
       this.ready = false;
     }
-    RgWebComponent.deactivate();
+    //RgWebComponent.deactivate();
   }
 
+/*
   private async initImageCanvas() {
 
     await RgWebComponent.swapInputs(
@@ -67,4 +66,5 @@ export class ImageComponent {
     RgWebComponent.changeLaserTint(randomTint);
     this.ready = true;
   }
+*/
 }
