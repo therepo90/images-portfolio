@@ -6,13 +6,17 @@ import {HttpClient} from "@angular/common/http";
 })
 export class ResourceService {
   private base: string;
-  //private imgDir = 'images';
+  private imgDir = 'images';
   private shadersDir = 'shaders';
 
   constructor(private http: HttpClient) {
     this.base = window.origin.includes('localhost') ? '' : '/images-portfolio';
   }
 
+  getFullImagePath(path: string): string {
+    path = path.startsWith('/') ? path.slice(1) : path;
+    return [this.base, this.imgDir, path].join('/');
+  }
   async loadShader(path: string) {
     path = path.startsWith('/') ? path.slice(1) : path;
     let dst = [this.base,this.shadersDir,path].join('/');

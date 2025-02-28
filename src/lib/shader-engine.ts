@@ -80,12 +80,12 @@ export class ShaderEngine<T extends WebComponent> {
   };
 
   loadTexture = (gl, texture: WebGLTexture, path: string, unit: number, image: any) => {
-    console.log('ShaderEngine::loadTexture', { gl, texture, path, unit, image, width: image.width, height: image.height, imageData: image.data });
     if(!image) {
       console.error('No image ');
       alert('No image ')
-      return;
+      throw new Error('No image ');
     }
+    console.log('ShaderEngine::loadTexture', { gl, texture, path, unit, image, width: image.width, height: image.height, imageData: image.data });
     gl.activeTexture(gl[`TEXTURE${unit}`]);
     gl.bindTexture(gl.TEXTURE_2D, texture);
 

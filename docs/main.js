@@ -30133,12 +30133,12 @@ var ShaderEngine = class {
     console.log("Initialized engine");
   });
   loadTexture = (gl, texture, path, unit, image) => {
-    console.log("ShaderEngine::loadTexture", { gl, texture, path, unit, image, width: image.width, height: image.height, imageData: image.data });
     if (!image) {
       console.error("No image ");
       alert("No image ");
-      return;
+      throw new Error("No image ");
     }
+    console.log("ShaderEngine::loadTexture", { gl, texture, path, unit, image, width: image.width, height: image.height, imageData: image.data });
     gl.activeTexture(gl[`TEXTURE${unit}`]);
     gl.bindTexture(gl.TEXTURE_2D, texture);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
@@ -30390,11 +30390,15 @@ var ImageEngine = class extends ShaderEngine {
 var ResourceService = class _ResourceService {
   http;
   base;
-  //private imgDir = 'images';
+  imgDir = "images";
   shadersDir = "shaders";
   constructor(http) {
     this.http = http;
     this.base = window.origin.includes("localhost") ? "" : "/images-portfolio";
+  }
+  getFullImagePath(path) {
+    path = path.startsWith("/") ? path.slice(1) : path;
+    return [this.base, this.imgDir, path].join("/");
   }
   loadShader(path) {
     return __async(this, null, function* () {
@@ -30422,67 +30426,70 @@ var AppComponent = class _AppComponent {
   shaderFragmentContent;
   vertexShaderContent;
   shaderFragmentTpl;
-  imgDir = "/images";
+  bgImages;
+  images;
   constructor(http, resourceService) {
     this.http = http;
     this.resourceService = resourceService;
   }
-  bgImages = [
-    {
-      channelo0TexturePath: this.imgDir + "/helmet.png"
-    }
-  ];
-  images = [
-    {
-      id: "4",
-      /*shaderId: 'imgTransition3Shader',*/
-      //shaderMinNameAbbvPath: this.shadersDir+'/img1.shader',
-      channelo0TexturePath: this.imgDir + "/037_2.jpg",
-      //
-      channelo1TexturePath: this.imgDir + "/037_orig.jpg",
-      active: true
-    }
-    /* {
-       id: '3',
-       shaderId: 'imgTransition3Shader',
-       shaderMinNameAbbvPath: this.shadersDir+'/img1.shader',
-       channelo0TexturePath:this.imgDir+'/troll.jpg', //
-       channelo1TexturePath:this.imgDir+'/troll2.jpg',
-       active: false,
-     },
-     {
-       id: '2',
-       shaderId: 'imgTransition2Shader',
-       shaderMinNameAbbvPath: this.shadersDir+'/img1.shader',
-       channelo0TexturePath:this.imgDir+'/phone_followers.jpg',
-       channelo1TexturePath:this.imgDir+'/phone_followers2.jpg',
-       active: false,
-     },
-     {
-       id: '1',
-       shaderId: 'imgTransition1Shader',
-       shaderMinNameAbbvPath: this.shadersDir+'/img1.shader',
-       channelo0TexturePath:this.imgDir+'/DSC_0031.jpg',
-       channelo1TexturePath:this.imgDir+'/DSC_0031_2.jpg',
-       active: false,
-     },
-     {
-       id: '5',
-       shaderId: 'imgTransition3Shader',
-       shaderMinNameAbbvPath: this.shadersDir+'/img1.shader',
-       channelo0TexturePath:this.imgDir+'/228.jpg', //
-       channelo1TexturePath:this.imgDir+'/228_1.jpg',
-       active: false,
-     },*/
-    /* {
-      id: '4',
-      shaderId: 'imgTransition4Shader',
-      shaderMinNameAbbvPath: '/img1.shader',
-      channelo0TexturePath: '/full/DSC_0031.jpg',
-      channelo1TexturePath: '/full/DSC_0031_2.jpg',
-      active: false,
-    }*/
-  ];
+  ngOnInit() {
+    this.bgImages = [
+      {
+        channelo0TexturePath: this.resourceService.getFullImagePath("/helmet.png")
+      }
+    ];
+    this.images = [
+      {
+        id: "4",
+        /*shaderId: 'imgTransition3Shader',*/
+        //shaderMinNameAbbvPath: this.shadersDir+'/img1.shader',
+        channelo0TexturePath: this.resourceService.getFullImagePath("/037_2.jpg"),
+        //
+        channelo1TexturePath: this.resourceService.getFullImagePath("/037_orig.jpg"),
+        active: true
+      }
+      /* {
+         id: '3',
+         shaderId: 'imgTransition3Shader',
+         shaderMinNameAbbvPath: this.shadersDir+'/img1.shader',
+         channelo0TexturePath:'/troll.jpg', //
+         channelo1TexturePath:'/troll2.jpg',
+         active: false,
+       },
+       {
+         id: '2',
+         shaderId: 'imgTransition2Shader',
+         shaderMinNameAbbvPath: this.shadersDir+'/img1.shader',
+         channelo0TexturePath:'/phone_followers.jpg',
+         channelo1TexturePath:'/phone_followers2.jpg',
+         active: false,
+       },
+       {
+         id: '1',
+         shaderId: 'imgTransition1Shader',
+         shaderMinNameAbbvPath: this.shadersDir+'/img1.shader',
+         channelo0TexturePath:'/DSC_0031.jpg',
+         channelo1TexturePath:'/DSC_0031_2.jpg',
+         active: false,
+       },
+       {
+         id: '5',
+         shaderId: 'imgTransition3Shader',
+         shaderMinNameAbbvPath: this.shadersDir+'/img1.shader',
+         channelo0TexturePath:'/228.jpg', //
+         channelo1TexturePath:'/228_1.jpg',
+         active: false,
+       },*/
+      /* {
+        id: '4',
+        shaderId: 'imgTransition4Shader',
+        shaderMinNameAbbvPath: '/img1.shader',
+        channelo0TexturePath: '/full/DSC_0031.jpg',
+        channelo1TexturePath: '/full/DSC_0031_2.jpg',
+        active: false,
+      }*/
+    ];
+  }
   visibleCanvas = true;
   /*
     activate(imageId: string) {
@@ -30554,7 +30561,7 @@ var AppComponent = class _AppComponent {
       yield engine.swapInputs({
         texturePaths: {
           /*iChannel0Path: this.base + this.channelo0TexturePath,
-          iChannel1Path: this.base + this.channelo1TexturePath*/
+            iChannel1Path: this.base + this.channelo1TexturePath*/
           iChannel0Path: this.images[0].channelo0TexturePath,
           iChannel1Path: this.images[0].channelo1TexturePath
         }

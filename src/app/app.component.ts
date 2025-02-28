@@ -18,74 +18,82 @@ defineBgWeb();
   styleUrl: './app.component.scss',
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
-export class AppComponent implements AfterViewInit {
+export class AppComponent implements AfterViewInit, OnInit {
   @ViewChild('rgImage') rgImage!: ElementRef<HTMLElement>;
   @ViewChild('bgproplus') bgproplus!: ElementRef<HTMLElement>;
 
   private shaderFragmentContent!: string;
   private vertexShaderContent!: string;
   private shaderFragmentTpl!: string;
-  private imgDir: string = '/images';
 
-  constructor(private http: HttpClient, private resourceService:ResourceService) {}
-  bgImages = [
-    {
-      channelo0TexturePath:this.imgDir+'/helmet.png',
-    },
-  ];
-  images = [
-    {
-      id: '4',
-      /*shaderId: 'imgTransition3Shader',*/
-      //shaderMinNameAbbvPath: this.shadersDir+'/img1.shader',
-      channelo0TexturePath:this.imgDir+'/037_2.jpg', //
-      channelo1TexturePath:this.imgDir+'/037_orig.jpg',
-      active: true,
-    },
-   /* {
-      id: '3',
-      shaderId: 'imgTransition3Shader',
-      shaderMinNameAbbvPath: this.shadersDir+'/img1.shader',
-      channelo0TexturePath:this.imgDir+'/troll.jpg', //
-      channelo1TexturePath:this.imgDir+'/troll2.jpg',
-      active: false,
-    },
-    {
-      id: '2',
-      shaderId: 'imgTransition2Shader',
-      shaderMinNameAbbvPath: this.shadersDir+'/img1.shader',
-      channelo0TexturePath:this.imgDir+'/phone_followers.jpg',
-      channelo1TexturePath:this.imgDir+'/phone_followers2.jpg',
-      active: false,
-    },
-    {
-      id: '1',
-      shaderId: 'imgTransition1Shader',
-      shaderMinNameAbbvPath: this.shadersDir+'/img1.shader',
-      channelo0TexturePath:this.imgDir+'/DSC_0031.jpg',
-      channelo1TexturePath:this.imgDir+'/DSC_0031_2.jpg',
-      active: false,
-    },
-    {
-      id: '5',
-      shaderId: 'imgTransition3Shader',
-      shaderMinNameAbbvPath: this.shadersDir+'/img1.shader',
-      channelo0TexturePath:this.imgDir+'/228.jpg', //
-      channelo1TexturePath:this.imgDir+'/228_1.jpg',
-      active: false,
-    },*/
-    /* {
-      id: '4',
-      shaderId: 'imgTransition4Shader',
-      shaderMinNameAbbvPath: '/img1.shader',
-      channelo0TexturePath: '/full/DSC_0031.jpg',
-      channelo1TexturePath: '/full/DSC_0031_2.jpg',
-      active: false,
-    }*/
-  ] as any[];
+  private bgImages!: { channelo0TexturePath: string }[];
+  private images!: { channelo1TexturePath: string; active: boolean; id: string; channelo0TexturePath: string }[];
+
+  constructor(
+    private http: HttpClient,
+    private resourceService: ResourceService,
+  ) {}
+
+  ngOnInit(): void {
+    this.bgImages = [
+      {
+        channelo0TexturePath:this.resourceService.getFullImagePath('/helmet.png'),
+      },
+    ];
+    this.images = [
+      {
+        id: '4',
+        /*shaderId: 'imgTransition3Shader',*/
+        //shaderMinNameAbbvPath: this.shadersDir+'/img1.shader',
+        channelo0TexturePath:this.resourceService.getFullImagePath('/037_2.jpg'), //
+        channelo1TexturePath:this.resourceService.getFullImagePath('/037_orig.jpg'),
+        active: true,
+      },
+      /* {
+         id: '3',
+         shaderId: 'imgTransition3Shader',
+         shaderMinNameAbbvPath: this.shadersDir+'/img1.shader',
+         channelo0TexturePath:'/troll.jpg', //
+         channelo1TexturePath:'/troll2.jpg',
+         active: false,
+       },
+       {
+         id: '2',
+         shaderId: 'imgTransition2Shader',
+         shaderMinNameAbbvPath: this.shadersDir+'/img1.shader',
+         channelo0TexturePath:'/phone_followers.jpg',
+         channelo1TexturePath:'/phone_followers2.jpg',
+         active: false,
+       },
+       {
+         id: '1',
+         shaderId: 'imgTransition1Shader',
+         shaderMinNameAbbvPath: this.shadersDir+'/img1.shader',
+         channelo0TexturePath:'/DSC_0031.jpg',
+         channelo1TexturePath:'/DSC_0031_2.jpg',
+         active: false,
+       },
+       {
+         id: '5',
+         shaderId: 'imgTransition3Shader',
+         shaderMinNameAbbvPath: this.shadersDir+'/img1.shader',
+         channelo0TexturePath:'/228.jpg', //
+         channelo1TexturePath:'/228_1.jpg',
+         active: false,
+       },*/
+      /* {
+        id: '4',
+        shaderId: 'imgTransition4Shader',
+        shaderMinNameAbbvPath: '/img1.shader',
+        channelo0TexturePath: '/full/DSC_0031.jpg',
+        channelo1TexturePath: '/full/DSC_0031_2.jpg',
+        active: false,
+      }*/
+    ];
+  }
   visibleCanvas: boolean = true;
 
-/*
+  /*
   activate(imageId: string) {
     if (!this.visibleCanvas) {
       ImageWebComponent.activate();
@@ -104,7 +112,7 @@ export class AppComponent implements AfterViewInit {
     });
   }
 
-/*
+  /*
   private async initBgCanvas() {
     const base = window.origin.includes('localhost') ? '' : '/images-portfolio';
     console.log('Bejs', { base });
@@ -136,7 +144,6 @@ export class AppComponent implements AfterViewInit {
 */
 
   private async initImgCanvas() {
-
     this.shaderFragmentContent = await this.resourceService.loadShader('img1.shader.fragment.glsl');
     this.vertexShaderContent = await this.resourceService.loadShader('/base/vertex100.glsl');
     this.shaderFragmentTpl = await this.resourceService.loadShader('/base/fragment-main100.glsl');
@@ -153,22 +160,19 @@ export class AppComponent implements AfterViewInit {
     const toPreloadC1 = this.images.map((textureInfo) => textureInfo.channelo1TexturePath);
     await engine.preloadImages([...toPreloadC0, ...toPreloadC1]);
 
-
     await engine.setTexturePaths({
       iChannel0Path: this.images[0].channelo0TexturePath,
       iChannel1Path: this.images[0].channelo1TexturePath,
     });
 
-    await engine.swapInputs(
-      {
-        texturePaths: {
-          /*iChannel0Path: this.base + this.channelo0TexturePath,
+    await engine.swapInputs({
+      texturePaths: {
+        /*iChannel0Path: this.base + this.channelo0TexturePath,
           iChannel1Path: this.base + this.channelo1TexturePath*/
-          iChannel0Path: this.images[0].channelo0TexturePath,
-          iChannel1Path: this.images[0].channelo1TexturePath
-        }
-      }
-    );
+        iChannel0Path: this.images[0].channelo0TexturePath,
+        iChannel1Path: this.images[0].channelo1TexturePath,
+      },
+    });
     await engine.activate();
   }
 
