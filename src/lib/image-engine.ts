@@ -1,6 +1,7 @@
 import { ShaderEngine } from './shader-engine';
 import { ImageWebComponent } from './image-web-component';
 import {measureExecutionTime} from "../utils";
+import {ResourceService} from "../app/resource.service";
 
 export class ImageEngine extends ShaderEngine<ImageWebComponent> {
   private swappingInputs: boolean = false;

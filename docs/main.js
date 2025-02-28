@@ -30103,6 +30103,7 @@ function measureExecutionTime(label) {
 
 // src/lib/shader-engine.ts
 var ShaderEngine = class {
+  resourceService;
   shaderFragmentContent;
   vertexShaderContent;
   mouse;
@@ -30120,24 +30121,35 @@ var ShaderEngine = class {
   shadowRoot;
   shaderFragmentTpl;
   preloadedImages = /* @__PURE__ */ new Map();
-  preloadImages = (paths) => __async(this, null, function* () {
-    console.log("Preloading images", paths);
-    const promises = paths.map((path) => {
-      return new Promise((resolve, reject) => {
-        const image = new Image();
-        image.onload = () => resolve(image);
-        image.onerror = reject;
-        image.src = path;
+  constructor(resourceService) {
+    this.resourceService = resourceService;
+  }
+  preloadImages(paths) {
+    return __async(this, null, function* () {
+      console.log("Preloading images", paths);
+      const promises = paths.map((path) => {
+        return new Promise((resolve, reject) => {
+          const image = new Image();
+          image.onload = () => resolve(image);
+          image.onerror = reject;
+          image.src = path;
+        });
+      });
+      const loadedImages = yield Promise.all(promises);
+      paths.forEach((path, i) => {
+        this.preloadedImages.set(path, loadedImages[i]);
       });
     });
-    const loadedImages = yield Promise.all(promises);
-    paths.forEach((path, i) => {
-      this.preloadedImages.set(path, loadedImages[i]);
-    });
-  });
+  }
   init(initParams) {
     return __async(this, null, function* () {
-      const { shaderFragmentTpl, shaderFragmentContent, vertexShaderContent, webElement } = initParams;
+      const toPreloadC0 = initParams.images.map((textureInfo) => textureInfo.channelo0TexturePath);
+      const toPreloadC1 = initParams.images.map((textureInfo) => textureInfo.channelo1TexturePath);
+      const preloadedImagesPromise = this.preloadImages([...toPreloadC0, ...toPreloadC1]);
+      this.shaderFragmentContent = yield this.resourceService.loadShader("img1.shader.fragment.glsl");
+      this.vertexShaderContent = yield this.resourceService.loadShader("/base/vertex100.glsl");
+      this.shaderFragmentTpl = yield this.resourceService.loadShader("/base/fragment-main100.glsl");
+      const { webElement } = initParams;
       this.webEl = webElement;
       this.shadowRoot = webElement.shadowRoot;
       if (!this.shadowRoot) {
@@ -30149,9 +30161,6 @@ var ShaderEngine = class {
       }
       const wrapper = webElement;
       console.log("ShaderEngine::init", wrapper, initParams);
-      this.vertexShaderContent = vertexShaderContent;
-      this.shaderFragmentContent = shaderFragmentContent;
-      this.shaderFragmentTpl = shaderFragmentTpl;
       this.mouse = { x: 0, y: 0 };
       this.startTime = Date.now();
       const parentWidth = wrapper.getBoundingClientRect().width;
@@ -30159,6 +30168,7 @@ var ShaderEngine = class {
       console.log("Rekt", { r: wrapper.getBoundingClientRect(), parentWidth, parentHeight });
       canvas.width = parentWidth;
       canvas.height = parentHeight;
+      yield preloadedImagesPromise;
       yield this.setupWebGL().then(() => {
         this.setupMouseListeners();
       });
@@ -30324,6 +30334,9 @@ var ShaderEngine = class {
   setupAdditionalUniforms(program) {
   }
 };
+__decorate([
+  measureExecutionTime()
+], ShaderEngine.prototype, "preloadImages", null);
 __decorate([
   measureExecutionTime()
 ], ShaderEngine.prototype, "init", null);
@@ -30602,20 +30615,12 @@ var AppComponent = class _AppComponent {
   */
   initImgCanvas() {
     return __async(this, null, function* () {
-      this.shaderFragmentContent = yield this.resourceService.loadShader("img1.shader.fragment.glsl");
-      this.vertexShaderContent = yield this.resourceService.loadShader("/base/vertex100.glsl");
-      this.shaderFragmentTpl = yield this.resourceService.loadShader("/base/fragment-main100.glsl");
       let webEl = this.rgImage.nativeElement;
-      const engine = new ImageEngine();
+      const engine = new ImageEngine(this.resourceService);
       yield engine.init({
-        shaderFragmentTpl: this.shaderFragmentTpl,
-        shaderFragmentContent: this.shaderFragmentContent,
-        vertexShaderContent: this.vertexShaderContent,
-        webElement: webEl
+        webElement: webEl,
+        images: this.images
       });
-      const toPreloadC0 = this.images.map((textureInfo) => textureInfo.channelo0TexturePath);
-      const toPreloadC1 = this.images.map((textureInfo) => textureInfo.channelo1TexturePath);
-      yield engine.preloadImages([...toPreloadC0, ...toPreloadC1]);
       yield engine.setTexturePaths({
         iChannel0Path: this.images[0].channelo0TexturePath,
         iChannel1Path: this.images[0].channelo1TexturePath

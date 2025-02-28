@@ -1,16 +1,16 @@
-import { AfterViewInit, Component, CUSTOM_ELEMENTS_SCHEMA, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { AfterViewInit, Component, CUSTOM_ELEMENTS_SCHEMA, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { ImageComponent } from './image/image.component';
 import { CommonModule } from '@angular/common';
-import { defineImageWebComponent, ImageWebComponent } from '../lib/image-web-component';
+import { ImageWebComponent } from '../lib/image-web-component';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { BackgroundWebComponent, defineBgWeb } from '../lib/bg-web-component';
-import {ShaderEngine} from "../lib/shader-engine";
-import {ResourceService} from "./resource.service";
-import {ImageEngine} from "../lib/image-engine";
-import {measureExecutionTime} from "../utils";
+import { defineBgWeb } from '../lib/bg-web-component';
+import { ResourceService } from './resource.service';
+import { ImageEngine } from '../lib/image-engine';
+import { measureExecutionTime } from '../utils';
+import { TheImage } from './theimg';
 
 defineBgWeb();
+
 @Component({
   selector: 'app-root',
   standalone: true,
@@ -28,7 +28,7 @@ export class AppComponent implements AfterViewInit, OnInit {
   private shaderFragmentTpl!: string;
 
   private bgImages!: { channelo0TexturePath: string }[];
-  private images!: { channelo1TexturePath: string; active: boolean; id: string; channelo0TexturePath: string }[];
+  private images!: TheImage[];
 
   constructor(
     private http: HttpClient,
@@ -38,7 +38,7 @@ export class AppComponent implements AfterViewInit, OnInit {
   ngOnInit(): void {
     this.bgImages = [
       {
-        channelo0TexturePath:this.resourceService.getFullImagePath('/helmet.png'),
+        channelo0TexturePath: this.resourceService.getFullImagePath('/helmet.png'),
       },
     ];
     this.images = [
@@ -46,8 +46,8 @@ export class AppComponent implements AfterViewInit, OnInit {
         id: '4',
         /*shaderId: 'imgTransition3Shader',*/
         //shaderMinNameAbbvPath: this.shadersDir+'/img1.shader',
-        channelo0TexturePath:this.resourceService.getFullImagePath('/037_2.jpg'), //
-        channelo1TexturePath:this.resourceService.getFullImagePath('/037_orig.jpg'),
+        channelo0TexturePath: this.resourceService.getFullImagePath('/037_2.jpg'), //
+        channelo1TexturePath: this.resourceService.getFullImagePath('/037_orig.jpg'),
         active: true,
       },
       /* {
@@ -146,21 +146,13 @@ export class AppComponent implements AfterViewInit, OnInit {
 
   @measureExecutionTime()
   private async initImgCanvas() {
-    this.shaderFragmentContent = await this.resourceService.loadShader('img1.shader.fragment.glsl');
-    this.vertexShaderContent = await this.resourceService.loadShader('/base/vertex100.glsl');
-    this.shaderFragmentTpl = await this.resourceService.loadShader('/base/fragment-main100.glsl');
     let webEl = this.rgImage.nativeElement as ImageWebComponent; // Mamy jeden web component z canvasem. I tylko jego inicjalizujemy.
 
-    const engine = new ImageEngine();
+    const engine = new ImageEngine(this.resourceService);
     await engine.init({
-      shaderFragmentTpl: this.shaderFragmentTpl,
-      shaderFragmentContent: this.shaderFragmentContent,
-      vertexShaderContent: this.vertexShaderContent,
       webElement: webEl,
+      images: this.images,
     });
-    const toPreloadC0 = this.images.map((textureInfo) => textureInfo.channelo0TexturePath);
-    const toPreloadC1 = this.images.map((textureInfo) => textureInfo.channelo1TexturePath);
-    await engine.preloadImages([...toPreloadC0, ...toPreloadC1]);
 
     await engine.setTexturePaths({
       iChannel0Path: this.images[0].channelo0TexturePath,

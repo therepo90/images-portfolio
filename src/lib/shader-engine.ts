@@ -1,6 +1,7 @@
 import { WebComponent } from './web-component';
 import { InitParams } from './init-params';
 import {measureExecutionTime} from "../utils";
+import {ResourceService} from "../app/resource.service";
 
 export class ShaderEngine<T extends WebComponent> {
   protected shaderFragmentContent!: string;
@@ -23,8 +24,11 @@ export class ShaderEngine<T extends WebComponent> {
   public preloadedImages = new Map<string, HTMLImageElement>();
 
 
+  constructor(protected resourceService:ResourceService) {
+  }
 
-  public preloadImages = async (paths: string[]) => {
+  @measureExecutionTime()
+  async preloadImages (paths: string[]) {
     console.log('Preloading images', paths);
     const promises = paths.map((path) => {
       return new Promise<HTMLImageElement>((resolve, reject) => {
@@ -45,8 +49,14 @@ export class ShaderEngine<T extends WebComponent> {
 
   @measureExecutionTime()
   async init (initParams: InitParams<T>) {
+    const toPreloadC0 = initParams.images.map((textureInfo) => textureInfo.channelo0TexturePath);
+    const toPreloadC1 = initParams.images.map((textureInfo) => textureInfo.channelo1TexturePath);
+    const preloadedImagesPromise = this.preloadImages([...toPreloadC0, ...toPreloadC1]);
+    this.shaderFragmentContent = await this.resourceService.loadShader('img1.shader.fragment.glsl');
+    this.vertexShaderContent = await this.resourceService.loadShader('/base/vertex100.glsl');
+    this.shaderFragmentTpl = await this.resourceService.loadShader('/base/fragment-main100.glsl');
 
-    const { shaderFragmentTpl, shaderFragmentContent, vertexShaderContent, webElement } = initParams;
+    const { webElement } = initParams;
     this.webEl = webElement;
     this.shadowRoot = webElement.shadowRoot as ShadowRoot;
     if (!this.shadowRoot) {
@@ -59,9 +69,6 @@ export class ShaderEngine<T extends WebComponent> {
     }
     const wrapper = webElement;
     console.log('ShaderEngine::init', wrapper, initParams);
-    this.vertexShaderContent = vertexShaderContent;
-    this.shaderFragmentContent = shaderFragmentContent;
-    this.shaderFragmentTpl = shaderFragmentTpl;
 
     this.mouse = { x: 0, y: 0 };
     this.startTime = Date.now();
@@ -72,6 +79,7 @@ export class ShaderEngine<T extends WebComponent> {
     canvas.width = parentWidth;
     canvas.height = parentHeight;
 
+    await preloadedImagesPromise;
     await this.setupWebGL().then(() => {
       this.setupMouseListeners();
     });

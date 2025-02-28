@@ -1,8 +1,8 @@
+import {TheImage} from "../app/theimg";
+
 export interface InitParams<T> {
-  shaderFragmentTpl: string;
-  shaderFragmentContent: string;
-  vertexShaderContent: string;
   webElement: T;
+  images: TheImage[]
 }
 
 export interface ActivateParams {
