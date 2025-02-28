@@ -6,6 +6,7 @@ html {
 .canvas-wrapper {
   width   : $canvasWidth;
   height  : $canvasHeight;
+  margin  : 0 auto;
   @media screen and (max-width: 992px) {
     width: $canvasWidthMobile;
     height: $canvasHeightMobile;
@@ -56,9 +57,15 @@ html {
 
 rg-image {
   display: block;
-  width: 1200px;
-  height: 800px;
+  width: 100%;
+  height: 100%;
+  max-width: 1200px;
+  max-height: 800px;
   background: yellow;
+  @media screen and (max-width: 992px) {
+    width: 100%;
+    height: 100%;
+  }
 }
 
 /*#rg-web-component-canvas {
