@@ -23,9 +23,6 @@ export class ShaderEngine<T extends WebComponent> {
 
 
   public preloadImages = async (paths: string[]) => {
-    const base = window.origin.includes('localhost') ? '' : '/images-portfolio';
-    console.log('Bejsss', { base });
-    paths = paths.map((path) => base + path);
     console.log('Preloading images', paths);
     const promises = paths.map((path) => {
       return new Promise<HTMLImageElement>((resolve, reject) => {

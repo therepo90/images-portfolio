@@ -30086,9 +30086,6 @@ var ShaderEngine = class {
   shaderFragmentTpl;
   preloadedImages = /* @__PURE__ */ new Map();
   preloadImages = (paths) => __async(this, null, function* () {
-    const base = window.origin.includes("localhost") ? "" : "/images-portfolio";
-    console.log("Bejsss", { base });
-    paths = paths.map((path) => base + path);
     console.log("Preloading images", paths);
     const promises = paths.map((path) => {
       return new Promise((resolve, reject) => {
