@@ -222,6 +222,7 @@ export class ShaderEngine<T extends WebComponent> {
     gl.uniform2f(resolutionUniformLocation, canvas.width, canvas.height);
     this.textures = [gl.createTexture(), gl.createTexture()] as any[];
 
+    console.log('WebGL initialized.');
     //this.beamTarget.x = this.mouse.x - 50;
     //this.beamTarget.y = this.mouse.y + 50;
   };

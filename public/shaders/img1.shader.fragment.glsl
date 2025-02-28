@@ -203,12 +203,14 @@ void processBorder( out vec4 fragColor, in vec2 fragCoord, out float sqOut, in v
 
 void mainImage(out vec4 fragColor, in vec2 fragCoord)
 {
+  //fragColor = vec4(0,1.0,0,1.0);
+
   vec4 mainCol;
   mainImage2(mainCol, vUV * iResolution.xy);
   vec4 borderColor;
   float sq;
   processBorder(borderColor, vUV * iResolution.xy, sq, laserTint);
-  gl_FragColor = mix(mainCol, borderColor, sq);
+  fragColor = mix(mainCol, borderColor, sq);
   //gl_FragColor=borderColor;
   float a=1.;
   //if(sq> 0.98){
@@ -216,6 +218,6 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
   //}
   //a = 1.-pow(sq,3.);
   //}
-  gl_FragColor.a = a;
+
 }
 

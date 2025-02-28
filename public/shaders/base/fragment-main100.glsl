@@ -14,6 +14,5 @@ uniform int iFrame;
 
 void main()
 {
-  //vUV=vec2(0,0);// just use it so auv is not stripped
   mainImage(gl_FragColor, gl_FragCoord.xy);
 }
